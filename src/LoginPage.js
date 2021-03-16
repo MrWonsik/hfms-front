@@ -43,14 +43,10 @@ const LoginPage = () => {
         }
     }
 
-    const loader = () => {
-        return <Spinner animation="border" size="sm" />
-    }
-
     return (
         <Row className="justify-content-md-center">
             <Col className="mt-5" md="4">
-                <Jumbotron className="py-5">
+                <Jumbotron className="py-5 login-page-jumbotron">
                     <h2>Login</h2>
                     <Form name="form" onSubmit={handleSubmit}>
                         <Form.Group controlId="formUsername">
@@ -82,7 +78,7 @@ const LoginPage = () => {
                             </Form.Control.Feedback>
                         </Form.Group>
                         <Form.Group className="text-right">
-                            {loggingIn && loader()}
+                            {loggingIn && <Spinner animation="border" size="sm" />}
                             {' '}
                             <Button variant="primary" type="submit">Login</Button>
                         </Form.Group>

@@ -1,14 +1,15 @@
 import React from 'react';
-import { Route } from 'react-router-dom';
+import { Route, Redirect } from 'react-router-dom';
 import NotFoundPage from '../NotFoundPage';
 
 export const PrivateRoute = ({ component: Component, user, role, ...rest }) => {
-    console.log(user);
-    console.log(role);
     return (
-    <Route {...rest} render={props => (
-        user && user !== null && user.role === role
-            ? <Component {...props} />
-            : <NotFoundPage />
-    )} />
+        <Route exact {...rest} render={props => {
+            if(user === undefined) {
+                return <Redirect to="/login" />
+            }
+            if(user.role === role) {
+                return <Component {...props} />
+            }
+        }} />
 )}

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector, useEffect } from 'react-redux';
+import { Col } from 'react-bootstrap';
 
 // import { userActions } from '../_actions';
 
@@ -15,15 +16,14 @@ const HomePageAdmin = () => {
     }));
 
     return (
-        <div className="col-md-6 col-md-offset-3">
+        <Col md={{ span: 6, offset: 3 }}>
+            <p className="text-right"><Link to="/login">Logout</Link></p>
             <h1>Hi {user.username}!</h1>
-            <p>Your role: {user.role}</p>
-            <p>You're logged in with React & JWT!!</p>
-            <h3>Users from secure api end point:</h3>
-            <Link to="/test">Test!</Link>
-            {users.loading && <em>Loading users...</em>}
+            <h2>Users list:</h2>
+            {users.loading && <Spinner animation="border" size="sm" />}
             {users.error && <span className="text-danger">ERROR: {users.error}</span>}
             {users.items &&
+                //TODO: change to react table!!!!!!
                 <ul>
                     {users.items.map((user, index) =>
                         <li key={user.id}>
@@ -32,10 +32,8 @@ const HomePageAdmin = () => {
                     )}
                 </ul>
             }
-            <p>
-                <Link to="/login">Logout</Link>
-            </p>
-        </div>
+
+        </Col>
     );
 }
 

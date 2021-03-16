@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Router, Route, Switch } from 'react-router-dom';
+import { Router, Route, Switch, Redirect } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { history } from './_helpers';
@@ -32,7 +32,7 @@ const App = () => {
 
     const { alert, user } = useSelector(state => ({
         alert: state.alert,
-        user: state.authentication.user,
+        user: state.authentication.user
     }));
     const dispatch = useDispatch();
     
@@ -44,26 +44,30 @@ const App = () => {
     }, []);
     
     return (
-        <Container fluid>
-            <Row>
-                <Col>
-                    {alert.message &&
-                        <Alert className="fixed-top m-3" key={alert.message} variant={alert.type} onClose={() => dispatch(alertActions.clear())} dismissible>
-                            <Text>{alert.message}</Text> 
-                        </Alert>
-                    }
-                    <Router history={history}>
-                        <Switch>
-                            { user && user.role && renderHomepage(user) }
-                            <PrivateRoute user={user} role="ROLE_ADMIN" path="/test" component={TestPage} />   
-                            <Route path="/login" component={LoginPage} />
-                            <Route exact path="*" component={NotFoundPage} />
-                        </Switch>
-                    </Router>
-                </Col>
-            </Row>
-            <div className="fixed-down"><Text>Tomasz Wąsacz 2021</Text></div>
-        </Container>
+        <>
+            <Container fluid>
+                <Row>
+                    <Col>
+                        {alert.message &&
+                            <Alert className="fixed-top m-3" key={alert.message} variant={alert.type} onClose={() => dispatch(alertActions.clear())} dismissible>
+                                <Text>{alert.message}</Text> 
+                            </Alert>
+                        }
+                        <Router history={history}>
+                            <Switch>
+                                { user && user.role && renderHomepage(user) }
+                                <PrivateRoute user={user} role="ROLE_ADMIN" path="/test" component={TestPage} />
+                                <Route exact path="/login" component={LoginPage} />
+                                <Route exact path="*" component={NotFoundPage} />
+                            </Switch>
+                        </Router>
+                    </Col>
+                </Row>
+            </Container>
+            <div className="author-footer">
+                <Text>Tomasz Wąsacz 2021</Text>
+            </div>
+        </>
     );
 }
 

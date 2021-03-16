@@ -1,3 +1,49 @@
-html, body, #app, #app>div {
-    height: 100%
+@main-color-dark: #423E28;
+@secondary-color: #50723C;
+@secondary-color-dark: #324726;
+@main-color: #8db964;
+@focus-color: #9dce70;
+@main-font-color: white;
+
+.author-footer {
+  position: fixed;
+  bottom: 0;
+  margin: -15px;
+  padding-bottom: 15px;
+  margin: auto;
+  width: 100%;
+  border: 1px solid @main-color-dark;
+  background-color: @main-color;
+  color: @main-font-color;
+}
+
+.login-page-jumbotron {
+  margin-top: 100px;
+  margin-bottom: 100px;
+  border: 1px solid @main-color-dark;
+  background-color: @main-color;
+  color: @main-font-color;
+}
+
+button.btn.btn-primary {
+  border-color: @secondary-color;
+  background-color: @secondary-color;
+
+  &:active:not(:disabled):not(.disabled) {
+    border-color: @secondary-color-dark;
+    background-color: @secondary-color-dark;
   }
+
+  &:focus {
+    box-shadow: 0 0 0 0.2rem @focus-color;
+  }
+}
+
+.form-group {
+  input{
+    border-color: @main-color-dark;
+    &:focus {
+      box-shadow: 0 0 0 0.2rem @focus-color;
+    }
+  }
+}
