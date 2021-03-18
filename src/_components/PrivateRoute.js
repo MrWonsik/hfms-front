@@ -1,8 +1,7 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
-import NotFoundPage from '../NotFoundPage';
 
-export const PrivateRoute = ({ component: Component, user, role, ...rest }) => {
+const PrivateRoute = ({ component: Component, user, role, ...rest }) => {
     return (
         <Route exact {...rest} render={props => {
             if(user === undefined) {
@@ -13,3 +12,5 @@ export const PrivateRoute = ({ component: Component, user, role, ...rest }) => {
             }
         }} />
 )}
+
+export default PrivateRoute;

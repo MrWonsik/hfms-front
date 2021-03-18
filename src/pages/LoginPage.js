@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -8,19 +7,20 @@ import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
 
 
-import { userActions } from './_actions';
+import { logout, login } from '../user/user.actions';
+import { getUsersClear } from '../user/users/users.actions';
 import { Jumbotron } from 'react-bootstrap';
 
 const LoginPage = () => {
     const dispatch = useDispatch();
     // reset login status
-    const { loggingIn, loggedIn } = useSelector(state => ({
-        loggingIn: state.authentication.loggingIn,
-        loggedIn: state.authentication.loggedIn
+    const { loggingIn } = useSelector(state => ({
+        loggingIn: state.user.loggingIn,
     }));
 
     useEffect(() => {
-        dispatch(userActions.logout()); 
+        dispatch(logout());
+        dispatch(getUsersClear());
     }, []);
 
     const [username, setUsername] = useState('');
@@ -39,7 +39,7 @@ const LoginPage = () => {
 
         setSubmitted(true);
         if (username && password) {
-            dispatch(userActions.login(username, password));
+            dispatch(login(username, password));
         }
     }
 
@@ -57,7 +57,6 @@ const LoginPage = () => {
                                 name="username" 
                                 value={username} 
                                 onChange={handleUsernameInput}
-                                type="text" 
                                 placeholder="Enter username"/>
                             <Form.Control.Feedback type="invalid">
                                 Username is required

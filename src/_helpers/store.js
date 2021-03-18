@@ -1,10 +1,19 @@
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import thunkMiddleware from 'redux-thunk';
 import { composeWithDevTools} from 'redux-devtools-extension'
-import reducers from '../_reducers';
 import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
+import { user } from '../user/user.reducer';
+import { alert } from '../alert/alert.reducer';
+import { users } from '../user/users/users.reducer';
+
+const reducers = combineReducers({
+  user,
+  alert,
+  users
+});
+
 
 const persistConfig = {
     key: "root",
