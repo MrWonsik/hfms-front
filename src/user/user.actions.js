@@ -42,11 +42,11 @@ const changePasswordSuccess = () => ({ type: CHANGE_PASSWORD_SUCCESS })
 export const CHANGE_PASSWORD_FAILURE = 'USER_CHANGE_PASSWORD_FAILURE';
 const changePasswordFailure = (error) => ({ type: CHANGE_PASSWORD_FAILURE, payload: { error } })
 
-export const changePassword = (oldPassword, newPassword, repeatedNewPassword, user) => async dispatch => {
+export const changePassword = (oldPassword, newPassword, repeatedNewPassword) => async dispatch => {
     
-    dispatch(changePasswordRequest({ oldPassword, newPassword, repeatedNewPassword }));
+    dispatch(changePasswordRequest());
     let isPasswordChanged = false;
-    await changePasswordRequestCall(oldPassword, newPassword, repeatedNewPassword, user)
+    await changePasswordRequestCall(oldPassword, newPassword, repeatedNewPassword)
         .then(
             () => {
                 dispatch(changePasswordSuccess());

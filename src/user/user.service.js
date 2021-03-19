@@ -1,5 +1,6 @@
 import config from 'config';
 import { parseJwt, httpHelper } from '../_helpers';
+import { getJwtToken } from '../index'
 
 export const loginRequestCall = (username, password) => {
 
@@ -13,7 +14,7 @@ export const loginRequestCall = (username, password) => {
         .then(httpHelper.handleResponse)
         .then(jwt => {
             let decodedJwt = parseJwt(jwt.token);
-            let user = decodedJwt && decodedJwt.userInfo;
+            let user = decodedJwt?.userInfo;
             user.token = jwt.token;
             return user;
         }).catch((error) => {
@@ -21,10 +22,10 @@ export const loginRequestCall = (username, password) => {
         });
 }
 
-export const changePasswordRequestCall = (oldPassword, newPassword, repeatedNewPassword, user) => {
+export const changePasswordRequestCall = (oldPassword, newPassword, repeatedNewPassword) => {
     const requestOptions = {
         method: 'POST',
-        headers: httpHelper.addAuthHeader({ 'Content-Type': 'application/json' }, user.token),
+        headers: httpHelper.addAuthHeader({ 'Content-Type': 'application/json' }, getJwtToken()),
         body: JSON.stringify({ oldPassword, newPassword, repeatedNewPassword })
     };
 

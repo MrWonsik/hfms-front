@@ -64,7 +64,7 @@ const App = () => {
             )}
             <Router history={history}>
               <Switch>
-                {user && user.role && renderHomepage(user)}
+                {user?.role && renderHomepage(user)}
                 <PrivateRoute
                   user={user}
                   role="ROLE_ADMIN"

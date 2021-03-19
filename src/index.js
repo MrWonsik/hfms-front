@@ -12,6 +12,8 @@ import './styles.less';
 const store = configureStore();
 const persistor = persistStore(store);
 
+export const getJwtToken= () => store.getState().user?.user?.token;
+
 render(
     <Provider store={store}>
         <PersistGate loading={<div>Loading...</div>} persistor={persistor}>

@@ -1,14 +1,20 @@
-@main-color-dark: #423E28;
+@main-color: #6a9641; //#8db964
+@main-color-dark: #27351b;
+
 @secondary-color: #50723C;
 @secondary-color-dark: #324726;
-@main-color: #8db964;
-@focus-color: #9dce70;
+
+@main-focus-color: #9dce70;
+
+@main-disable-color: #444d3d;
+
 @main-font-color: white;
 
 .author-footer {
   position: fixed;
   bottom: 0;
   margin: -15px;
+  padding-top: 10px;
   padding-bottom: 15px;
   margin: auto;
   width: 100%;
@@ -41,12 +47,20 @@ button.btn.btn-primary {
   background-color: @secondary-color;
 
   &:active:not(:disabled):not(.disabled) {
-    border-color: @secondary-color-dark;
-    background-color: @secondary-color-dark;
+    border-color: @main-color-dark;
+    background-color: @main-color-dark;
+
+    &:focus {
+      box-shadow: 0 0 0 0.2rem @main-focus-color;  
+    }
   }
 
   &:focus {
-    box-shadow: 0 0 0 0.2rem @focus-color;
+    box-shadow: 0 0 0 0.2rem @main-focus-color;
+  }
+
+  &:hover {
+    background-color: @secondary-color-dark;
   }
 }
 
@@ -54,11 +68,57 @@ button.btn.btn-primary {
   input{
     border-color: @main-color-dark;
     &:focus {
-      box-shadow: 0 0 0 0.2rem @focus-color;
+      box-shadow: 0 0 0 0.2rem @main-focus-color;
     }
   }
 }
 
 .alert-main {
   z-index: 1051;
+}
+
+.navbar-main {
+  margin-left: -15px;
+  margin-right: -15px;
+  border: 1px solid @main-color-dark;
+  background-color: @main-color;
+  color: @main-font-color;
+  margin-bottom: 30px;
+
+  .nav-item {
+    border-radius: 4px;
+
+    &:hover {
+      background-color: @secondary-color-dark;
+      transition: color .15s ease-in-out,background-color .15s ease-in-out;
+    }
+  }
+
+  .navbar-nav .nav-link, .navbar-text {
+    color: @main-font-color;
+    &:hover {
+      color: @main-font-color
+    }
+  }
+}
+
+.user-list-table {
+  color: @main-font-color;
+
+  thead tr:first-child {
+    background-color: @secondary-color;
+  }
+
+  tr {
+    background-color: @main-color;
+  }
+  tr.disabled {
+    td {
+      opacity: .65;
+    }
+    td:last-child {
+      opacity: .75;
+    }
+    background-color: @main-disable-color;
+  }
 }

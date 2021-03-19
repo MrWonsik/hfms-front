@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Nav from "react-bootstrap/Nav";
+import Navbar from "react-bootstrap/Navbar";
 import Form from "react-bootstrap/Form";
 
 import { changePassword } from '../user/user.actions';
@@ -50,7 +51,7 @@ const UserTools = () => {
 
     setSubmitted(true);
     if (oldPassword && newPassword && repeatedNewPassword) {
-        dispatch(changePassword(oldPassword, newPassword, repeatedNewPassword, user)).then((isPasswordChanged) => {
+        dispatch(changePassword(oldPassword, newPassword, repeatedNewPassword)).then((isPasswordChanged) => {
           if(isPasswordChanged) {
             handleClose();
           }
@@ -60,14 +61,21 @@ const UserTools = () => {
 
   return (
     <>
-      <Nav className="justify-content-end">
-        <Nav.Item>
-          <Nav.Link onClick={handleShow}>Change password</Nav.Link>
-        </Nav.Item>
-        <Nav.Item>
-          <Nav.Link as={Link} to="/login">Logout</Nav.Link>
-        </Nav.Item>
-      </Nav>
+      <Navbar className="navbar-main" expand="md" variant="dark">
+        <Navbar.Brand href="/home">Home</Navbar.Brand>
+        <Navbar.Text>Login as: <span>{user.username}</span></Navbar.Text>
+        <Navbar.Toggle />
+        <Navbar.Collapse className="justify-content-end">
+          <Nav>
+            <Nav.Item>
+              <Nav.Link onClick={handleShow}>Change password</Nav.Link>
+            </Nav.Item>
+            <Nav.Item>
+              <Nav.Link as={Link} to="/login">Logout</Nav.Link>
+            </Nav.Item>
+          </Nav>
+        </Navbar.Collapse>
+      </Navbar>
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
@@ -118,7 +126,7 @@ const UserTools = () => {
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" onClick={handleChangePassword}>
+          <Button type="submit" variant="primary" onClick={handleChangePassword}>
             Change password
           </Button>
         </Modal.Footer>

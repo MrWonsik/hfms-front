@@ -1,3 +1,6 @@
+import { logout } from '../user/user.actions'
+import { history } from './history'
+
 export const httpHelper = {
     addAuthHeader,
     handleResponse
@@ -20,7 +23,7 @@ function handleResponse(response) {
             if (response.status === 401) {
                 // auto logout if 401 response returned from api
                 logout();
-                location.reload(true);
+                history.push('/login');
             }
             const error = (data && data.message) || response.statusText;
             throw Error(error);
