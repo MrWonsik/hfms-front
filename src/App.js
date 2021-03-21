@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Router, Route, Switch, Redirect } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
-import { history } from "./_helpers";
+import history from "./_helpers/history";
 import { alertClear } from "./alert/alert.actions";
 import PrivateRoute from "./_components/PrivateRoute";
 import HomePageUser from "./pages/HomePageUser";
@@ -14,7 +14,6 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Alert from "react-bootstrap/Alert";
-import styled from "styled-components";
 
 const renderHomepage = (user) => {
   switch (user.role) {
@@ -26,9 +25,6 @@ const renderHomepage = (user) => {
 
 const App = () => {
   const [show, setShow] = useState(false);
-  const Text = styled.div`
-    text-align: center;
-  `;
 
   const { alert, user, loggedIn } = useSelector((state) => ({
     alert: state.alert,
@@ -49,7 +45,7 @@ const App = () => {
   return (
     <>
       <Container fluid>
-        <Row>
+        <Row className="mb-5">
           <Col>
             {show && alert.message && (
               <Alert
@@ -59,7 +55,7 @@ const App = () => {
                 onClose={() => dispatch(alertClear())}
                 dismissible
               >
-                <Text>{alert.message}</Text>
+                <div className = "text-center">{alert.message}</div>
               </Alert>
             )}
             <Router history={history}>
@@ -80,7 +76,7 @@ const App = () => {
         </Row>
       </Container>
       <div className="author-footer">
-        <Text>Tomasz Wąsacz 2021</Text>
+        <div className="text-center">Tomasz Wąsacz 2021</div>
       </div>
     </>
   );

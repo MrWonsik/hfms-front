@@ -8,7 +8,7 @@ import {
   CHANGE_PASSWORD_FAILURE
 } from "./user.actions";
 
-export const user = (state = {}, action) => {
+export const user = (state = {updatingPasswordInProgress: false}, action) => {
   const { type, payload } = action;
 
   switch (type) {
@@ -29,13 +29,20 @@ export const user = (state = {}, action) => {
     case LOGOUT:
       return {};
     case CHANGE_PASSWORD_REQUEST:
-      return state;
+      return {
+        ...state,
+        updatingPasswordInProgress: true
+      };
     case CHANGE_PASSWORD_SUCCESS:
       return {
-        ...state
+        ...state,
+        updatingPasswordInProgress: false
       };
     case CHANGE_PASSWORD_FAILURE:
-      return state;
+      return {
+        ...state,
+        updatingPasswordInProgress: false
+      };
     default:
       return state;
   }

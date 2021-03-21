@@ -1,47 +1,73 @@
-import config from 'config';
-import { httpHelper } from "../../_helpers"
-import { getJwtToken } from "../../index"
+import config from "config";
+import { httpHelper } from "../../_helpers";
+import { getJwtToken } from "../../index";
 
 export const getAllUsersCall = () => {
+	const requestOptions = {
+		method: "GET",
+		headers: httpHelper.addAuthHeader({}, getJwtToken()),
+	};
 
-    const requestOptions = {
-        method: 'GET',
-        headers: httpHelper.addAuthHeader({}, getJwtToken())
-    };
+	return fetch(`${config.apiUrl}/api/user`, requestOptions)
+		.then(httpHelper.handleResponse)
+		.catch(httpHelper.handleError);
+};
 
-    return fetch(`${config.apiUrl}/api/user`, requestOptions)
-    .then(httpHelper.handleResponse)
-    .catch((error) => {
-        return Promise.reject(error.toString());
-    });
-}
+export const editUserStatusCall = (id, isEnabled) => {
+	const requestOptions = {
+		method: "PUT",
+		headers: httpHelper.addAuthHeader(
+			{ "Content-Type": "application/json" },
+			getJwtToken()
+		),
+		body: JSON.stringify({ isEnabled }),
+	};
 
-export const  editUserStatusCall = (id, isEnabled) => {
+	return fetch(`${config.apiUrl}/api/user/${id}`, requestOptions)
+		.then(httpHelper.handleResponse)
+		.then(user => user)
+		.catch(httpHelper.handleError);
+};
 
-    const requestOptions = {
-        method: 'PUT',
-        headers: httpHelper.addAuthHeader({ 'Content-Type': 'application/json' }, getJwtToken()),
-        body: JSON.stringify({ isEnabled })
-    };
+export const editUserPasswordCall = (newPassword, id) => {
+	const requestOptions = {
+		method: "PUT",
+		headers: httpHelper.addAuthHeader(
+			{ "Content-Type": "application/json" },
+			getJwtToken()
+		),
+		body: JSON.stringify({ password: newPassword }),
+	};
 
-    return fetch(`${config.apiUrl}/api/user/${id}`, requestOptions)
-        .then(httpHelper.handleResponse)
-        .catch((error) => {
-            return Promise.reject(error.toString());
-        });
-}
+	return fetch(`${config.apiUrl}/api/user/${id}`, requestOptions)
+		.then(httpHelper.handleResponse)
+		.catch(httpHelper.handleError);
+};
 
+export const deleteUserCall = (id) => {
+	const requestOptions = {
+		method: "DELETE",
+		headers: httpHelper.addAuthHeader({}, getJwtToken()),
+	};
 
-export const deleteUser = (id) => {
+	return fetch(`${config.apiUrl}/api/user/${id}`, requestOptions)
+		.then(httpHelper.handleResponse)
+		.then(user => user)
+		.catch(httpHelper.handleError);
+};
 
-    const requestOptions = {
-        method: 'DELETE',
-        headers: httpHelper.addAuthHeader({}, getJwtToken())
-    };
+export const createUserCall = (username, password, role) => {
+	const requestOptions = {
+		method: "POST",
+		headers: httpHelper.addAuthHeader(
+			{ "Content-Type": "application/json" },
+			getJwtToken()
+		),
+		body: JSON.stringify({ username, password, role }),
+	};
 
-    return fetch(`${config.apiUrl}/api/user/${id}`, requestOptions)
-        .then(httpHelper.handleResponse)
-        .catch((error) => {
-            return Promise.reject(error.toString());
-        });
-}
+	return fetch(`${config.apiUrl}/api/user`, requestOptions)
+		.then(httpHelper.handleResponse)
+		.then(user => user)
+		.catch(httpHelper.handleError);
+};

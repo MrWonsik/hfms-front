@@ -65,11 +65,15 @@ button.btn.btn-primary {
 }
 
 .form-group {
-  input{
+  input, select {
     border-color: @main-color-dark;
     &:focus {
       box-shadow: 0 0 0 0.2rem @main-focus-color;
     }
+  }
+
+  select {
+    padding-right: 10px; 
   }
 }
 
@@ -100,9 +104,29 @@ button.btn.btn-primary {
       color: @main-font-color
     }
   }
+
+  .navbar-icon {
+    font-size: 25px;
+  }
 }
 
 .user-list-table {
+
+  tr:last-child th:first-child {
+    border-top-left-radius: 4px;
+  }
+
+  tr:last-child th:last-child {
+    border-top-right-radius: 4px
+  }
+
+  tr:last-child td:first-child {
+    border-bottom-left-radius: 4px;
+  }
+
+  tr:last-child td:last-child {
+    border-bottom-right-radius: 4px
+  }
   color: @main-font-color;
 
   thead tr:first-child {
@@ -121,4 +145,28 @@ button.btn.btn-primary {
     }
     background-color: @main-disable-color;
   }
+
+  .user-table-action-icon {
+    font-size: 32px;
+    padding: 5px;
+
+    &:hover {
+      border-radius: 4px;
+      background-color: @secondary-color-dark;
+      transition: color .15s ease-in-out,background-color .15s ease-in-out;
+      cursor: pointer;
+    }
+  }
+}
+
+.icon-insted-button {
+    font-size: 50px;
+    color: @main-color;
+
+    &:hover {
+      border-radius: 4px;
+      color: @secondary-color-dark;
+      transition: color .15s ease-in-out,color .15s ease-in-out;
+      cursor: pointer;
+    }
 }

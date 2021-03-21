@@ -1,6 +1,6 @@
 import { loginRequestCall, changePasswordRequestCall } from './user.service';
 import { alertError, alertSuccess } from '../alert/alert.actions';
-import { history } from '../_helpers';
+import history from '../_helpers/history';
 
 export const LOGIN_REQUEST = "USER_LOGIN_REQUEST";
 const loginRequest = (user) => ({ type: LOGIN_REQUEST, payload: { user } })

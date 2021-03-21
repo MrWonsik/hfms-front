@@ -17,9 +17,7 @@ export const loginRequestCall = (username, password) => {
             let user = decodedJwt?.userInfo;
             user.token = jwt.token;
             return user;
-        }).catch((error) => {
-            return Promise.reject(error.toString());
-        });
+        }).catch(httpHelper.handleError);
 }
 
 export const changePasswordRequestCall = (oldPassword, newPassword, repeatedNewPassword) => {
@@ -33,7 +31,5 @@ export const changePasswordRequestCall = (oldPassword, newPassword, repeatedNewP
         .then(httpHelper.handleResponse)
         .then(data => {
             return data;
-        }).catch((error) => {
-            return Promise.reject(error.toString());
-        });
+        }).catch(httpHelper.handleError);
 }
