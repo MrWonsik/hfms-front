@@ -21,26 +21,25 @@ const UserTools = () => {
 
 	return (
 		<>
-			<Navbar className="navbar-main" expand="md" variant="dark">
-				<Navbar.Brand href="/home"><BsHouse className="navbar-icon" /> HFMS</Navbar.Brand>
-				<Navbar.Text>
-					Login as: <span>{user.username}</span>
-				</Navbar.Text>
-				<Navbar.Toggle />
-				<Navbar.Collapse className="justify-content-end">
-					<Nav>
-						<Nav.Item>
-							<Nav.Link onClick={handleChangePasswordModalOpen}>
-								<BsGearFill className="navbar-icon" />
-							</Nav.Link>
-						</Nav.Item>
-						<Nav.Item>
-							<Nav.Link as={Link} to="/login">
-								<BsPower className="navbar-icon"/>
-							</Nav.Link>
-						</Nav.Item>
-					</Nav>
-				</Navbar.Collapse>
+			<Navbar className="navbar-main justify-content-between" variant="dark">
+				<Nav>
+					<Navbar.Brand href="/home"><BsHouse className="navbar-icon" /> HFMS</Navbar.Brand>
+				</Nav>
+				<Nav>
+					<Navbar.Text className="navbar-username-container">
+						Logged in as: <span className="navbar-username">{user.username}</span>
+					</Navbar.Text>
+					<Nav.Item>
+						<Nav.Link onClick={handleChangePasswordModalOpen}>
+							<BsGearFill className="navbar-icon" />
+						</Nav.Link>
+					</Nav.Item>
+					<Nav.Item>
+						<Nav.Link as={Link} to="/login">
+							<BsPower className="navbar-icon"/>
+						</Nav.Link>
+					</Nav.Item>
+				</Nav>
 			</Navbar>
 
 			<ChangePasswordModal />
