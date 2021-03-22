@@ -6,9 +6,11 @@ import Form from "react-bootstrap/Form";
 import Spinner from "react-bootstrap/Spinner";
 import { closeModalChangePasswordUsers } from "../../modal/modal.actions";
 import { editUserPassword } from "../../user/users/users.actions";
+import { useHistory } from "react-router";
 
 
 export const ChangeUserPasswordModal = () => {
+    let history = useHistory();
 
     const dispatch = useDispatch();
 
@@ -35,7 +37,7 @@ export const ChangeUserPasswordModal = () => {
 				if (isPasswordChanged) {
 					handleClose();
 				}
-			});
+			}).catch(shouldRedirect => shouldRedirect && history.push("/login"));;
         }
       };
 

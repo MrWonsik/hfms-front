@@ -1,16 +1,17 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-
-// import { userActions } from '../_actions';
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
+import { Link } from 'react-router-dom'
 
 const NotFoundPage = () => {
 
     return (
-        <div>
-            <h1>Page not found!</h1>
-            <p>Go to main page: <Link to="/home">home</Link></p>
-            <p>Go to login page: <Link to="/login">login</Link></p>
-        </div>
+        <Row className="justify-content-md-center">
+            <Col md="6" className="justify-content-md-center text-center">
+                <h1>Page not found!</h1>
+                <Link to="/home">Back to home page...</Link>
+            </Col>
+        </Row>
     );
 }
 

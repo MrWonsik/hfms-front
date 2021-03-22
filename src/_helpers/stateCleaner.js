@@ -9,3 +9,9 @@ export const cleanState = () => (dispatch) => {
 	dispatch(getUsersClear());
 	dispatch(clearModal());
 };
+
+export const cleanStateWithourAlert = () => dispatch => {
+	dispatch(logout());
+	dispatch(getUsersClear());
+	dispatch(clearModal());
+}

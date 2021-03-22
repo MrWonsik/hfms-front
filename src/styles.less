@@ -21,8 +21,6 @@
 	padding-bottom: 15px;
 	margin: 0;
 	width: 100%;
-	// border: 1px solid @main-color-dark;
-	// background-color: @main-color;
 	color: @main-color-dark;
 }
 
@@ -93,7 +91,7 @@ button.btn.btn-primary {
 	border: 1px solid @main-color-dark;
 	background-color: @main-color;
 	color: @main-font-color;
-	margin-bottom: 30px;
+	margin-bottom: 15px;
 
 	.nav-item {
 		border-radius: 4px;
@@ -186,4 +184,23 @@ button.btn.btn-primary {
     .navbar-username {
         font-weight: bold;
     }
+}
+
+.user-page-content-container {
+	background-color: white;
+	padding: 30px;
+}
+
+.user-page-navbar {
+	border-bottom: 1px solid @main-color-dark;
+	padding: 5px;
+
+	.user-page-navbar-icon {
+		font-size: 35px;
+		color: @main-color-dark;
+
+		&:hover {
+			color: @main-focus-color;
+		}
+	}
 }

@@ -2,13 +2,19 @@ import React from 'react';
 import { Jumbotron } from 'react-bootstrap';
 import { Route, Switch, Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import PrivateRoute from "../_components/PrivateRoute";
-import NotFoundPage from "../pages/NotFoundPage";
-import TestPage from "../pages/TestPage";
-import TestPage2 from "../pages/TestPage2";
+import MainUserPage from "../pages/MainUserPage"
+import CategoryPage from "../pages/CategoryPage"
+import SummaryPage from "../pages/SummaryPage"
+import ShopPage from "../pages/ShopPage"
+import ExpensseAndIncomeListPage from "../pages/ExpensseAndIncomeListPage"
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 
+import Nav from "react-bootstrap/Nav";
+import Navbar from "react-bootstrap/Navbar";
+import { BsHouse, BsFileText, BsGraphUp, BsFillCollectionFill } from "react-icons/bs";
+import { AiOutlineShop } from "react-icons/ai";
+import NotFoundPage from './NotFoundPage';
 
 const HomePageUser = ({ match }) => {
     const { user, loggedIn } = useSelector((state) => ({
@@ -19,33 +25,45 @@ const HomePageUser = ({ match }) => {
     return (
         <>
             <Row className="justify-content-md-center">
-                <Col md="3">
-                    <Jumbotron>
-                        <ul>
-                            <li>
-                                <Link to={`${match.url}`}>Home</Link>
-                            </li>
-                            <li>
-                                <Link to={`${match.url}/smth1`}>Smth1</Link>
-                            </li>
-                            <li>
-                                <Link to={`${match.url}/smth2`}>Smth2</Link>
-                            </li>
-                            <li>
-                                <Link to={`${match.url}/smth3`}>Smth3</Link>
-                            </li>
-                        </ul>
-                    </Jumbotron>
+                <Col md="6">
+                        <Navbar className="justify-content-between justify-content-center user-page-navbar" >
+                            <Nav.Item>
+                            </Nav.Item>
+                            <Nav.Item>
+                                <Nav.Link as={Link} to={`${match.url}`}><BsHouse className="user-page-navbar-icon"/>
+                                </Nav.Link>
+                            </Nav.Item>
+                            <Nav.Item>
+                                <Nav.Link as={Link} to={`${match.url}/expensse-and-income-list-page`}><BsFileText className="user-page-navbar-icon"/>
+                                </Nav.Link>
+                            </Nav.Item>
+                            <Nav.Item>
+                                <Nav.Link as={Link} to={`${match.url}/summary-page`}><BsGraphUp className="user-page-navbar-icon"/>
+                                </Nav.Link>
+                            </Nav.Item>
+                            <Nav.Item>
+                                <Nav.Link as={Link} to={`${match.url}/shop-page`}><AiOutlineShop className="user-page-navbar-icon"/>
+                                </Nav.Link>
+                            </Nav.Item>
+                            <Nav.Item>
+                                <Nav.Link as={Link} to={`${match.url}/category-page`}><BsFillCollectionFill className="user-page-navbar-icon"/>
+                                </Nav.Link>
+                            </Nav.Item>
+                            <Nav.Item>
+                            </Nav.Item>
+                        </Navbar>
                 </Col>
+            </Row>
+            <Row className="justify-content-md-center">
                 <Col md="9">
-                    <Jumbotron>
+                    <Jumbotron className="user-page-block user-page-content-container">
                         <Switch>
-                            <PrivateRoute user={user} role="ROLE_USER" path={`${match.path}/smth1`} component={TestPage2}/>
-                            <PrivateRoute user={user} role="ROLE_USER" path={`${match.path}/smth2`} component={TestPage2}/>
-                            <PrivateRoute user={user} role="ROLE_USER" path={`${match.path}/smth3`} component={TestPage}/>
-                            <PrivateRoute user={user} role="ROLE_USER" path={`${match.path}`} component={TestPage2}/>
-                            {!loggedIn && <Redirect from="*" to="/login" />}
-                            <Route path="*" component={NotFoundPage} />
+                            <Route path={`${match.path}/summary-page`} component={SummaryPage}/>
+                            <Route path={`${match.path}/expensse-and-income-list-page`} component={ExpensseAndIncomeListPage}/>
+                            <Route path={`${match.path}/shop-page`} component={ShopPage}/>
+                            <Route path={`${match.path}/category-page`} component={CategoryPage}/>
+                            <Route exact path={`${match.path}`} component={MainUserPage}/>
+                            <Route path="*" component={NotFoundPage}/>
                         </Switch>
                     </Jumbotron>
                 </Col>

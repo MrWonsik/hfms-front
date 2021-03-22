@@ -10,8 +10,10 @@ import { BsTrash, BsPersonPlusFill, BsPencil, BsPersonCheck, BsPerson, BsCalenda
 
 import { getAllUsers, editUserStatus, deleteUser } from '../user/users/users.actions';
 import { openModalAddNewUser, openModalChangePasswordUsers } from "../modal/modal.actions";
+import { useHistory } from "react-router";
 
 const UsersTable = () => {
+    let history = useHistory();
 
     const dispatch = useDispatch();  
     const { currentUser, users, isUsersLoading } = useSelector((state) => ({
@@ -21,12 +23,12 @@ const UsersTable = () => {
     }));
 
     useEffect(() => {
-        dispatch(getAllUsers());
+        dispatch(getAllUsers()).catch((shouldRedirect) => shouldRedirect && history.push("/login"));
     }, []);
 
 
     const handleUserStatus = (id, isEnabled) => {
-        dispatch(editUserStatus(id, isEnabled));
+        dispatch(editUserStatus(id, isEnabled)).catch(shouldRedirect => shouldRedirect && history.push("/login"));;
     }
 
     const handleChangeUserPassword = (id) => {
@@ -34,7 +36,7 @@ const UsersTable = () => {
     }
 
     const handleDeleteUser = (id) => {
-        dispatch(deleteUser(id));
+        dispatch(deleteUser(id)).catch(shouldRedirect => shouldRedirect && history.push("/login"));;
     }
 
     const handleAddNewUser = () => {
@@ -68,16 +70,6 @@ const UsersTable = () => {
                                 <td><BsCalendar />  {user.createDate}</td>
                                 <td><BsCalendar />  {user.updateDate}</td>
                                 <td>
-                                    {/* <ButtonGroup>
-                                        {currentUser.id == user.id ? "" : 
-                                        <>
-                                            <Button size="sm" onClick={() => handleUserStatus(user.id, !user.isEnabled)}>{user.isEnabled ? <BsPersonCheckFill /> : <BsPersonFill />}</Button> 
-                                            <Button size="sm" onClick={() => handleChangeUserPassword(user.id)}><BsFillGearFill /></Button>
-                                            <Button size="sm" onClick={() => handleDeleteUser(user.id)}><BsPersonDashFill /></Button>
-                                        </>
-                                        }
-
-                                    </ButtonGroup> */}
                                     {currentUser.id == user.id ? "" : 
                                     <>
                                         {user.isEnabled 

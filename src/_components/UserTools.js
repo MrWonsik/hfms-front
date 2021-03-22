@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import { BsPower, BsGearFill, BsHouse } from "react-icons/bs";
+import { BsPower, BsGearFill } from "react-icons/bs";
 import { openModalChangePassword } from "../modal/modal.actions";
 
 import ChangePasswordModal from "./modal/ChangePasswordModal";
@@ -23,7 +23,7 @@ const UserTools = () => {
 		<>
 			<Navbar className="navbar-main justify-content-between" variant="dark">
 				<Nav>
-					<Navbar.Brand href="/home"><BsHouse className="navbar-icon" /> HFMS</Navbar.Brand>
+					<Navbar.Brand href="/home">HFMS</Navbar.Brand>
 				</Nav>
 				<Nav>
 					<Navbar.Text className="navbar-username-container">

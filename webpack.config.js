@@ -30,12 +30,17 @@ module.exports = {
         template: './src/index.html'
     })],
     devServer: {
-        historyApiFallback: true
+        historyApiFallback: {
+            index: '/'
+        }
     },
     externals: {
         // global app config object
         config: JSON.stringify({
             apiUrl: 'http://localhost:8081'
         })
+    },
+    output: {
+        publicPath: '/'
     }
 }

@@ -8,9 +8,12 @@ import Spinner from "react-bootstrap/Spinner";
 
 import { login } from "../user/user.actions";
 import { Jumbotron } from "react-bootstrap";
-import { cleanState } from "../_helpers";
+import { cleanStateWithourAlert } from "../_helpers";
+import { useHistory } from "react-router";
 
 const LoginPage = () => {
+	let history = useHistory();
+
 	const dispatch = useDispatch();
 	// reset login status
 	const { loggingIn } = useSelector((state) => ({
@@ -18,7 +21,7 @@ const LoginPage = () => {
 	}));
 
 	useEffect(() => {
-		dispatch(cleanState());
+		dispatch(cleanStateWithourAlert());
 	}, []);
 
 	const [username, setUsername] = useState("");
@@ -37,7 +40,11 @@ const LoginPage = () => {
 
 		setSubmitted(true);
 		if (username && password) {
-			dispatch(login(username, password));
+			dispatch(login(username, password)).then((loggedSuccess) => {
+				if (loggedSuccess) {
+					history.push("/home");
+				}
+			});
 		}
 	};
 

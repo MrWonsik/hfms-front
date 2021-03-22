@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Router, Route, Switch, Redirect } from "react-router-dom";
+import { Route, Switch, Redirect, BrowserRouter, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
-import history from "./_helpers/history";
 import { alertClear } from "./alert/alert.actions";
-import PrivateRoute from "./_components/PrivateRoute";
 import HomePageUser from "./pages/HomePageUser";
 import HomePageAdmin from "./pages/HomePageAdmin";
 import NotFoundPage from "./pages/NotFoundPage";
@@ -17,8 +15,8 @@ import UserTools from "./_components/UserTools";
 
 const renderHomepage = (user) => {
   switch (user.role) {
-    case "ROLE_ADMIN": return ( <PrivateRoute user={user} role="ROLE_ADMIN" path="/home" component={HomePageAdmin} /> );
-    case "ROLE_USER": return ( <PrivateRoute user={user} role="ROLE_USER" path="/home" component={HomePageUser} /> );
+    case "ROLE_ADMIN": return ( <Route exact path="/home" component={HomePageAdmin} /> );
+    case "ROLE_USER": return ( <Route path="/home" component={HomePageUser} /> );
     default: false;
   }
 };
@@ -35,7 +33,6 @@ const App = () => {
 
   useEffect(() => {
     dispatch(alertClear());
-    history.listen(() => dispatch(alertClear()));
   }, []);
 
   useEffect(() => { 
@@ -58,17 +55,17 @@ const App = () => {
                 <div className = "text-center">{alert.message}</div>
               </Alert>
             )}
-            <Router history={history}>
+            <BrowserRouter>
               <>
                 {loggedIn && <UserTools />}
                 <Switch>
                   {user?.role && renderHomepage(user)}
                   <Route exact path="/login" component={LoginPage} />
                   {!loggedIn && <Redirect from="*" to="/login" />}
-                  <Route exact path="*" component={NotFoundPage} />
+                  <Route path="*" component={NotFoundPage} />
                 </Switch>
               </>
-            </Router>
+            </BrowserRouter>
           </Col>
         </Row>
       </Container>
