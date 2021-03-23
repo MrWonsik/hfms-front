@@ -1,11 +1,10 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 
 const ExpensseAndIncomeListPage = () => {
 
     return (
         <div>
-            <h1>ExpensseAndIncomeListPage</h1>
+            <h1>Expensse and Income List Page</h1>
         </div>
     );
 }

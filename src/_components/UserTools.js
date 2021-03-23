@@ -11,8 +11,9 @@ import ChangePasswordModal from "./modal/ChangePasswordModal";
 const UserTools = () => {
 	const dispatch = useDispatch();
 
-	const { user } = useSelector((state) => ({
+	const { user, currentPage } = useSelector((state) => ({
 		user: state.user.user,
+		currentPage: state.user.currentPage
 	}));
 
 	const handleChangePasswordModalOpen = () => {
@@ -21,10 +22,7 @@ const UserTools = () => {
 
 	return (
 		<>
-			<Navbar className="navbar-main justify-content-between" variant="dark">
-				<Nav>
-					<Navbar.Brand href="/home">HFMS</Navbar.Brand>
-				</Nav>
+			<Navbar className="navbar-main justify-content-end">
 				<Nav>
 					<Navbar.Text className="navbar-username-container">
 						Logged in as: <span className="navbar-username">{user.username}</span>

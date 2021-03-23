@@ -4,7 +4,7 @@ const SummaryPage = () => {
 
     return (
         <div>
-            <h1>SummaryPage</h1>
+            <h1>Summary Page</h1>
         </div>
     );
 }

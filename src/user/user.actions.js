@@ -58,3 +58,6 @@ export const changePassword = (oldPassword, newPassword, repeatedNewPassword) =>
         );
     return Promise.resolve(isPasswordChanged);
 };
+
+export const CHANGE_PAGE = 'CHANGE_PAGE';
+export const changePage = (pageName) => ({ type: CHANGE_PAGE, payload: { pageName }})
