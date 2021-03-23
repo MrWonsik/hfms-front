@@ -1,6 +1,5 @@
 import { loginRequestCall, changePasswordRequestCall } from './user.service';
 import { alertError, alertSuccess } from '../alert/alert.actions';
-import history from '../_helpers/history';
 
 export const LOGIN_REQUEST = "USER_LOGIN_REQUEST";
 const loginRequest = (user) => ({ type: LOGIN_REQUEST, payload: { user } })
@@ -9,26 +8,24 @@ export const LOGIN_SUCCESS = "USER_LOGIN_SUCCESS";
 const loginSuccess = (user) => ({ type: LOGIN_SUCCESS, payload: { user } })
 
 export const LOGIN_FAILURE = "USER_LOGIN_FAILURE";
-const loginFailure = (error) => ({ type: LOGIN_FAILURE, payload: { error } })
+const loginFailure = () => ({ type: LOGIN_FAILURE })
 
-export const login = (username, password) => {
-
-    return dispatch => {
-        dispatch(loginRequest({ username }));
-
-        loginRequestCall(username, password)
-            .then(
-                user => { 
-                    dispatch(loginSuccess(user));
-                    history.push('/home');
-                },
-                error => {
-                    dispatch(loginFailure(error));
-                    dispatch(alertError(error));
-                }
-            );
-    };
-}
+export const login = (username, password) => async dispatch => {
+    dispatch(loginRequest({ username }));
+    let loggedSuccess = false;
+    await loginRequestCall(username, password)
+        .then(
+            user => { 
+                dispatch(loginSuccess(user));
+                loggedSuccess = true;
+            },
+            error => {
+                dispatch(loginFailure());
+                dispatch(alertError(error.msg));
+            }
+        );
+    return Promise.resolve(loggedSuccess);
+};
 
 export const LOGOUT = 'USER_LOGOUT';
 export const logout = () => ({type: LOGOUT });
@@ -40,7 +37,7 @@ export const CHANGE_PASSWORD_SUCCESS = 'USER_CHANGE_PASSWORD_SUCCESS';
 const changePasswordSuccess = () => ({ type: CHANGE_PASSWORD_SUCCESS })
 
 export const CHANGE_PASSWORD_FAILURE = 'USER_CHANGE_PASSWORD_FAILURE';
-const changePasswordFailure = (error) => ({ type: CHANGE_PASSWORD_FAILURE, payload: { error } })
+const changePasswordFailure = () => ({ type: CHANGE_PASSWORD_FAILURE })
 
 export const changePassword = (oldPassword, newPassword, repeatedNewPassword) => async dispatch => {
     
@@ -54,9 +51,13 @@ export const changePassword = (oldPassword, newPassword, repeatedNewPassword) =>
                 isPasswordChanged = true;
             },
             error => {
-                dispatch(changePasswordFailure(error));
-                dispatch(alertError(error));
+                dispatch(changePasswordFailure());
+                dispatch(alertError(error.msg));
+                return Promise.reject(error);
             }
         );
     return Promise.resolve(isPasswordChanged);
 };
+
+export const CHANGE_PAGE = 'CHANGE_PAGE';
+export const changePage = (pageName) => ({ type: CHANGE_PAGE, payload: { pageName }})

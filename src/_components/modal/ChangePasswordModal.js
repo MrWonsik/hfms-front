@@ -7,10 +7,11 @@ import Spinner from "react-bootstrap/Spinner";
 import { closeModalChangePassword } from '../../modal/modal.actions'
 
 import { changePassword } from '../../user/user.actions';
+import { useHistory } from "react-router";
 
 
 export const ChangePasswordModal = () => {
-
+    let history = useHistory();
     const dispatch = useDispatch();
 
     const { isModalChangePasswordOpen, updatingPasswordInProgress } = useSelector(state => ({
@@ -38,11 +39,13 @@ export const ChangePasswordModal = () => {
         if (oldPassword && newPassword && repeatedNewPassword) {
             dispatch(
 				changePassword(oldPassword, newPassword, repeatedNewPassword)
-			).then((isPasswordChanged) => {
-				if (isPasswordChanged) {
-					handleClose();
-				}
-			});
+			).then(
+                (isPasswordChanged) => {
+				    isPasswordChanged && handleClose()
+            }).catch(
+                (shouldRedirect) => {
+                    shouldRedirect && history.push("/login")
+            });
         }
       };
 

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import { BsPower, BsGearFill, BsHouse } from "react-icons/bs";
+import { BsPower, BsGearFill } from "react-icons/bs";
 import { openModalChangePassword } from "../modal/modal.actions";
 
 import ChangePasswordModal from "./modal/ChangePasswordModal";
@@ -11,8 +11,9 @@ import ChangePasswordModal from "./modal/ChangePasswordModal";
 const UserTools = () => {
 	const dispatch = useDispatch();
 
-	const { user } = useSelector((state) => ({
+	const { user, currentPage } = useSelector((state) => ({
 		user: state.user.user,
+		currentPage: state.user.currentPage
 	}));
 
 	const handleChangePasswordModalOpen = () => {
@@ -21,26 +22,22 @@ const UserTools = () => {
 
 	return (
 		<>
-			<Navbar className="navbar-main" expand="md" variant="dark">
-				<Navbar.Brand href="/home"><BsHouse className="navbar-icon" /> HFMS</Navbar.Brand>
-				<Navbar.Text>
-					Login as: <span>{user.username}</span>
-				</Navbar.Text>
-				<Navbar.Toggle />
-				<Navbar.Collapse className="justify-content-end">
-					<Nav>
-						<Nav.Item>
-							<Nav.Link onClick={handleChangePasswordModalOpen}>
-								<BsGearFill className="navbar-icon" />
-							</Nav.Link>
-						</Nav.Item>
-						<Nav.Item>
-							<Nav.Link as={Link} to="/login">
-								<BsPower className="navbar-icon"/>
-							</Nav.Link>
-						</Nav.Item>
-					</Nav>
-				</Navbar.Collapse>
+			<Navbar className="navbar-main justify-content-end">
+				<Nav>
+					<Navbar.Text className="navbar-username-container">
+						Logged in as: <span className="navbar-username">{user.username}</span>
+					</Navbar.Text>
+					<Nav.Item>
+						<Nav.Link onClick={handleChangePasswordModalOpen}>
+							<BsGearFill className="navbar-icon" />
+						</Nav.Link>
+					</Nav.Item>
+					<Nav.Item>
+						<Nav.Link as={Link} to="/login">
+							<BsPower className="navbar-icon"/>
+						</Nav.Link>
+					</Nav.Item>
+				</Nav>
 			</Navbar>
 
 			<ChangePasswordModal />

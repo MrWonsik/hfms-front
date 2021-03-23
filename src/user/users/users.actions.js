@@ -51,7 +51,8 @@ export const editUserStatus = (id, isEnabled) => async dispatch => {
             },
             error => {
                 dispatch(userChangeStatusFailure());
-                dispatch(alertError(error));
+                dispatch(alertError(error.msg));
+                return Promise.reject(error);
             }
         )
 }
@@ -68,7 +69,8 @@ export const editUserPassword = (newPassword, id) => async dispatch => {
             },
             error => {
                 dispatch(userChangePasswordFailure());
-                dispatch(alertError(error));
+                dispatch(alertError(error.msg));
+                return Promise.reject(error);
             }
         )
     return Promise.resolve(isUserPasswordChanged);
@@ -85,7 +87,8 @@ export const deleteUser = (id) => async dispatch => {
             },
             error => {
                 dispatch(userDeleteFailure());
-                dispatch(alertError(error));
+                dispatch(alertError(error.msg));
+                return Promise.reject(error);
             }
         )
 }
@@ -103,7 +106,8 @@ export const createUser = (username, password, role) => async dispatch => {
             },
             error => {
                 dispatch(createUserFailure());
-                dispatch(alertError(error));
+                dispatch(alertError(error.msg));
+                return Promise.reject(error);
             }
         )
     return Promise.resolve(isUserCreated);
@@ -118,7 +122,8 @@ export const getAllUsers = () => async dispatch => {
             },
             error => {
                 dispatch(getUsersFailure());
-                dispatch(alertError(error));
+                dispatch(alertError(error.msg));
+                return Promise.reject(error);
             }
         );
 }
