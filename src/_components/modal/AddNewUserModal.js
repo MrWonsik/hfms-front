@@ -40,7 +40,7 @@ export const ChangePasswordModal = () => {
                 if(isUserCreated) {
                     handleClose();
                 }
-            }).catch(shouldRedirect => shouldRedirect && history.push("/login"));
+            });
         }
       };
 

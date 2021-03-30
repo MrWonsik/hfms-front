@@ -37,7 +37,7 @@ export const ChangeUserPasswordModal = () => {
 				if (isPasswordChanged) {
 					handleClose();
 				}
-			}).catch(shouldRedirect => shouldRedirect && history.push("/login"));;
+			});
         }
       };
 

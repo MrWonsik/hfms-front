@@ -6,6 +6,8 @@ import {
 	OPEN_MODAL_ADD_NEW_USER,
 	CLOSE_MODAL_ADD_NEW_USER,
 	MODAL_CLEAR,
+	OPEN_MODAL_ADD_NEW_SHOP,
+	CLOSE_MODAL_ADD_NEW_SHOP,
 } from "./modal.actions";
 
 const initialState = {
@@ -47,6 +49,16 @@ export const modals = (state = initialState, action) => {
 			return {
 				...state,
 				addNewUserModalIsOpen: false,
+			};
+		case OPEN_MODAL_ADD_NEW_SHOP:
+			return {
+				...state,
+				addNewShopModalIsOpen: true,
+			};
+		case CLOSE_MODAL_ADD_NEW_SHOP:
+			return {
+				...state,
+				addNewShopModalIsOpen: false,
 			};
 		case MODAL_CLEAR:
 			return {};

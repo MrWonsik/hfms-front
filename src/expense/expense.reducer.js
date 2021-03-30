@@ -3,6 +3,9 @@ import {
 	GET_SHOPS_SUCCESS,
 	GET_SHOPS_FAILURE,
 	CLEAR_EXPENSES,
+	CREATE_SHOP_FAILURE,
+	CREATE_SHOP_SUCCESS,
+	CREATE_SHOP_REQUEST
 } from "./expense.actions";
 
 const initialState = {
@@ -31,6 +34,23 @@ export const expenses = (state = initialState, action) => {
 			};
 		case CLEAR_EXPENSES:
 			return {};
+		case CREATE_SHOP_REQUEST:
+			return {
+				...state,
+				creatingShopInProgress: true,
+			};
+		case CREATE_SHOP_SUCCESS:
+			const { shop } = payload;
+			state.shops.push(shop);
+			return {
+				...state,
+				creatingShopInProgress: false
+			};
+		case CREATE_SHOP_FAILURE:
+			return {
+				...state,
+				creatingShopInProgress: false
+			};
 		default:
 			return state;
 	}

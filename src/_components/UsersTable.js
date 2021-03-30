@@ -23,12 +23,12 @@ const UsersTable = () => {
     }));
 
     useEffect(() => {
-        dispatch(getAllUsers()).catch((shouldRedirect) => shouldRedirect && history.push("/login"));
+        dispatch(getAllUsers());
     }, []);
 
 
     const handleUserStatus = (id, isEnabled) => {
-        dispatch(editUserStatus(id, isEnabled)).catch(shouldRedirect => shouldRedirect && history.push("/login"));;
+        dispatch(editUserStatus(id, isEnabled));
     }
 
     const handleChangeUserPassword = (id) => {
@@ -36,7 +36,7 @@ const UsersTable = () => {
     }
 
     const handleDeleteUser = (id) => {
-        dispatch(deleteUser(id)).catch(shouldRedirect => shouldRedirect && history.push("/login"));;
+        dispatch(deleteUser(id));
     }
 
     const handleAddNewUser = () => {
@@ -50,7 +50,7 @@ const UsersTable = () => {
             {!users && isUsersLoading ? <Spinner animation="border text-center" size="lg" /> : 
                 <>
                     <Form.Group className="text-right">
-                        <BsPersonPlusFill tabIndex="0" className="icon-add-user" onClick={() => handleAddNewUser()} onKeyPress={e => e.key === 'Enter' && handleAddNewUser()}/>
+                        <BsPersonPlusFill tabIndex="0" className="icon-add" onClick={() => handleAddNewUser()} onKeyPress={e => e.key === 'Enter' && handleAddNewUser()}/>
                     </Form.Group>
                     <Table responsive className="list-table">
                     <thead>

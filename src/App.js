@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Route, Switch, Redirect, BrowserRouter, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
-import { alertClear } from "./alert/alert.actions";
+import { alertClear, alertError } from "./alert/alert.actions";
 import HomePageUser from "./pages/HomePageUser";
 import HomePageAdmin from "./pages/HomePageAdmin";
 import NotFoundPage from "./pages/NotFoundPage";
@@ -12,6 +12,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Alert from "react-bootstrap/Alert";
 import UserTools from "./_components/UserTools";
+import { createBrowserHistory } from "history";
 
 const renderHomepage = (user) => {
   switch (user.role) {
@@ -20,6 +21,8 @@ const renderHomepage = (user) => {
     default: false;
   }
 };
+
+export const history = createBrowserHistory({forceRefresh:true});
 
 const App = () => {
   const [show, setShow] = useState(false);
@@ -31,13 +34,11 @@ const App = () => {
   }));
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(alertClear());
-  }, []);
-
   useEffect(() => { 
-    setShow(true); 
-  }, [alert])
+    if(alert && alert.message) {
+      setShow(true); 
+    }
+  }, [])
 
   return (
     <>
@@ -55,7 +56,7 @@ const App = () => {
                 <div className = "text-center">{alert.message}</div>
               </Alert>
             )}
-            <BrowserRouter>
+            <BrowserRouter history={history}>
               <>
                 {loggedIn && <UserTools />}
                 <Switch>

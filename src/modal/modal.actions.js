@@ -23,3 +23,8 @@ export const OPEN_MODAL_ADD_NEW_USER = "OPEN_MODAL_ADD_NEW_USER";
 export const CLOSE_MODAL_ADD_NEW_USER = "CLOSE_MODAL_ADD_NEW_USER";
 export const openModalAddNewUser = () => ({ type: OPEN_MODAL_ADD_NEW_USER });
 export const closeModalAddNewUser = () => ({ type: CLOSE_MODAL_ADD_NEW_USER });
+
+export const OPEN_MODAL_ADD_NEW_SHOP = "OPEN_MODAL_ADD_NEW_SHOP";
+export const CLOSE_MODAL_ADD_NEW_SHOP = "CLOSE_MODAL_ADD_NEW_SHOP";
+export const openModalAddNewShop = () => ({ type: OPEN_MODAL_ADD_NEW_SHOP});
+export const closeModalAddNewShop = () => ({ type: CLOSE_MODAL_ADD_NEW_SHOP });
