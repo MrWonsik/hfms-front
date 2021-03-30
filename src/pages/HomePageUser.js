@@ -27,7 +27,7 @@ const HomePageUser = ({ match }) => {
     return (
         <>
             <Row className="justify-content-md-center">
-                <Col md="6">
+                <Col md="5">
                         <Navbar className="justify-content-between justify-content-center user-page-navbar" >
                             <Nav.Item>
                             </Nav.Item>

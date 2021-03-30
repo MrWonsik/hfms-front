@@ -33,7 +33,7 @@ export const users = (state = initialState, action) => {
 		case GET_USERS_SUCCESS:
 			const { users } = payload;
 			return {
-				users,
+				users: users.users,
 				isLoading: false,
 			};
 		case GET_USERS_FAILURE:

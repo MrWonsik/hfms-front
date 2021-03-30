@@ -42,7 +42,7 @@ const App = () => {
   return (
     <>
       <Container fluid>
-        <Row className="mb-5">
+        <Row className="mb-6">
           <Col>
             {show && alert.message && (
               <Alert

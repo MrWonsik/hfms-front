@@ -18,7 +18,7 @@ const UsersTable = () => {
     const dispatch = useDispatch();  
     const { currentUser, users, isUsersLoading } = useSelector((state) => ({
         currentUser: state.user.user,
-        users: state.users,
+        users: state.users.users,
         isUsersLoading: state.users.isLoading
     }));
 
@@ -47,12 +47,12 @@ const UsersTable = () => {
 
     return (
         <>
-            {!users.users && isUsersLoading ? <Spinner animation="border" size="lg" /> : 
+            {!users && isUsersLoading ? <Spinner animation="border text-center" size="lg" /> : 
                 <>
                     <Form.Group className="text-right">
                         <BsPersonPlusFill tabIndex="0" className="icon-add-user" onClick={() => handleAddNewUser()} onKeyPress={e => e.key === 'Enter' && handleAddNewUser()}/>
                     </Form.Group>
-                    <Table responsive className="user-list-table">
+                    <Table responsive className="list-table">
                     <thead>
                         <tr>
                             <th>Username</th>
@@ -63,7 +63,7 @@ const UsersTable = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {users.users?.map((user) => (
+                        {users?.map((user) => (
                         <tr key={user.id} className={!user.isEnabled ? "disabled" : ""}>
                                 <td><BsPerson />  {user.username}</td>
                                 <td>{mapRoleToString(user.role)}</td>
@@ -73,10 +73,10 @@ const UsersTable = () => {
                                     {currentUser.id == user.id ? "" : 
                                     <>
                                         {user.isEnabled 
-                                        ? <BsPersonCheck tabIndex="0" className="user-table-action-icon" onClick={() => handleUserStatus(user.id, !user.isEnabled)} onKeyPress={e => e.key === 'Enter' && handleUserStatus(user.id, !user.isEnabled)}/> 
-                                        : <BsPerson tabIndex="0" className="user-table-action-icon" onClick={() => handleUserStatus(user.id, !user.isEnabled)} onKeyPress={e => e.key === 'Enter' && handleUserStatus(user.id, !user.isEnabled)}/>}
-                                        <BsPencil tabIndex="0" className="user-table-action-icon" onClick={() => handleChangeUserPassword(user.id)} onKeyPress={e => e.key === 'Enter' && handleChangeUserPassword(user.id)}/>
-                                        <BsTrash tabIndex="0" className="user-table-action-icon" onClick={() => handleDeleteUser(user.id)} onKeyPress={e => e.key === 'Enter' && handleDeleteUser(user.id)}/>
+                                        ? <BsPersonCheck tabIndex="0" className="table-action-icon" onClick={() => handleUserStatus(user.id, !user.isEnabled)} onKeyPress={e => e.key === 'Enter' && handleUserStatus(user.id, !user.isEnabled)}/> 
+                                        : <BsPerson tabIndex="0" className="table-action-icon" onClick={() => handleUserStatus(user.id, !user.isEnabled)} onKeyPress={e => e.key === 'Enter' && handleUserStatus(user.id, !user.isEnabled)}/>}
+                                        <BsPencil tabIndex="0" className="table-action-icon" onClick={() => handleChangeUserPassword(user.id)} onKeyPress={e => e.key === 'Enter' && handleChangeUserPassword(user.id)}/>
+                                        <BsTrash tabIndex="0" className="table-action-icon" onClick={() => handleDeleteUser(user.id)} onKeyPress={e => e.key === 'Enter' && handleDeleteUser(user.id)}/>
                                     </>
                                     }
                                 </td>

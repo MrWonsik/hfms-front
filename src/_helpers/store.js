@@ -8,12 +8,14 @@ import { user } from "../user/user.reducer";
 import { alert } from "../alert/alert.reducer";
 import { users } from "../user/users/users.reducer";
 import { modals } from "../modal/modal.reducer";
+import { expenses } from "../expense/expense.reducer";
 
 const reducers = combineReducers({
 	user,
 	alert,
 	users,
 	modals,
+	expenses
 });
 
 const persistConfig = {

@@ -5,7 +5,7 @@
 @main-color-focus-dark: #242d1e;
 @main-focus-color-light: #79a94e;
 
-@main-disable-color: #444d3d;
+@main-disable-color: #cad8cb;
 
 @main-font-color: white;
 
@@ -110,7 +110,8 @@ button.btn.btn-primary {
 	}
 }
 
-.user-list-table {
+.list-table {
+
 	tr:last-child th:first-child {
 		border-top-left-radius: 4px;
 	}
@@ -119,22 +120,17 @@ button.btn.btn-primary {
 		border-top-right-radius: 4px;
 	}
 
-	tr:last-child td:first-child {
-		border-bottom-left-radius: 4px;
-	}
-
-	tr:last-child td:last-child {
-		border-bottom-right-radius: 4px;
-	}
 	color: @main-font-color;
 
 	thead tr:first-child {
 		background-color: @main-color-dark;
 	}
 
-	tr {
-		background-color: @main-color;
+	tbody tr {
+		background-color: white;
+		color: @main-color-dark;
 	}
+
 	tr.disabled {
 		td {
 			opacity: 0.65;
@@ -145,15 +141,14 @@ button.btn.btn-primary {
 		background-color: @main-disable-color;
 	}
 
-	.user-table-action-icon {
+	.table-action-icon {
 		font-size: 32px;
 		padding: 5px;
 
 		&:hover, &:focus {
 			border-radius: 4px;
-			background-color: @main-color-dark;
-			transition: color 0.15s ease-in-out,
-				background-color 0.15s ease-in-out;
+			color: @main-focus-color-light;
+			transition: color 0.15s ease-in-out;
 			cursor: pointer;
 		}
 	}
