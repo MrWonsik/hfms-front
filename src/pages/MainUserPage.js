@@ -1,15 +1,28 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import { Pie, Bar } from 'react-chartjs-2'
+import { useDispatch, useSelector } from 'react-redux';
+import { getShops } from '../expense/expense.actions';
 
 const MainUserPage = () => {
+    let dispatch = useDispatch();
+
+    const { shops, shopsIsLoading } = useSelector((state) => ({
+      shops: state.expenses.shops,
+      shopsIsLoading: state.expenses.isLoading
+    }));
+
+    useEffect(() => {
+      dispatch(getShops());
+    }, []);
+
     const rand = () => Math.round(Math.random() * 20)
 
     const data = {
         datasets: [
           {
-            data: [rand(), rand(), rand(), rand(), rand(), rand(), rand(), rand(), rand(), rand()],
+            data: [rand(), rand(), rand(), rand(), rand(), rand()],
             backgroundColor: [
               'rgba(255, 99, 132, 0.6)',
               'rgba(54, 162, 235, 0.6)',
@@ -17,10 +30,6 @@ const MainUserPage = () => {
               'rgba(75, 192, 192, 0.6)',
               'rgba(153, 102, 255, 0.6)',
               'rgba(255, 159, 64, 0.6)',
-              'rgba(255, 100, 64, 0.6)',
-              'rgba(255, 10, 64, 0.6)',
-              'rgba(255, 255, 64, 0.6)',
-              'rgba(255, 0, 64, 0.6)',
             ],
             borderWidth: 3,
           },
@@ -69,7 +78,19 @@ const MainUserPage = () => {
             </Row>
             <Row className="justify-space-between">
                 <Col className="main-user-page-summary-last-exp m-2">List of last added expenses and income</Col>
-                <Col className="main-user-page-last-shops m-2">List of last added shops</Col>
+                <Col className="main-user-page-last-shops m-2">
+                  {!shops && shopsIsLoading ? <Spinner animation="border text-center" size="lg" /> : 
+                    <>
+                      List of last added shops:
+                      <ul>
+                        {shops?.sort((a,b) => ( new Date(b.createDate) - new Date(a.createDate))).slice(0, 5).map(shop => (
+                          <li key={shop.id}>{shop.shopName} ({shop.createDate})</li>
+                        ))}
+                        see more...
+                      </ul>
+                    </>
+                  }
+                </Col>
                 <Col className="main-user-page-last-categories m-2">List of last added categories</Col>
             </Row>
         </>

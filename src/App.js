@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Route, Switch, Redirect, BrowserRouter, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
-import { alertClear, alertError } from "./alert/alert.actions";
+import { alertClear } from "./alert/alert.actions";
 import HomePageUser from "./pages/HomePageUser";
 import HomePageAdmin from "./pages/HomePageAdmin";
 import NotFoundPage from "./pages/NotFoundPage";
