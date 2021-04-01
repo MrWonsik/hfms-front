@@ -1,7 +1,7 @@
 import React from 'react';
 import { Jumbotron } from 'react-bootstrap';
 import { Route, Switch, Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import MainUserPage from "../pages/MainUserPage"
 import CategoryPage from "../pages/CategoryPage"
 import SummaryPage from "../pages/SummaryPage"
@@ -15,10 +15,7 @@ import { BsHouse, BsFileText, BsGraphUp, BsFillCollectionFill } from "react-icon
 import { AiOutlineShop } from "react-icons/ai";
 import NotFoundPage from './NotFoundPage';
 
-import { changePage } from '../user/user.actions'
-
 const HomePageUser = ({ match }) => {
-    const dispatch = useDispatch();
     const { currentPage } = useSelector((state) => ({
         currentPage: state.user.currentPage
     }));
@@ -31,27 +28,27 @@ const HomePageUser = ({ match }) => {
                             <Nav.Item>
                             </Nav.Item>
                             <Nav.Item>
-                                <Nav.Link as={Link} to={`${match.url}`} onClick={() => dispatch(changePage("Home"))}>
+                                <Nav.Link as={Link} to={`${match.url}`}>
                                     <BsHouse className={"user-page-navbar-icon " + (currentPage === "Home" ? "current-page" : "")}/>
                                 </Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
-                                <Nav.Link as={Link} to={`${match.url}/expensse-and-income-list-page`} onClick={() => dispatch(changePage("Expenses and income list"))}>
+                                <Nav.Link as={Link} to={`${match.url}/expensse-and-income-list-page`}>
                                     <BsFileText className={"user-page-navbar-icon " + (currentPage === "Expenses and income list" ? "current-page" : "")}/>
                                 </Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
-                                <Nav.Link as={Link} to={`${match.url}/summary-page`} onClick={() => dispatch(changePage("Summary"))}>
+                                <Nav.Link as={Link} to={`${match.url}/summary-page`}>
                                     <BsGraphUp className={"user-page-navbar-icon " + (currentPage === "Summary" ? "current-page" : "")}/>
                                 </Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
-                                <Nav.Link as={Link} to={`${match.url}/shop-page`} onClick={() => dispatch(changePage("Shop management"))}>
+                                <Nav.Link as={Link} to={`${match.url}/shop-page`}>
                                     <AiOutlineShop className={"user-page-navbar-icon " + (currentPage === "Shop management" ? "current-page" : "")}/>
                                 </Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
-                                <Nav.Link as={Link} to={`${match.url}/category-page`} onClick={() => dispatch(changePage("Category management"))}>
+                                <Nav.Link as={Link} to={`${match.url}/category-page`}>
                                     <BsFillCollectionFill className={"user-page-navbar-icon " + (currentPage === "Category management" ? "current-page" : "")}/>
                                 </Nav.Link>
                             </Nav.Item>

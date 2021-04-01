@@ -1,6 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { changePage } from '../user/user.actions';
 
 const ExpensseAndIncomeListPage = () => {
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(changePage("Expenses and income list"));
+      }, []);
 
     return (
         <div>

@@ -8,6 +8,8 @@ import {
 	MODAL_CLEAR,
 	OPEN_MODAL_ADD_NEW_SHOP,
 	CLOSE_MODAL_ADD_NEW_SHOP,
+	OPEN_CONFIRMATION_MODAL,
+	CLOSE_CONFIRMATION_MODAL
 } from "./modal.actions";
 
 const initialState = {
@@ -33,12 +35,12 @@ export const modals = (state = initialState, action) => {
 			const { id } = payload;
 			return {
 				...state,
-				changePasswordModalUsers: { isOpen: true, id},
+				changePasswordModalUsers: { isOpen: true, id },
 			};
 		case CLOSE_MODAL_CHANGE_PASSWORD_USERS:
 			return {
 				...state,
-				changePasswordModalUsers: { isOpen: false, id: ""},
+				changePasswordModalUsers: { isOpen: false },
 			};
 		case OPEN_MODAL_ADD_NEW_USER:
 			return {
@@ -59,6 +61,17 @@ export const modals = (state = initialState, action) => {
 			return {
 				...state,
 				addNewShopModalIsOpen: false,
+			};
+		case OPEN_CONFIRMATION_MODAL:
+			const { contextId } = payload;
+			return {
+				...state,
+				confirmationModal: {isOpen: true, contextId },
+			};
+		case CLOSE_CONFIRMATION_MODAL:
+			return {
+				...state,
+				confirmationModal: {isOpen: false },
 			};
 		case MODAL_CLEAR:
 			return {};

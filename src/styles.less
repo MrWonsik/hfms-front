@@ -1,6 +1,6 @@
 @main-color: #708d58;
 @main-color-dark: #3b552b; //#293820
-
+@secondary-color: #707b66;
 
 @main-color-focus-dark: #242d1e;
 @main-focus-color-light: #79a94e;
@@ -33,7 +33,6 @@
 }
 
 .modal-content {
-	.modal-header,
 	.modal-footer {
 		border: none;
 	}
@@ -50,6 +49,27 @@ button.btn.btn-primary {
 
 	&:active:not(:disabled):not(.disabled) {
 		// border-color: @main-color-dark;
+		background-color: @main-color-dark;
+
+		&:focus {
+			box-shadow: 0 0 0 0.2rem @main-focus-color-light;
+		}
+	}
+
+	&:focus {
+		box-shadow: 0 0 0 0.2rem @main-focus-color-light;
+	}
+
+	&:hover {
+		background-color: @main-color-focus-dark;
+	}
+}
+
+button.btn.btn-secondary {
+	border-color: @secondary-color;
+	background-color: @secondary-color;
+
+	&:active:not(:disabled):not(.disabled) {
 		background-color: @main-color-dark;
 
 		&:focus {
@@ -210,4 +230,10 @@ button.btn.btn-primary {
 	border: 1px solid @main-color-dark;
 	padding: 20px;
 	border-radius: 4px;
+}
+
+.additionaly-info {
+	color: rgb(146, 146, 146);
+	font-size: 13px;
+	font-style: italic;
 }

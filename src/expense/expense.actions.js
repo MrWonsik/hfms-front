@@ -1,4 +1,4 @@
-import { alertError } from "../alert/alert.actions";
+import { alertError, alertSuccess } from "../alert/alert.actions";
 import { getShopsCall, createShopCall, deleteShopCall } from "./expense.service";
 
 export const GET_SHOPS_REQUEST = "GET_SHOPS_REQUEST";
@@ -39,8 +39,9 @@ export const createShop = (shopName) => async dispatch => {
     let isShopCreated = false;
     await createShopCall(shopName)
         .then(
-            shops => {
-                dispatch(createShopSuccess(shops));
+            shop => {
+                dispatch(createShopSuccess(shop));
+                dispatch(alertSuccess("Shop: " + shop.shopName + " has been created."));
                 isShopCreated = true;
             },
             error => {

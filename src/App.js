@@ -40,6 +40,10 @@ const App = () => {
     }
   }, [])
 
+  useEffect(() => { 
+    setShow(true); 
+  }, alert)
+
   return (
     <>
       <Container fluid>

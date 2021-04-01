@@ -28,3 +28,8 @@ export const OPEN_MODAL_ADD_NEW_SHOP = "OPEN_MODAL_ADD_NEW_SHOP";
 export const CLOSE_MODAL_ADD_NEW_SHOP = "CLOSE_MODAL_ADD_NEW_SHOP";
 export const openModalAddNewShop = () => ({ type: OPEN_MODAL_ADD_NEW_SHOP});
 export const closeModalAddNewShop = () => ({ type: CLOSE_MODAL_ADD_NEW_SHOP });
+
+export const OPEN_CONFIRMATION_MODAL = "OPEN_CONFIRMATION_MODAL";
+export const CLOSE_CONFIRMATION_MODAL = "CLOSE_CONFIRMATION_MODAL";
+export const openConfirmationModal = (contextId) => ({ type: OPEN_CONFIRMATION_MODAL, payload: {contextId}});
+export const closeConfirmationModal = () => ({ type: CLOSE_CONFIRMATION_MODAL });
