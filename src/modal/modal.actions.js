@@ -33,3 +33,8 @@ export const OPEN_CONFIRMATION_MODAL = "OPEN_CONFIRMATION_MODAL";
 export const CLOSE_CONFIRMATION_MODAL = "CLOSE_CONFIRMATION_MODAL";
 export const openConfirmationModal = (contextId) => ({ type: OPEN_CONFIRMATION_MODAL, payload: {contextId}});
 export const closeConfirmationModal = () => ({ type: CLOSE_CONFIRMATION_MODAL });
+
+export const OPEN_MODAL_ADD_NEW_CATEGORY = "OPEN_MODAL_ADD_NEW_CATEGORY";
+export const CLOSE_MODAL_ADD_NEW_CATEGORY = "CLOSE_MODAL_ADD_NEW_CATEGORY";
+export const openModalAddNewCategory = () => ({ type: OPEN_MODAL_ADD_NEW_CATEGORY});
+export const closeModalAddNewCategory = () => ({ type: CLOSE_MODAL_ADD_NEW_CATEGORY });

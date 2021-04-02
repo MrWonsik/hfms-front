@@ -1,5 +1,5 @@
 import { alertError, alertSuccess } from "../alert/alert.actions";
-import { getShopsCall, createShopCall, deleteShopCall } from "./expense.service";
+import { getShopsCall, createShopCall, deleteShopCall, getExpenseCategoriesCall, createExpenseCategoryCall } from "./finance.service";
 
 export const GET_SHOPS_REQUEST = "GET_SHOPS_REQUEST";
 export const GET_SHOPS_SUCCESS = "GET_SHOPS_SUCCESS";
@@ -24,8 +24,8 @@ export const getShops = () => async dispatch => {
         );
 }
 
-export const CLEAR_EXPENSES = "CLEAR_EXPENSES";
-export const clearExpenses = () => ({ type: CLEAR_EXPENSES });
+export const CLEAR_FINANCES = "CLEAR_FINANCES";
+export const clearFinances = () => ({ type: CLEAR_FINANCES });
 
 export const CREATE_SHOP_REQUEST = "CREATE_SHOP_REQUEST";
 export const CREATE_SHOP_SUCCESS = "CREATE_SHOP_SUCCESS";
@@ -75,4 +75,54 @@ export const deleteShop = (id) => async dispatch => {
                 return Promise.reject(error);
             }
         )
+}
+
+export const GET_EXPENSE_CATEGORIES_REQUEST = "GET_EXPENSE_CATEGORIES_REQUEST";
+export const GET_EXPENSE_CATEGORIES_SUCCESS = "GET_EXPENSE_CATEGORIES_SUCCESS";
+export const GET_EXPENSE_CATEGORIES_FAILURE = "GET_EXPENSE_CATEGORIES_FAILURE";
+export const getExpenseCategoriesRequest = () => ({ type: GET_EXPENSE_CATEGORIES_REQUEST })
+export const getExpenseCategoriesSuccess = (expenseCategories) => ({ type: GET_EXPENSE_CATEGORIES_SUCCESS, payload: {expenseCategories} })
+export const getExpenseCategoriesFailure = () => ({ type: GET_EXPENSE_CATEGORIES_FAILURE })
+
+export const getExpenseCategories = () => async dispatch => {
+    dispatch(getExpenseCategoriesRequest());
+    await getExpenseCategoriesCall()
+        .then(
+            expenseCategories => {
+                console.log(expenseCategories);
+                dispatch(getExpenseCategoriesSuccess(expenseCategories));
+            },
+            error => {
+                dispatch(getExpenseCategoriesFailure());
+                dispatch(alertError(error.msg));
+                return Promise.reject(error);
+            }
+        );
+}
+
+export const CREATE_EXPENSE_CATEGORY_REQUEST = "CREATE_EXPENSE_CATEGORY_REQUEST";
+export const CREATE_EXPENSE_CATEGORY_SUCCESS = "CREATE_EXPENSE_CATEGORY_SUCCESS";
+export const CREATE_EXPENSE_CATEGORY_FAILURE = "CREATE_EXPENSE_CATEGORY_FAILURE";
+export const createExpenseCategoryRequest = () => ({ type: CREATE_EXPENSE_CATEGORY_REQUEST })
+export const createExpenseCategorySuccess = (expesneCategory) => ({ type: CREATE_EXPENSE_CATEGORY_SUCCESS, payload: {expesneCategory} })
+export const createExpenseCategoryFailure = () => ({ type: CREATE_EXPENSE_CATEGORY_FAILURE })
+
+export const createExpenseCategory = ( category ) => async dispatch => {
+    dispatch(createExpenseCategoryRequest());
+    let isCategoryCreated = false;
+    await createExpenseCategoryCall(category)
+        .then(
+            category => {
+                dispatch(createExpenseCategorySuccess(category));
+                dispatch(alertSuccess("Category: " + category.categoryName + " has been created."));
+                isCategoryCreated = true;
+            },
+            error => {
+                console.log(error);
+                dispatch(createExpenseCategoryFailure());
+                dispatch(alertError(error.msg));
+                return Promise.reject(error);
+            }
+        );
+    return Promise.resolve(isCategoryCreated);
 }

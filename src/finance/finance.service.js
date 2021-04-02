@@ -40,3 +40,30 @@ export const deleteShopCall = (id) => {
 		.then(shop => shop)
 		.catch(httpHelper.handleError);
 };
+
+export const getExpenseCategoriesCall = () => {
+	const requestOptions = {
+		method: "GET",
+		headers: httpHelper.addAuthHeader({}, getJwtToken()),
+	};
+
+	return fetch(`${config.apiUrl}/api/expense-category/`, requestOptions)
+		.then(httpHelper.handleResponse)
+		.catch(httpHelper.handleError);
+};
+
+export const createExpenseCategoryCall = (category) => {
+	const requestOptions = {
+		method: "POST",
+		headers: httpHelper.addAuthHeader(
+			{ "Content-Type": "application/json" },
+			getJwtToken()
+		),
+		body: JSON.stringify(category),
+	};
+
+	return fetch(`${config.apiUrl}/api/expense-category/`, requestOptions)
+		.then(httpHelper.handleResponse)
+		.then(expenseCategory => expenseCategory)
+		.catch(httpHelper.handleError);
+};

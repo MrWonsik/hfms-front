@@ -101,7 +101,11 @@ button.btn.btn-secondary {
 }
 
 .alert-main {
+	max-width: 300px;
+	margin: 15px;
 	z-index: 1051;
+	left: unset;
+	border: 1px solid @main-color-dark;	
 }
 
 .navbar-main {
@@ -127,6 +131,23 @@ button.btn.btn-secondary {
 
 	.navbar-icon {
 		font-size: 30px;
+	}
+}
+
+.categories-tabs {
+	border-color: @main-color-dark;
+
+	.nav-link {
+		color: @main-color-dark;
+		&:focus, &:hover {
+			border-bottom-color: @main-color-dark; 
+			color: @main-focus-color-light;
+		}
+
+		&.active {
+			border-color: @main-color-dark @main-color-dark #fff;
+			color: @main-focus-color-light;
+		}
 	}
 }
 
@@ -162,7 +183,7 @@ button.btn.btn-secondary {
 	}
 
 	.table-action-icon {
-		font-size: 32px;
+		font-size: 30px;
 		padding: 5px;
 
 		&:hover, &:focus {

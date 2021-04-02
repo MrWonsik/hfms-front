@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getShops, deleteShop } from '../expense/expense.actions';
+import { getShops, deleteShop } from '../finance/finance.actions';
 import Table from "react-bootstrap/Table";
 import Spinner from "react-bootstrap/Spinner";
 import Form from "react-bootstrap/Form";
@@ -13,8 +13,8 @@ import Alert from "react-bootstrap/Alert";
 const ShopsTable = () => {
     const dispatch = useDispatch();
     const { shops, isShopsLoading } = useSelector((state) => ({
-        shops: state.expenses.shops,
-        isShopsLoading: state.expenses.isLoading
+        shops: state.finance.shops,
+        isShopsLoading: state.finance.isShopsLoading
     }));
 
     useEffect(() => {
@@ -54,8 +54,8 @@ const ShopsTable = () => {
                         {shops?.map((shop) => (
                         <tr key={shop.id}>
                                 <td>{shop.shopName} <span className="additionaly-info">({shop.id})</span></td>
-                                <td>{shop.createDate}</td>
-                                <td>{shop.createTime}</td>
+                                <td>{shop.createDate.date}</td>
+                                <td>{shop.createDate.time}</td>
                                 <td>
                                     <>
                                         <BsTrash tabIndex="0" className="table-action-icon" onClick={() => showDeleteConfirmationModal(shop)} onKeyPress={e => e.key === 'Enter' && showDeleteConfirmationModal(shop)}/>

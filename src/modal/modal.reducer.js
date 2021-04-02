@@ -9,7 +9,9 @@ import {
 	OPEN_MODAL_ADD_NEW_SHOP,
 	CLOSE_MODAL_ADD_NEW_SHOP,
 	OPEN_CONFIRMATION_MODAL,
-	CLOSE_CONFIRMATION_MODAL
+	CLOSE_CONFIRMATION_MODAL,
+	OPEN_MODAL_ADD_NEW_CATEGORY,
+	CLOSE_MODAL_ADD_NEW_CATEGORY
 } from "./modal.actions";
 
 const initialState = {
@@ -72,6 +74,16 @@ export const modals = (state = initialState, action) => {
 			return {
 				...state,
 				confirmationModal: {isOpen: false },
+			};
+		case OPEN_MODAL_ADD_NEW_CATEGORY:
+			return {
+				...state,
+				addNewCategoryModalIsOpen: true,
+			};
+		case CLOSE_MODAL_ADD_NEW_CATEGORY:
+			return {
+				...state,
+				addNewCategoryModalIsOpen: false,
 			};
 		case MODAL_CLEAR:
 			return {};

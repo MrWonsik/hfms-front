@@ -40,9 +40,13 @@ const App = () => {
     }
   }, [])
 
-  useEffect(() => { 
-    setShow(true); 
-  }, alert)
+  const getAlertHeading = (type) => {
+    switch(type) {
+      case "danger": return "Error";
+      case "success": return "Success";
+      case deafult: return "";
+    }
+  }
 
   return (
     <>
@@ -51,12 +55,14 @@ const App = () => {
           <Col>
             {show && alert.message && (
               <Alert
-                className="fixed-top m-3 alert-main"
+                className="fixed-bottom alert-main"
                 key={alert.message}
                 variant={alert.type}
                 onClose={() => dispatch(alertClear())}
                 dismissible
               >
+                <Alert.Heading>{getAlertHeading(alert.type)}</Alert.Heading>
+                <hr/>
                 <div className = "text-center">{alert.message}</div>
               </Alert>
             )}

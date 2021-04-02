@@ -5,7 +5,7 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Spinner from "react-bootstrap/Spinner";
 import { closeModalAddNewShop } from '../../modal/modal.actions'
-import { createShop } from "../../expense/expense.actions";
+import { createShop } from "../../finance/finance.actions";
 
 
 export const AddNewShopModal = () => {
@@ -14,7 +14,7 @@ export const AddNewShopModal = () => {
 
     const { addNewShopModalIsOpen, creatingShopInProgress } = useSelector(state => ({
         addNewShopModalIsOpen: state.modals.addNewShopModalIsOpen,
-        creatingShopInProgress: state.expenses.creatingShopInProgress
+        creatingShopInProgress: state.finance.creatingShopInProgress
     }));
 
     const [submitted, setSubmitted] = useState(false);
