@@ -64,6 +64,22 @@ export const createExpenseCategoryCall = (category) => {
 
 	return fetch(`${config.apiUrl}/api/expense-category/`, requestOptions)
 		.then(httpHelper.handleResponse)
+		.then(updatedExpenseCategory => updatedExpenseCategory)
+		.catch(httpHelper.handleError);
+};
+
+export const changeStateFavouriteExepenseCategoryCall = ( category ) => {
+	const requestOptions = {
+		method: "PUT",
+		headers: httpHelper.addAuthHeader(
+			{ "Content-Type": "application/json" },
+			getJwtToken()
+		),
+		body: JSON.stringify({ isFavourite: !category.favourite }),
+	};
+
+	return fetch(`${config.apiUrl}/api/expense-category/${category.id}`, requestOptions)
+		.then(httpHelper.handleResponse)
 		.then(expenseCategory => expenseCategory)
 		.catch(httpHelper.handleError);
 };

@@ -11,7 +11,8 @@ import {
 	GET_EXPENSE_CATEGORIES_REQUEST,
 	CREATE_EXPENSE_CATEGORY_FAILURE,
 	CREATE_EXPENSE_CATEGORY_REQUEST,
-	CREATE_EXPENSE_CATEGORY_SUCCESS
+	CREATE_EXPENSE_CATEGORY_SUCCESS,
+	IS_FAVOURITE_EXPENSE_CATEGORY_SUCCESS
 } from "./finance.actions";
 
 const initialState = {
@@ -85,8 +86,8 @@ export const finance = (state = initialState, action) => {
 				creatingExpenseCategoryInProgress: true,
 			};
 		case CREATE_EXPENSE_CATEGORY_SUCCESS:
-			const { expesneCategory } = payload;
-			state.expenseCategories.push(expesneCategory);
+			const { expenseCategory } = payload;
+			state.expenseCategories.push(expenseCategory);
 			return {
 				...state,
 				creatingExpenseCategoryInProgress: false
@@ -95,6 +96,14 @@ export const finance = (state = initialState, action) => {
 			return {
 				...state,
 				creatingExpenseCategoryInProgress: false
+			};
+		case IS_FAVOURITE_EXPENSE_CATEGORY_SUCCESS:
+			const { updatedExpenseCategory } = payload;
+			return {
+				...state,
+				expenseCategories: state.expenseCategories.map((expenseCategoryFromState, id) =>
+					updatedExpenseCategory.id === id ? { ...expenseCategoryFromState, favourite: updatedExpenseCategory.favourite } : expenseCategoryFromState
+				),
 			};
 		default:
 			return state;

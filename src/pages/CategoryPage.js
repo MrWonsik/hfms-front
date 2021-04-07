@@ -24,7 +24,6 @@ const CategoryPage = () => {
         dispatch(getExpenseCategories());
     }, []);
 
-
     const handleAddNewCategory = () => {
         dispatch(openModalAddNewCategory());
     }
@@ -40,7 +39,7 @@ const CategoryPage = () => {
                     <CategoriesTable type="expense" categories={expenseCategories} isLoading={isExpenseCategoriesLoading} />
                 </Tab>
                 <Tab eventKey="income" title="income">
-                    <CategoriesTable />
+                    {/* <CategoriesTable /> */}
                 </Tab>
             </Tabs>
             

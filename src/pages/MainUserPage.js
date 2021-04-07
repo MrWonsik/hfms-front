@@ -4,7 +4,7 @@ import Col from 'react-bootstrap/Col'
 import Spinner from 'react-bootstrap/Spinner'
 import { Pie, Bar } from 'react-chartjs-2'
 import { useDispatch, useSelector } from 'react-redux';
-import { getShops } from '../finance/finance.actions';
+import { getExpenseCategories, getShops } from '../finance/finance.actions';
 import { Link } from 'react-router-dom';
 import { changePage } from '../user/user.actions';
 import { ListGroup } from 'react-bootstrap';
@@ -22,6 +22,7 @@ const MainUserPage = () => {
     useEffect(() => {
       dispatch(changePage("Home"))
       dispatch(getShops());
+      dispatch(getExpenseCategories());
     }, []);
 
     const rand = () => Math.round(Math.random() * 20)
@@ -80,24 +81,24 @@ const MainUserPage = () => {
     return (
         <>
             <Row className="justify-content-md-center">
-                <Col className="m-4"><Pie data={data} /></Col>
-                <Col className="m-4"><Bar data={data2} options={options2} /></Col>
+                <Col lg sm="12" className="m-4"><Pie data={data} /></Col>
+                <Col lg sm="12" className="m-4"><Bar data={data2} options={options2} /></Col>
             </Row>
             <Row className="justify-space-between">
-                <Col className="main-user-page-summary-last-exp m-2">
+                <Col lg sm="12" className="main-user-page-summary-last-exp m-2">
                 {!expenseCategories && isExpenseCategoriesLoading ? <Spinner animation="border text-center" size="lg" /> : 
                     <>
                       <p className="text-center font-weight-bold">Last added categories:</p>
                       { expenseCategories && expenseCategories.length > 0 ?
                         <> 
                           <ListGroup variant="flush">
-                            {expenseCategories?.sort((a,b) => ( new Date(b.createDate.date) - new Date(a.createDate.date)))
-                                  .sort((a,b) => (b.createDate.time.localeCompare(a.createDate.time)))
+                            {expenseCategories?.sort((a,b) => (a.createDate.time.localeCompare(b.createDate.time)))
+                                  .sort((a,b) => ( new Date(b.createDate.date) - new Date(a.createDate.date)))
                                   .slice(0, 5)
                                   .map(category => (
                                     <ListGroup.Item key={category.id}>{category.categoryName} <span className="additionaly-info">({category.createDate.date})</span></ListGroup.Item>
                                   ))}
-                                  <ListGroup.Item className="text-right"><Link className="" to="/home/category">see more</Link></ListGroup.Item>
+                                  <ListGroup.Item className="text-right"><Link className="" to="/home/category-page">see more</Link></ListGroup.Item>
                           </ListGroup>
                         </> :
                         <> 
@@ -108,15 +109,15 @@ const MainUserPage = () => {
                     </>
                   }
                 </Col>
-                <Col className="main-user-page-last-shops m-2">
+                <Col lg sm="12" className="main-user-page-last-shops m-2">
                   {!shops && isShopsLoading ? <Spinner animation="border text-center" size="lg" /> : 
                     <>
                       <p className="text-center font-weight-bold">Last added shops:</p>
                       { shops && shops.length > 0 ?
                         <> 
                           <ListGroup variant="flush">
-                            {shops?.sort((a,b) => ( new Date(b.createDate.date) - new Date(a.createDate.date)))
-                                  .sort((a,b) => (b.createDate.time.localeCompare(a.createDate.time)))
+                            {shops?.sort((a,b) => (b.createDate.time.localeCompare(a.createDate.time)))
+                                  .sort((a,b) => ( new Date(b.createDate.date) - new Date(a.createDate.date)))
                                   .slice(0, 5)
                                   .map(shop => (
                                     <ListGroup.Item key={shop.id}>{shop.shopName} <span className="additionaly-info">({shop.createDate.date})</span></ListGroup.Item>
@@ -132,7 +133,7 @@ const MainUserPage = () => {
                     </>
                   }
                 </Col>
-                <Col className="main-user-page-last-categories m-2">
+                <Col md sm="12" className="main-user-page-last-categories m-2">
                 {!shops && isShopsLoading ? <Spinner animation="border text-center" size="lg" /> : 
                     <>
                       <p className="text-center font-weight-bold">Last added expenses and incomes:</p>

@@ -1,5 +1,5 @@
 import { alertError, alertSuccess } from "../alert/alert.actions";
-import { getShopsCall, createShopCall, deleteShopCall, getExpenseCategoriesCall, createExpenseCategoryCall } from "./finance.service";
+import { getShopsCall, createShopCall, deleteShopCall, getExpenseCategoriesCall, createExpenseCategoryCall, changeStateFavouriteExepenseCategoryCall } from "./finance.service";
 
 export const GET_SHOPS_REQUEST = "GET_SHOPS_REQUEST";
 export const GET_SHOPS_SUCCESS = "GET_SHOPS_SUCCESS";
@@ -16,7 +16,6 @@ export const getShops = () => async dispatch => {
                 dispatch(getShopsSuccess(shops));
             },
             error => {
-                console.log(error);
                 dispatch(getShopsFailure());
                 dispatch(alertError(error.msg));
                 return Promise.reject(error);
@@ -45,7 +44,6 @@ export const createShop = (shopName) => async dispatch => {
                 isShopCreated = true;
             },
             error => {
-                console.log(error);
                 dispatch(createShopFailure());
                 dispatch(alertError(error.msg));
                 return Promise.reject(error);
@@ -89,7 +87,6 @@ export const getExpenseCategories = () => async dispatch => {
     await getExpenseCategoriesCall()
         .then(
             expenseCategories => {
-                console.log(expenseCategories);
                 dispatch(getExpenseCategoriesSuccess(expenseCategories));
             },
             error => {
@@ -104,7 +101,7 @@ export const CREATE_EXPENSE_CATEGORY_REQUEST = "CREATE_EXPENSE_CATEGORY_REQUEST"
 export const CREATE_EXPENSE_CATEGORY_SUCCESS = "CREATE_EXPENSE_CATEGORY_SUCCESS";
 export const CREATE_EXPENSE_CATEGORY_FAILURE = "CREATE_EXPENSE_CATEGORY_FAILURE";
 export const createExpenseCategoryRequest = () => ({ type: CREATE_EXPENSE_CATEGORY_REQUEST })
-export const createExpenseCategorySuccess = (expesneCategory) => ({ type: CREATE_EXPENSE_CATEGORY_SUCCESS, payload: {expesneCategory} })
+export const createExpenseCategorySuccess = (expenseCategory) => ({ type: CREATE_EXPENSE_CATEGORY_SUCCESS, payload: {expenseCategory} })
 export const createExpenseCategoryFailure = () => ({ type: CREATE_EXPENSE_CATEGORY_FAILURE })
 
 export const createExpenseCategory = ( category ) => async dispatch => {
@@ -118,11 +115,38 @@ export const createExpenseCategory = ( category ) => async dispatch => {
                 isCategoryCreated = true;
             },
             error => {
-                console.log(error);
                 dispatch(createExpenseCategoryFailure());
                 dispatch(alertError(error.msg));
                 return Promise.reject(error);
             }
         );
     return Promise.resolve(isCategoryCreated);
+}
+
+export const IS_FAVOURITE_EXPENSE_CATEGORY_REQUEST = "IS_FAVOURITE_EXPENSE_CATEGORY_REQUEST";
+export const IS_FAVOURITE_EXPENSE_CATEGORY_SUCCESS = "IS_FAVOURITE_EXPENSE_CATEGORY_SUCCESS";
+export const IS_FAVOURITE_EXPENSE_CATEGORY_FAILURE = "IS_FAVOURITE_EXPENSE_CATEGORY_FAILURE";
+export const changeStateFavouriteExpenseCategoryRequest = () => ({ type: IS_FAVOURITE_EXPENSE_CATEGORY_REQUEST })
+export const changeStateFavouriteExpenseCategorySuccess = (updatedExpenseCategory) => ({ type: IS_FAVOURITE_EXPENSE_CATEGORY_SUCCESS, payload: {updatedExpenseCategory} })
+export const changeStateFavouriteExpenseCategoryFailure = () => ({ type: IS_FAVOURITE_EXPENSE_CATEGORY_FAILURE })
+
+export const changeStateFavouriteExepenseCategory = ( category ) => async dispatch => {
+    dispatch(changeStateFavouriteExpenseCategoryRequest());
+    await changeStateFavouriteExepenseCategoryCall(category)
+        .then(
+            updatedExpenseCategory => {
+                dispatch(changeStateFavouriteExpenseCategorySuccess(updatedExpenseCategory));
+                let msg = "Category: " + updatedExpenseCategory.categoryName + " mark as favourite.";
+                if(!updatedExpenseCategory.favourite) {
+                    msg = "Category: " + updatedExpenseCategory.categoryName + " is not favourite anymore."
+                }
+                dispatch(getExpenseCategories());
+                dispatch(alertSuccess(msg));
+            },
+            error => {
+                dispatch(changeStateFavouriteExpenseCategoryFailure());
+                dispatch(alertError(error.msg));
+                return Promise.reject(error);
+            }
+        );
 }

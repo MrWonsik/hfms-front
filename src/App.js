@@ -40,6 +40,10 @@ const App = () => {
     }
   }, [])
 
+  useEffect(() => { 
+    setShow(true); 
+  })
+
   const getAlertHeading = (type) => {
     switch(type) {
       case "danger": return "Error";

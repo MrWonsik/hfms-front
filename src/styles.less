@@ -153,6 +153,10 @@ button.btn.btn-secondary {
 
 .list-table {
 
+	td, th {
+		padding: .5rem;
+	}
+
 	tr:last-child th:first-child {
 		border-top-left-radius: 4px;
 	}
@@ -163,8 +167,24 @@ button.btn.btn-secondary {
 
 	color: @main-font-color;
 
-	thead tr:first-child {
-		background-color: @main-color-dark;
+	thead {
+		
+		th {
+			&:hover, &:focus {
+				outline: none;
+			}
+		}
+		th.sortable {
+			&:hover, &:focus {
+				background-color: @main-focus-color-light;
+				transition: background-color 0.15s ease-in-out;
+				cursor: pointer;		
+			}
+		}
+
+		tr:first-child {
+			background-color: @main-color-dark;
+		}
 	}
 
 	tbody tr {
@@ -192,6 +212,24 @@ button.btn.btn-secondary {
 			transition: color 0.15s ease-in-out;
 			cursor: pointer;
 		}
+	}
+}
+
+.pagination.react-bootstrap-table-page-btns-ul {
+	float: right;
+
+	.page-item .page-link {
+		color: @main-color-dark;
+
+		&:focus {
+			box-shadow: 0 0 0 0.2rem @main-focus-color-light;
+		}
+	}
+
+	.page-item.active .page-link {
+		color: @main-font-color;
+		border-color: @main-color-dark;
+		background-color: @main-color-dark;
 	}
 }
 

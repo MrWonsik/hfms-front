@@ -7,6 +7,7 @@ import { configureStore } from './_helpers';
 import App from './App';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import './styles.less';
 
 const store = configureStore();
