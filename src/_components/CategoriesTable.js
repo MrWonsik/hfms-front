@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useDispatch } from 'react-redux';
 import Spinner from "react-bootstrap/Spinner";
 import { BsTrash, BsStarFill, BsStar, BsSquareFill, BsCalendar } from 'react-icons/bs'
@@ -8,9 +8,8 @@ import Alert from "react-bootstrap/Alert";
 import { dateSort, sortByName } from '../_helpers/tableBootstrapSorter';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
-import { changeStateFavouriteExepenseCategory } from '../finance/finance.actions';
 
-const CategoriesTable = ({ type, categories, isLoading }) => {
+const CategoriesTable = ({ type, categories, isLoading, handleDeleteCategory, handleIsFavouriteClicked }) => {
 
     const dispatch = useDispatch();
 
@@ -22,13 +21,7 @@ const CategoriesTable = ({ type, categories, isLoading }) => {
         dispatch(openModalAddNewCategory());
     }
 
-    const handleIsFavouriteClicked = (category) => {
-        dispatch(changeStateFavouriteExepenseCategory(category));
-    }
-
-    const products = [];
-    categories?.forEach((category) => {
-        products.push({
+    const products = categories?.map((category) => ({
             id: category.id,
             categoryName: <>{category.categoryName} <span className="additionaly-info">({category.id})</span></>,
             color: <><BsSquareFill className="align-baseline" color={category.colorHex} /> {category.colorHex}</>,
@@ -40,8 +33,7 @@ const CategoriesTable = ({ type, categories, isLoading }) => {
                     <BsStarFill className="table-action-icon" onClick={() => handleIsFavouriteClicked(category)} onKeyPress={e => e.key === 'Enter' && handleIsFavouriteClicked(category)} /> : 
                     <BsStar className="table-action-icon" onClick={() => handleIsFavouriteClicked(category)} onKeyPress={e => e.key === 'Enter' && handleIsFavouriteClicked(category)} />}
             </>
-        })
-    })
+    }))
     
     const columns = [{
         dataField: 'categoryName',
@@ -69,7 +61,7 @@ const CategoriesTable = ({ type, categories, isLoading }) => {
 
     const defaultSorted = [{
         dataField: 'categoryName',
-        order: 'desc'
+        order: 'asc'
     }]
     
     const paginationOptions = {
@@ -83,7 +75,6 @@ const CategoriesTable = ({ type, categories, isLoading }) => {
         <>
             { !categories && isLoading === true ? <Spinner animation="border text-center" size="lg" /> :  categories?.length > 0 ?  
                 <>
-                    {/*TODO: add button to add new shop */}
                     <BootstrapTable 
                         classes="list-table" 
                         bootstrap4 
@@ -95,7 +86,7 @@ const CategoriesTable = ({ type, categories, isLoading }) => {
                         pagination={ paginationFactory(paginationOptions) }
                     />
                     {categories?.map((category) => (
-                        <ConfirmationModal key={category.id} id={"category_" + category.categoryName.trim() + "_" + category.id} confirmationMessage={"Are you sure you want to delete " + category.categoryName + "?"} />
+                        <ConfirmationModal key={category.id} id={"category_" + category.categoryName.trim() + "_" + category.id} confirmationFunction={() => handleDeleteCategory(category.id)} confirmationMessage={"Are you sure you want to delete " + category.categoryName + "?"} />
                     ))}
                 </> :
                 <Alert className="text-center" variant="light">

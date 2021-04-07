@@ -11,9 +11,8 @@ import ChangePasswordModal from "./modal/ChangePasswordModal";
 const UserTools = () => {
 	const dispatch = useDispatch();
 
-	const { user, currentPage } = useSelector((state) => ({
+	const { user } = useSelector((state) => ({
 		user: state.user.user,
-		currentPage: state.user.currentPage
 	}));
 
 	const handleChangePasswordModalOpen = () => {

@@ -42,7 +42,7 @@ export const users = (state = initialState, action) => {
 				isLoading: false,
 			};
 		case GET_USERS_CLEAR:
-			return {};
+			return initialState;
 		case USER_CHANGE_STATUS_REQUEST:
 			return {
 				...state,

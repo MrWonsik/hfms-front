@@ -2,7 +2,7 @@ import {
 	GET_SHOPS_REQUEST,
 	GET_SHOPS_SUCCESS,
 	GET_SHOPS_FAILURE,
-	CLEAR_EXPENSES,
+	CLEAR_FINANCES,
 	CREATE_SHOP_FAILURE,
 	CREATE_SHOP_SUCCESS,
 	CREATE_SHOP_REQUEST,
@@ -44,7 +44,7 @@ export const finance = (state = initialState, action) => {
 				...state,
 				isShopsLoading: false,
 			};
-		case CLEAR_EXPENSES:
+		case CLEAR_FINANCES:
 			return {};
 		case CREATE_SHOP_REQUEST:
 			return {

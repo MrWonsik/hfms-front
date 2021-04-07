@@ -47,30 +47,27 @@ const UsersTable = () => {
         dispatch(openModalAddNewUser());
     }
 
-    let productsFilled = false;
-    const products = [];
-    users?.forEach((user) => {
-        products.push({
-            id: user.id,
-            username: user.username,
-            role: mapRoleToString(user.role),
-            createDate: <><BsCalendar /> {user.createDate}</>,
-            updateDate: <><BsCalendar /> {user.updateDate}</>,
-            isDisabled: !user.isEnabled,
-            actions: <>
-                {currentUser.id == user.id ? "" : 
-                    <>
-                        {user.isEnabled 
-                        ? <BsPersonCheck tabIndex="0" className="table-action-icon" onClick={() => handleUserStatus(user.id, !user.isEnabled)} onKeyPress={e => e.key === 'Enter' && handleUserStatus(user.id, !user.isEnabled)}/> 
-                        : <BsPerson tabIndex="0" className="table-action-icon" onClick={() => handleUserStatus(user.id, !user.isEnabled)} onKeyPress={e => e.key === 'Enter' && handleUserStatus(user.id, !user.isEnabled)}/>}
-                        <BsPencil tabIndex="0" className="table-action-icon" onClick={() => handleChangeUserPassword(user.id)} onKeyPress={e => e.key === 'Enter' && handleChangeUserPassword(user.id)}/>
-                        <BsTrash tabIndex="0" className="table-action-icon" onClick={() => showDeleteConfirmationModal(user)} onKeyPress={e => e.key === 'Enter' && showDeleteConfirmationModal(user)}/>
-                    </>
-                }
-            </>
-        })
-    })
-    productsFilled = true;
+    
+    let products = [];
+    products = users?.map((user) => ({
+        id: user.id,
+        username: user.username,
+        role: mapRoleToString(user.role),
+        createDate: <><BsCalendar /> {user.createDate}</>,
+        updateDate: <><BsCalendar /> {user.updateDate}</>,
+        isDisabled: !user.isEnabled,
+        actions: <>
+            {currentUser.id == user.id ? "" : 
+                <>
+                    {user.isEnabled 
+                    ? <BsPersonCheck tabIndex="0" className="table-action-icon" onClick={() => handleUserStatus(user.id, !user.isEnabled)} onKeyPress={e => e.key === 'Enter' && handleUserStatus(user.id, !user.isEnabled)}/> 
+                    : <BsPerson tabIndex="0" className="table-action-icon" onClick={() => handleUserStatus(user.id, !user.isEnabled)} onKeyPress={e => e.key === 'Enter' && handleUserStatus(user.id, !user.isEnabled)}/>}
+                    <BsPencil tabIndex="0" className="table-action-icon" onClick={() => handleChangeUserPassword(user.id)} onKeyPress={e => e.key === 'Enter' && handleChangeUserPassword(user.id)}/>
+                    <BsTrash tabIndex="0" className="table-action-icon" onClick={() => showDeleteConfirmationModal(user)} onKeyPress={e => e.key === 'Enter' && showDeleteConfirmationModal(user)}/>
+                </>
+            }
+        </>
+    }));
     
     const columns = [{
         dataField: 'username',
@@ -117,9 +114,9 @@ const UsersTable = () => {
 
     return (
         <>
-            {!users && isUsersLoading ? <Spinner animation="border text-center" size="lg" /> : 
+            {!users && isUsersLoading && products ? <Spinner animation="border text-center" size="lg" /> : 
                 <>
-                    <Form.Group className="text-right">
+                    <Form.Group className="text-right add-new-container">
                         <BsPersonPlusFill tabIndex="0" className="icon-add" onClick={() => handleAddNewUser()} onKeyPress={e => e.key === 'Enter' && handleAddNewUser()}/>
                     </Form.Group>
                     <BootstrapTable 

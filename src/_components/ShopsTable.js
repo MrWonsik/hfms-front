@@ -35,9 +35,7 @@ const ShopsTable = () => {
         dispatch(openModalAddNewShop());
     }
 
-    const products = [];
-    shops?.forEach((shop) => {
-        products.push({
+    const products = shops?.map((shop) => ({
             id: shop.id,
             shopName: <>{shop.shopName} <span className="additionaly-info">({shop.id})</span></>,
             date: <><BsCalendar /> {shop.createDate.date} </>,
@@ -46,8 +44,7 @@ const ShopsTable = () => {
                 <BsTrash tabIndex="0" className="table-action-icon" onClick={() => showDeleteConfirmationModal(shop)} onKeyPress={e => e.key === 'Enter' && showDeleteConfirmationModal(shop)}/>
                 {/*TODO: add action to show all expense from this shop*/}
             </>
-        })
-    })
+        }))
     const columns = [{
         dataField: 'shopName',
         text: 'Shop name',
@@ -84,10 +81,9 @@ const ShopsTable = () => {
 
     return (
         <>
-            { !shops || isShopsLoading ? <Spinner animation="border text-center" size="lg" /> :  shops && shops.length > 0 ?  
+            { !shops && isShopsLoading ? <Spinner animation="border text-center" size="lg" /> :  shops && shops.length > 0 ?  
                 <>
-                    {/*TODO: add button to add new shop */}
-                    <Form.Group className="text-right">
+                    <Form.Group className="text-right add-new-container">
                         <BsPlus tabIndex="0" className="icon-add" onClick={handleAddNewShop} onKeyPress={e => e.key === 'Enter' && handleAddNewShop()}/>
                     </Form.Group>
                     <BootstrapTable 

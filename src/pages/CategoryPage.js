@@ -8,7 +8,7 @@ import AddNewCategoriesModal from '../_components/modal/AddNewCategoriesModal';
 import Form from "react-bootstrap/Form";
 import { BsPlus } from 'react-icons/bs'
 import { openModalAddNewCategory } from '../modal/modal.actions';
-import { getExpenseCategories } from '../finance/finance.actions';
+import { changeStateFavouriteExepenseCategory, deleteExepenseCategory, getExpenseCategories } from '../finance/finance.actions';
 
 const CategoryPage = () => {
 
@@ -28,15 +28,22 @@ const CategoryPage = () => {
         dispatch(openModalAddNewCategory());
     }
 
+    const handleIsFavouriteClicked = (category) => {
+        dispatch(changeStateFavouriteExepenseCategory(category));
+    }
+
+    const handleDeleteCategory = (id) => {
+        dispatch(deleteExepenseCategory(id));
+    }
 
     return (
         <>
-            <Form.Group className="text-right">
+            <Form.Group className="text-right add-new-container">
                 <BsPlus tabIndex="0" className="icon-add" onClick={handleAddNewCategory} onKeyPress={e => e.key === 'Enter' && handleAddNewCategory()}/>
             </Form.Group>
             <Tabs className="categories-tabs">
                 <Tab eventKey="expense" title="expense">
-                    <CategoriesTable type="expense" categories={expenseCategories} isLoading={isExpenseCategoriesLoading} />
+                    <CategoriesTable type="expense" categories={expenseCategories} isLoading={isExpenseCategoriesLoading} handleDeleteCategory={handleDeleteCategory} handleIsFavouriteClicked={handleIsFavouriteClicked} />
                 </Tab>
                 <Tab eventKey="income" title="income">
                     {/* <CategoriesTable /> */}

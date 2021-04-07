@@ -83,3 +83,15 @@ export const changeStateFavouriteExepenseCategoryCall = ( category ) => {
 		.then(expenseCategory => expenseCategory)
 		.catch(httpHelper.handleError);
 };
+
+export const deleteExpenceCategoryCall = (id) => {
+	const requestOptions = {
+		method: "DELETE",
+		headers: httpHelper.addAuthHeader({}, getJwtToken()),
+	};
+
+	return fetch(`${config.apiUrl}/api/expense-category/${id}`, requestOptions)
+		.then(httpHelper.handleResponse)
+		.then(deletedExpenseCategory => deletedExpenseCategory)
+		.catch(httpHelper.handleError);
+};

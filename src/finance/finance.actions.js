@@ -1,5 +1,5 @@
 import { alertError, alertSuccess } from "../alert/alert.actions";
-import { getShopsCall, createShopCall, deleteShopCall, getExpenseCategoriesCall, createExpenseCategoryCall, changeStateFavouriteExepenseCategoryCall } from "./finance.service";
+import { getShopsCall, createShopCall, deleteShopCall, getExpenseCategoriesCall, createExpenseCategoryCall, changeStateFavouriteExepenseCategoryCall, deleteExpenceCategoryCall } from "./finance.service";
 
 export const GET_SHOPS_REQUEST = "GET_SHOPS_REQUEST";
 export const GET_SHOPS_SUCCESS = "GET_SHOPS_SUCCESS";
@@ -145,6 +145,30 @@ export const changeStateFavouriteExepenseCategory = ( category ) => async dispat
             },
             error => {
                 dispatch(changeStateFavouriteExpenseCategoryFailure());
+                dispatch(alertError(error.msg));
+                return Promise.reject(error);
+            }
+        );
+}
+
+export const DELETE_EXPENSE_CATEGORY_REQUEST = "DELETE_EXPENSE_CATEGORY_REQUEST";
+export const DELETE_EXPENSE_CATEGORY_SUCCESS = "DELETE_EXPENSE_CATEGORY_SUCCESS";
+export const DELETE_EXPENSE_CATEGORY_FAILURE = "DELETE_EXPENSE_CATEGORY_FAILURE";
+export const deleteExpenseCategoryRequest = () => ({ type: DELETE_EXPENSE_CATEGORY_REQUEST })
+export const deleteExpenseCategorySuccess = () => ({ type: DELETE_EXPENSE_CATEGORY_SUCCESS })
+export const deleteExpenseCategoryFailure = () => ({ type: DELETE_EXPENSE_CATEGORY_FAILURE })
+
+export const deleteExepenseCategory = ( id ) => async dispatch => {
+    dispatch(deleteExpenseCategoryRequest());
+    await deleteExpenceCategoryCall(id)
+        .then(
+            deletedExpenseCategory => {
+                dispatch(deleteExpenseCategorySuccess());
+                dispatch(getExpenseCategories());
+                dispatch(alertSuccess("Category " + deletedExpenseCategory.categoryName + " has been deleted."));
+            },
+            error => {
+                dispatch(deleteExpenseCategoryFailure());
                 dispatch(alertError(error.msg));
                 return Promise.reject(error);
             }
