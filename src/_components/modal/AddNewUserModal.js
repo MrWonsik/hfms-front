@@ -76,12 +76,12 @@ export const ChangePasswordModal = () => {
                 <Form.Control.Feedback type="invalid">
                     Password is required
                 </Form.Control.Feedback>
-          </Form.Group>
-          <Form.Group controlId="repeatedNewPassword">
+            </Form.Group>
+            <Form.Group controlId="role">
                 <Form.Label>Role:</Form.Label>
                     <Form.Control
                         as="select"
-                        className={ "form-control" + (submitted && !role ? " is-invalid" : "") }
+                        className={ "form-control"}
                         name="role"
                         value={role}
                         onChange={(e) => setRole(e.target.value)}
@@ -89,9 +89,6 @@ export const ChangePasswordModal = () => {
                         <option>user</option>
                         <option>admin</option>
                     </Form.Control>
-                <Form.Control.Feedback type="invalid">
-                    Repeat new password is required
-                </Form.Control.Feedback>
             </Form.Group>
         </Modal.Body>
         <Modal.Footer>
