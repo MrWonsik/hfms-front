@@ -6,23 +6,24 @@ import Form from "react-bootstrap/Form";
 import Spinner from "react-bootstrap/Spinner";
 import Col from "react-bootstrap/Col";
 import { closeModalAddNewCategory } from '../../modal/modal.actions'
-import { createExpenseCategory } from "../../finance/finance.actions";
+import { createCategory } from "../../finance/finance.actions";
 import { BsCircle, BsCircleFill } from "react-icons/bs";
+import { mapCategoryTypeToDomain } from "../../_helpers";
 
 export const AddNewCategoriesModal = () => {
 
     const dispatch = useDispatch();
 
-    const { addNewCategoryModalIsOpen, creatingCategoriesInProgress } = useSelector(state => ({
+    const { addNewCategoryModalIsOpen, creatingCategoryInProgress } = useSelector(state => ({
         addNewCategoryModalIsOpen: state.modals.addNewCategoryModalIsOpen,
-        creatingCategoriesInProgress: state.finance.creatingCategoriesInProgress
+        creatingCategoryInProgress: state.finance.creatingCategoryInProgress
     }));
 
     const [submitted, setSubmitted] = useState(false);
     const [categoryName, setCategoryName] = useState("");
     const [colorHex, setColorHex] = useState("");
     const [categoryType, setCategoryType] = useState("Expense category");
-    const [maximumCategoryAmount, setMaximumCategoryAmount] = useState(0);
+    const [maximumCost, setMaximumCost] = useState(0);
     const [isFavourite, setIsFavourite] = useState(false);
 
     const handleClose = () => {
@@ -30,16 +31,23 @@ export const AddNewCategoriesModal = () => {
         setCategoryName("");
         setColorHex("");
         setCategoryType("Expense category");
-        setMaximumCategoryAmount(0);
+        setMaximumCost(0);
         setSubmitted(false);
       }
 
     const handleAddNewCategories = (e) => {
         e.preventDefault();
-        console.log(isFavourite)
+
         setSubmitted(true);
-        if (categoryName) {
-            dispatch(createExpenseCategory({ categoryName, colorHex: (colorHex ? colorHex : null), isFavourite })).then((isCategoriesCreated) => {
+        if (categoryName && categoryType) {
+            dispatch(createCategory({ 
+                categoryName, 
+                colorHex: (colorHex ? colorHex : null), 
+                isFavourite,
+                maximumCost,
+                categoryType: mapCategoryTypeToDomain(categoryType)
+             }))
+            .then((isCategoriesCreated) => {
                 if(isCategoriesCreated) {
                     handleClose();
                 }
@@ -106,20 +114,20 @@ export const AddNewCategoriesModal = () => {
                     </Form.Control>
             </Form.Group>
             {categoryType === "Expense category" &&
-                <Form.Group controlId="maximumCategoryAmount">
-                    <Form.Label>Maximum category amount:</Form.Label>
+                <Form.Group controlId="maximumCategoryCost">
+                    <Form.Label>Maximum category cost:</Form.Label>
                         <Form.Control
                             type="number"
-                            className={ "form-control" + (submitted && maximumCategoryAmount < 0 ? " is-invalid" : "")}
-                            name="maximumCategoryAmount"
-                            value={maximumCategoryAmount}
-                            onChange={(e) => setMaximumCategoryAmount(e.target.value)}
+                            className={ "form-control" + (submitted && maximumCost < 0 ? " is-invalid" : "")}
+                            name="maximumCategoryCost"
+                            value={maximumCost}
+                            onChange={(e) => setMaximumCost(e.target.value)}
                             min="0"
                             step="0.01"
                             placeholder="0,00"
                         />
                         <Form.Control.Feedback type="invalid">
-                            Please provide correct positive number or 0 to not set maximum amount. 
+                            Please provide correct positive number set maximum cost (or 0 to not set any maximum value). 
                         </Form.Control.Feedback>
                 </Form.Group>
             }
@@ -134,7 +142,7 @@ export const AddNewCategoriesModal = () => {
             </Form.Group>
         </Modal.Body>
         <Modal.Footer>
-            { creatingCategoriesInProgress && <Spinner animation="border" size="sm" />}
+            { creatingCategoryInProgress && <Spinner animation="border" size="sm" />}
             <Button type="submit" variant="primary" onClick={handleAddNewCategories}>
                     Create categories
             </Button>

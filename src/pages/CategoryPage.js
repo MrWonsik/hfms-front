@@ -12,9 +12,11 @@ import { changeStateFavouriteExepenseCategory, deleteExepenseCategory, getExpens
 
 const CategoryPage = () => {
 
-    const { expenseCategories, isExpenseCategoriesLoading } = useSelector((state) => ({
+    const { expenseCategories, incomeCategories, isExpenseCategoriesLoading, isIncomeCategoriesLoading } = useSelector((state) => ({
         expenseCategories: state.finance.expenseCategories,
-        isExpenseCategoriesLoading: state.finance.isExpenseCategoriesLoading
+        incomeCategories: state.finance.incomeCategories,
+        isExpenseCategoriesLoading: state.finance.isExpenseCategoriesLoading,
+        isIncomeCategoriesLoading: state.finance.isIncomeCategoriesLoading
     }));
 
     const dispatch = useDispatch();
@@ -29,6 +31,7 @@ const CategoryPage = () => {
     }
 
     const handleIsFavouriteClicked = (category) => {
+        console.log(category);
         dispatch(changeStateFavouriteExepenseCategory(category));
     }
 
@@ -43,10 +46,10 @@ const CategoryPage = () => {
             </Form.Group>
             <Tabs className="categories-tabs">
                 <Tab eventKey="expense" title="expense">
-                    <CategoriesTable type="expense" categories={expenseCategories} isLoading={isExpenseCategoriesLoading} handleDeleteCategory={handleDeleteCategory} handleIsFavouriteClicked={handleIsFavouriteClicked} />
+                    <CategoriesTable type="Expense category" categories={expenseCategories} isLoading={isExpenseCategoriesLoading} handleDeleteCategory={handleDeleteCategory} handleIsFavouriteClicked={handleIsFavouriteClicked} />
                 </Tab>
                 <Tab eventKey="income" title="income">
-                    {/* <CategoriesTable /> */}
+                    <CategoriesTable type="Income category" categories={incomeCategories} isLoading={isIncomeCategoriesLoading} handleDeleteCategory={handleDeleteCategory} handleIsFavouriteClicked={handleIsFavouriteClicked} />
                 </Tab>
             </Tabs>
             

@@ -11,7 +11,7 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import { BsHouse, BsFileText, BsGraphUp, BsFillCollectionFill } from "react-icons/bs";
+import { BsHouse, BsFiles, BsFillPieChartFill, BsInboxesFill } from "react-icons/bs";
 import { AiOutlineShop } from "react-icons/ai";
 import NotFoundPage from './NotFoundPage';
 
@@ -34,12 +34,12 @@ const HomePageUser = ({ match }) => {
                             </Nav.Item>
                             <Nav.Item>
                                 <Nav.Link as={Link} to={`${match.url}/expensse-and-income-list-page`}>
-                                    <BsFileText className={"user-page-navbar-icon " + (currentPage === "Expenses and income list" ? "current-page" : "")}/>
+                                    <BsFiles className={"user-page-navbar-icon " + (currentPage === "Expenses and income list" ? "current-page" : "")}/>
                                 </Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
                                 <Nav.Link as={Link} to={`${match.url}/summary-page`}>
-                                    <BsGraphUp className={"user-page-navbar-icon " + (currentPage === "Summary" ? "current-page" : "")}/>
+                                    <BsFillPieChartFill className={"user-page-navbar-icon " + (currentPage === "Summary" ? "current-page" : "")}/>
                                 </Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
@@ -49,7 +49,7 @@ const HomePageUser = ({ match }) => {
                             </Nav.Item>
                             <Nav.Item>
                                 <Nav.Link as={Link} to={`${match.url}/category-page`}>
-                                    <BsFillCollectionFill className={"user-page-navbar-icon " + (currentPage === "Category management" ? "current-page" : "")}/>
+                                    <BsInboxesFill className={"user-page-navbar-icon " + (currentPage === "Category management" ? "current-page" : "")}/>
                                 </Nav.Link>
                             </Nav.Item>
                             <Nav.Item>

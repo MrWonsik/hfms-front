@@ -9,17 +9,20 @@ import {
 	GET_EXPENSE_CATEGORIES_FAILURE,
 	GET_EXPENSE_CATEGORIES_SUCCESS,
 	GET_EXPENSE_CATEGORIES_REQUEST,
-	CREATE_EXPENSE_CATEGORY_FAILURE,
-	CREATE_EXPENSE_CATEGORY_REQUEST,
-	CREATE_EXPENSE_CATEGORY_SUCCESS,
-	IS_FAVOURITE_EXPENSE_CATEGORY_SUCCESS
+	CREATE_CATEGORY_FAILURE,
+	CREATE_CATEGORY_REQUEST,
+	CREATE_CATEGORY_SUCCESS,
+	IS_FAVOURITE_CATEGORY_SUCCESS
 } from "./finance.actions";
 
 const initialState = {
 	shops: [],
 	expenseCategories: [],
+	incomeCategories: [],
 	isShopsLoading: false,
 	isExpenseCategoriesLoading: false,
+	isIncomeCategoriesLoading: false,
+	creatingCategoryInProgress: false,
 	creatingShopInProgress: false
 };
 
@@ -80,32 +83,46 @@ export const finance = (state = initialState, action) => {
 				...state,
 				isExpenseCategoriesLoading: false,
 			};
-		case CREATE_EXPENSE_CATEGORY_REQUEST:
+		case CREATE_CATEGORY_REQUEST:
 			return {
 				...state,
-				creatingExpenseCategoryInProgress: true,
+				creatingCategoryInProgress: true,
 			};
-		case CREATE_EXPENSE_CATEGORY_SUCCESS:
-			const { expenseCategory } = payload;
-			state.expenseCategories.push(expenseCategory);
+		case CREATE_CATEGORY_SUCCESS:
+			const { category } = payload;
+			state.expenseCategories.push(category);
 			return {
 				...state,
-				creatingExpenseCategoryInProgress: false
+				creatingCategoryInProgress: false
 			};
-		case CREATE_EXPENSE_CATEGORY_FAILURE:
+		case CREATE_CATEGORY_FAILURE:
 			return {
 				...state,
-				creatingExpenseCategoryInProgress: false
+				creatingCategoryInProgress: false
 			};
-		case IS_FAVOURITE_EXPENSE_CATEGORY_SUCCESS:
-			const { updatedExpenseCategory } = payload;
-			return {
-				...state,
-				expenseCategories: state.expenseCategories.map((expenseCategoryFromState, id) =>
-					updatedExpenseCategory.id === id ? { ...expenseCategoryFromState, favourite: updatedExpenseCategory.favourite } : expenseCategoryFromState
-				),
-			};
-		default:
-			return state;
+		case IS_FAVOURITE_CATEGORY_SUCCESS: {
+			const { updatedCategory, categoryType } = payload;
+			switch(categoryType) {
+				case "Expense category": {
+					return {
+						...state,
+						expenseCategories: state.expenseCategories.map((expenseCategoryFromState, id) =>
+							updatedCategory.id === id ? { ...expenseCategoryFromState, favourite: updatedCategory.favourite } : expenseCategoryFromState
+						),
+					}
+				}
+				case "Income category": {
+					return {
+						...state,
+						incomeCategories: state.incomeCategories.map((incomeCategoryFromState, id) =>
+							updatedCategory.id === id ? { ...incomeCategoryFromState, favourite: updatedCategory.favourite } : incomeCategoryFromState
+						),
+					}
+				}
+				default: 
+					return state;
+			}
+		}
+		default: return state;
 	}
 };

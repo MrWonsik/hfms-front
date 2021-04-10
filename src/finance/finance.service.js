@@ -1,5 +1,5 @@
 import config from "config";
-import { httpHelper } from "../_helpers";
+import { httpHelper, mapCategoryTypeToDomain } from "../_helpers";
 import { getJwtToken } from "../index";
 
 export const getShopsCall = () => {
@@ -52,7 +52,7 @@ export const getExpenseCategoriesCall = () => {
 		.catch(httpHelper.handleError);
 };
 
-export const createExpenseCategoryCall = (category) => {
+export const createCategoryCall = (category) => {
 	const requestOptions = {
 		method: "POST",
 		headers: httpHelper.addAuthHeader(
@@ -62,23 +62,23 @@ export const createExpenseCategoryCall = (category) => {
 		body: JSON.stringify(category),
 	};
 
-	return fetch(`${config.apiUrl}/api/expense-category/`, requestOptions)
+	return fetch(`${config.apiUrl}/api/category/`, requestOptions)
 		.then(httpHelper.handleResponse)
-		.then(updatedExpenseCategory => updatedExpenseCategory)
+		.then(createdCategory => createdCategory)
 		.catch(httpHelper.handleError);
 };
 
-export const changeStateFavouriteExepenseCategoryCall = ( category ) => {
+export const changeStateFavouriteCategoryCall = ( category ) => {
 	const requestOptions = {
-		method: "PUT",
+		method: "PATCH",
 		headers: httpHelper.addAuthHeader(
 			{ "Content-Type": "application/json" },
 			getJwtToken()
 		),
-		body: JSON.stringify({ isFavourite: !category.favourite }),
+		body: JSON.stringify({ isFavourite: !category.favourite, categoryType: mapCategoryTypeToDomain(category.type) }),
 	};
 
-	return fetch(`${config.apiUrl}/api/expense-category/${category.id}`, requestOptions)
+	return fetch(`${config.apiUrl}/api/category/${category.id}`, requestOptions)
 		.then(httpHelper.handleResponse)
 		.then(expenseCategory => expenseCategory)
 		.catch(httpHelper.handleError);

@@ -5,7 +5,7 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Spinner from "react-bootstrap/Spinner";
 import { closeModalAddNewUser } from '../../modal/modal.actions'
-import { mapRoleToDomain } from '../../_helpers/roleMapper'
+import { mapRoleToDomain } from '../../_helpers/mapper'
 import { createUser } from "../../user/users/users.actions";
 
 

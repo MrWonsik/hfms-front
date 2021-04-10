@@ -13,3 +13,11 @@ export const mapRoleToDomain = (role) => {
         default: return "undefined";
     }
 }
+
+export const mapCategoryTypeToDomain = (categoryType) => {
+    switch(categoryType) {
+        case "Expense category": return "EXPENSE";
+        case "Income category": return "INCOME";
+        default: return "undefined";
+    }
+}

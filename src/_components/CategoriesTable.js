@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import Spinner from "react-bootstrap/Spinner";
-import { BsTrash, BsStarFill, BsStar, BsSquareFill, BsCalendar } from 'react-icons/bs'
+import { BsTrash, BsStarFill, BsStar, BsSquareFill, BsCalendar, BsClipboardData, BsPencil } from 'react-icons/bs'
 import { openConfirmationModal, openModalAddNewCategory } from '../modal/modal.actions';
 import ConfirmationModal from './modal/ConfirmationModal';
 import Alert from "react-bootstrap/Alert";
@@ -30,9 +30,12 @@ const CategoriesTable = ({ type, categories, isLoading, handleDeleteCategory, ha
             actions: <>
                 <BsTrash tabIndex="0" className="table-action-icon" onClick={() => showDeleteConfirmationModal(category)} onKeyPress={e => e.key === 'Enter' && showDeleteConfirmationModal(category)}/>
                 {category.favourite ? 
-                    <BsStarFill className="table-action-icon" onClick={() => handleIsFavouriteClicked(category)} onKeyPress={e => e.key === 'Enter' && handleIsFavouriteClicked(category)} /> : 
-                    <BsStar className="table-action-icon" onClick={() => handleIsFavouriteClicked(category)} onKeyPress={e => e.key === 'Enter' && handleIsFavouriteClicked(category)} />}
-            </>
+                    <BsStarFill tabIndex="0" className="table-action-icon" onClick={() => handleIsFavouriteClicked({...category, type})} onKeyPress={e => e.key === 'Enter' && handleIsFavouriteClicked({...category, type})} /> : 
+                    <BsStar tabIndex="0" className="table-action-icon" onClick={() => handleIsFavouriteClicked({...category, type})} onKeyPress={e => e.key === 'Enter' && handleIsFavouriteClicked({...category, type})} />}
+                {type === "Expense category" && <BsClipboardData tabIndex="0" className="table-action-icon" onClick={() => console.log("not implemented yet")} onKeyPress={e => e.key === 'Enter' && console.log("not implemented yet")} />}
+                {type === "Expense category" && <BsPencil tabIndex="0" className="table-action-icon" onClick={() => console.log("not implemented yet")} onKeyPress={e => e.key === 'Enter' && console.log("not implemented yet")} />}
+            </>,
+            maximumCost: type === "Expense category" ? category.currentVersion.maximumCost : null
     }))
     
     const columns = [{
@@ -48,6 +51,12 @@ const CategoriesTable = ({ type, categories, isLoading, handleDeleteCategory, ha
         text: 'Created',
         sort: true,
         sortFunc: dateSort
+      }, {
+        dataField: 'maximumCost',
+        text: "Maximum cost",
+        hidden: type === "Expense category" ? false : true,
+        sort: true,
+        formatter: (cell) => Math.round(cell * 100 / 100).toFixed(2) + " zł"
       }, {
         dataField: 'actions',
         text: 'Action'  
@@ -90,7 +99,7 @@ const CategoriesTable = ({ type, categories, isLoading, handleDeleteCategory, ha
                     ))}
                 </> :
                 <Alert className="text-center" variant="light">
-                    You don't have any categories yet. To add new category <Alert.Link onClick={handleAddNewCategory}>click here</Alert.Link>.
+                    You don`t have any categories yet. To add new category <Alert.Link onClick={handleAddNewCategory}>click here</Alert.Link>.
                 </Alert>
             }
         </>
