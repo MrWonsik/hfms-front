@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from "react";
 import { useSelector, useDispatch } from "react-redux";
-import Table from "react-bootstrap/Table";
 import Spinner from "react-bootstrap/Spinner";
 import Form from "react-bootstrap/Form";
 import { mapRoleToString } from "../_helpers"
@@ -9,26 +8,31 @@ import ChangeUserPasswordModal from "./modal/ChangeUserPasswordModal"
 import { BsTrash, BsPersonPlusFill, BsPencil, BsPersonCheck, BsPerson, BsCalendar } from 'react-icons/bs'
 
 import { getAllUsers, editUserStatus, deleteUser } from '../user/users/users.actions';
-import { openModalAddNewUser, openModalChangePasswordUsers } from "../modal/modal.actions";
-import { useHistory } from "react-router";
+import { openConfirmationModal, openModalAddNewUser, openModalChangePasswordUsers } from "../modal/modal.actions";
+import ConfirmationModal from './modal/ConfirmationModal';
+import BootstrapTable from "react-bootstrap-table-next";
+import paginationFactory from 'react-bootstrap-table2-paginator';
+import { dateSort } from "../_helpers/tableBootstrapSorter";
+
 
 const UsersTable = () => {
-    let history = useHistory();
-
     const dispatch = useDispatch();  
     const { currentUser, users, isUsersLoading } = useSelector((state) => ({
         currentUser: state.user.user,
-        users: state.users,
+        users: state.users.users,
         isUsersLoading: state.users.isLoading
     }));
 
     useEffect(() => {
-        dispatch(getAllUsers()).catch((shouldRedirect) => shouldRedirect && history.push("/login"));
+        dispatch(getAllUsers())
     }, []);
 
+    const showDeleteConfirmationModal = (user) => {
+        dispatch(openConfirmationModal("user_" + user.username.trim() + "_" + user.id));
+    }
 
     const handleUserStatus = (id, isEnabled) => {
-        dispatch(editUserStatus(id, isEnabled)).catch(shouldRedirect => shouldRedirect && history.push("/login"));;
+        dispatch(editUserStatus(id, isEnabled));
     }
 
     const handleChangeUserPassword = (id) => {
@@ -36,55 +40,99 @@ const UsersTable = () => {
     }
 
     const handleDeleteUser = (id) => {
-        dispatch(deleteUser(id)).catch(shouldRedirect => shouldRedirect && history.push("/login"));;
+        dispatch(deleteUser(id));
     }
 
     const handleAddNewUser = () => {
         dispatch(openModalAddNewUser());
     }
 
-    //TODO: add paggination!
+    
+    let products = [];
+    products = users?.map((user) => ({
+        id: user.id,
+        username: user.username,
+        role: mapRoleToString(user.role),
+        createDate: <><BsCalendar /> {user.createDate}</>,
+        updateDate: <><BsCalendar /> {user.updateDate}</>,
+        isDisabled: !user.isEnabled,
+        actions: <>
+            {currentUser.id == user.id ? "" : 
+                <>
+                    {user.isEnabled 
+                    ? <BsPersonCheck tabIndex="0" className="table-action-icon" onClick={() => handleUserStatus(user.id, !user.isEnabled)} onKeyPress={e => e.key === 'Enter' && handleUserStatus(user.id, !user.isEnabled)}/> 
+                    : <BsPerson tabIndex="0" className="table-action-icon" onClick={() => handleUserStatus(user.id, !user.isEnabled)} onKeyPress={e => e.key === 'Enter' && handleUserStatus(user.id, !user.isEnabled)}/>}
+                    <BsPencil tabIndex="0" className="table-action-icon" onClick={() => handleChangeUserPassword(user.id)} onKeyPress={e => e.key === 'Enter' && handleChangeUserPassword(user.id)}/>
+                    <BsTrash tabIndex="0" className="table-action-icon" onClick={() => showDeleteConfirmationModal(user)} onKeyPress={e => e.key === 'Enter' && showDeleteConfirmationModal(user)}/>
+                </>
+            }
+        </>
+    }));
+    
+    const columns = [{
+        dataField: 'username',
+        text: 'Username',
+        sort: true
+      }, {
+        dataField: 'role',
+        text: 'Role',
+        sort: true
+      }, {
+        dataField: 'createDate',
+        text: 'Created',
+        sort: true,
+        sortFunc: dateSort
+      }, {
+        dataField: 'updateDate',
+        text: 'Updated',
+        sort: true,
+        sortFunc: dateSort
+      }, {
+        dataField: 'actions',
+        text: 'Action'  
+      }, {
+        dataField: 'id',
+        hidden: true
+      }, {
+        dataField: 'isDisabled',
+        hidden: true
+      }];
+
+    const defaultSorted = [{
+        dataField: 'username',
+        order: 'asc'
+    }]
+    
+    const paginationOptions = {
+        sizePerPage: 5,
+        hideSizePerPage: true, 
+        hidePageListOnlyOnePage: true,
+        alwaysShowAllBtns: false,
+    }
+
+    const rowUserDisableClass = (row, rowIndex) => (row.isDisabled ? "disabled" : null)
 
     return (
         <>
-            {!users.users && isUsersLoading ? <Spinner animation="border" size="lg" /> : 
+            {!users && isUsersLoading && products ? <Spinner animation="border text-center" size="lg" /> : 
                 <>
-                    <Form.Group className="text-right">
-                        <BsPersonPlusFill tabIndex="0" className="icon-add-user" onClick={() => handleAddNewUser()} onKeyPress={e => e.key === 'Enter' && handleAddNewUser()}/>
+                    <Form.Group className="text-right add-new-container">
+                        <BsPersonPlusFill tabIndex="0" className="icon-add" onClick={() => handleAddNewUser()} onKeyPress={e => e.key === 'Enter' && handleAddNewUser()}/>
                     </Form.Group>
-                    <Table responsive className="user-list-table">
-                    <thead>
-                        <tr>
-                            <th>Username</th>
-                            <th>Role</th>
-                            <th>Created</th>
-                            <th>Updated</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {users.users?.map((user) => (
-                        <tr key={user.id} className={!user.isEnabled ? "disabled" : ""}>
-                                <td><BsPerson />  {user.username}</td>
-                                <td>{mapRoleToString(user.role)}</td>
-                                <td><BsCalendar />  {user.createDate}</td>
-                                <td><BsCalendar />  {user.updateDate}</td>
-                                <td>
-                                    {currentUser.id == user.id ? "" : 
-                                    <>
-                                        {user.isEnabled 
-                                        ? <BsPersonCheck tabIndex="0" className="user-table-action-icon" onClick={() => handleUserStatus(user.id, !user.isEnabled)} onKeyPress={e => e.key === 'Enter' && handleUserStatus(user.id, !user.isEnabled)}/> 
-                                        : <BsPerson tabIndex="0" className="user-table-action-icon" onClick={() => handleUserStatus(user.id, !user.isEnabled)} onKeyPress={e => e.key === 'Enter' && handleUserStatus(user.id, !user.isEnabled)}/>}
-                                        <BsPencil tabIndex="0" className="user-table-action-icon" onClick={() => handleChangeUserPassword(user.id)} onKeyPress={e => e.key === 'Enter' && handleChangeUserPassword(user.id)}/>
-                                        <BsTrash tabIndex="0" className="user-table-action-icon" onClick={() => handleDeleteUser(user.id)} onKeyPress={e => e.key === 'Enter' && handleDeleteUser(user.id)}/>
-                                    </>
-                                    }
-                                </td>
-                        </tr>
-                        ))}
-                    </tbody>
-                    </Table>
-                   
+                    <BootstrapTable 
+                        classes="list-table" 
+                        bootstrap4 
+                        keyField="id"
+                        data={ products } 
+                        columns={ columns }
+                        bordered={false}
+                        defaultSorted={defaultSorted}
+                        pagination={ paginationFactory(paginationOptions) }
+                        rowClasses={rowUserDisableClass}
+                    />
+                    {users?.map((user) => (
+                        <ConfirmationModal key={user.id} id={"user_" + user.username.trim() + "_" + user.id} confirmationFunction={() => handleDeleteUser(user.id)} confirmationMessage={"Are you sure you want to delete " + user.username + " user?"} />
+                    ))}
                     <AddNewUserModal />
                     <ChangeUserPasswordModal />
                 </>

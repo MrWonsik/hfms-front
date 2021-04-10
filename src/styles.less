@@ -1,11 +1,11 @@
 @main-color: #708d58;
 @main-color-dark: #3b552b; //#293820
-
+@secondary-color: #707b66;
 
 @main-color-focus-dark: #242d1e;
 @main-focus-color-light: #79a94e;
 
-@main-disable-color: #444d3d;
+@main-disable-color: #cad8cb;
 
 @main-font-color: white;
 
@@ -33,7 +33,6 @@
 }
 
 .modal-content {
-	.modal-header,
 	.modal-footer {
 		border: none;
 	}
@@ -66,6 +65,27 @@ button.btn.btn-primary {
 	}
 }
 
+button.btn.btn-secondary {
+	border-color: @secondary-color;
+	background-color: @secondary-color;
+
+	&:active:not(:disabled):not(.disabled) {
+		background-color: @main-color-dark;
+
+		&:focus {
+			box-shadow: 0 0 0 0.2rem @main-focus-color-light;
+		}
+	}
+
+	&:focus {
+		box-shadow: 0 0 0 0.2rem @main-focus-color-light;
+	}
+
+	&:hover {
+		background-color: @main-color-focus-dark;
+	}
+}
+
 .form-group {
 	input,
 	select {
@@ -81,7 +101,11 @@ button.btn.btn-primary {
 }
 
 .alert-main {
+	max-width: 300px;
+	margin: 15px;
 	z-index: 1051;
+	left: unset;
+	border: 1px solid @main-color-dark;	
 }
 
 .navbar-main {
@@ -110,7 +134,29 @@ button.btn.btn-primary {
 	}
 }
 
-.user-list-table {
+.categories-tabs {
+	border-color: @main-color-dark;
+
+	.nav-link {
+		color: @main-color-dark;
+		&:focus, &:hover {
+			border-bottom-color: @main-color-dark; 
+			color: @main-focus-color-light;
+		}
+
+		&.active {
+			border-color: @main-color-dark @main-color-dark #fff;
+			color: @main-focus-color-light;
+		}
+	}
+}
+
+.list-table {
+
+	td, th {
+		padding: .5rem;
+	}
+
 	tr:last-child th:first-child {
 		border-top-left-radius: 4px;
 	}
@@ -119,22 +165,33 @@ button.btn.btn-primary {
 		border-top-right-radius: 4px;
 	}
 
-	tr:last-child td:first-child {
-		border-bottom-left-radius: 4px;
-	}
-
-	tr:last-child td:last-child {
-		border-bottom-right-radius: 4px;
-	}
 	color: @main-font-color;
 
-	thead tr:first-child {
-		background-color: @main-color-dark;
+	thead {
+		
+		th {
+			&:hover, &:focus {
+				outline: none;
+			}
+		}
+		th.sortable {
+			&:hover, &:focus {
+				background-color: @main-focus-color-light;
+				transition: background-color 0.15s ease-in-out;
+				cursor: pointer;		
+			}
+		}
+
+		tr:first-child {
+			background-color: @main-color-dark;
+		}
 	}
 
-	tr {
-		background-color: @main-color;
+	tbody tr {
+		background-color: white;
+		color: @main-color-dark;
 	}
+
 	tr.disabled {
 		td {
 			opacity: 0.65;
@@ -145,21 +202,38 @@ button.btn.btn-primary {
 		background-color: @main-disable-color;
 	}
 
-	.user-table-action-icon {
-		font-size: 32px;
+	.table-action-icon {
+		font-size: 30px;
 		padding: 5px;
 
 		&:hover, &:focus {
 			border-radius: 4px;
-			background-color: @main-color-dark;
-			transition: color 0.15s ease-in-out,
-				background-color 0.15s ease-in-out;
+			color: @main-focus-color-light;
+			transition: color 0.15s ease-in-out;
 			cursor: pointer;
 		}
 	}
 }
 
-.icon-add-user {
+.pagination.react-bootstrap-table-page-btns-ul {
+	float: right;
+
+	.page-item .page-link {
+		color: @main-color-dark;
+
+		&:focus {
+			box-shadow: 0 0 0 0.2rem @main-focus-color-light;
+		}
+	}
+
+	.page-item.active .page-link {
+		color: @main-font-color;
+		border-color: @main-color-dark;
+		background-color: @main-color-dark;
+	}
+}
+
+.icon-add {
 	font-size: 50px;
 	color: @main-color-dark;
 
@@ -182,7 +256,7 @@ button.btn.btn-primary {
 
 .user-page-content-container {
 	background-color: white;
-	padding: 30px;
+	padding: 10px;
 }
 
 .user-page-navbar {
@@ -195,7 +269,7 @@ button.btn.btn-primary {
 		font-size: 35px;
 		color: @main-color-dark;
 
-		&:hover {
+		&:hover, &.current-page {
 			font-size: 40px;
 			color: @main-focus-color-light;
 			transition: color 0.15s ease-in-out;
@@ -215,4 +289,38 @@ button.btn.btn-primary {
 	border: 1px solid @main-color-dark;
 	padding: 20px;
 	border-radius: 4px;
+}
+
+.additionaly-info {
+	color: rgb(146, 146, 146);
+	font-size: 13px;
+	font-style: italic;
+}
+
+.add-new-container {
+	margin-bottom: 3px;
+}
+
+.color-picker-wrapper {
+	display: flex;
+	align-items: center;
+	padding: .375rem .75rem;
+
+	.color-picker-circle {
+		padding-right: 5px;
+		font-size: 30px;
+	}
+
+	.color-picker {
+		position:absolute;
+		width: 100%;
+		height: 100%;
+		bottom: 0;
+		left: 0;
+		opacity: 0;
+
+		&:hover {
+			cursor: pointer;
+		}
+	}
 }

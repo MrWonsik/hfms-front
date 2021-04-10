@@ -23,3 +23,18 @@ export const OPEN_MODAL_ADD_NEW_USER = "OPEN_MODAL_ADD_NEW_USER";
 export const CLOSE_MODAL_ADD_NEW_USER = "CLOSE_MODAL_ADD_NEW_USER";
 export const openModalAddNewUser = () => ({ type: OPEN_MODAL_ADD_NEW_USER });
 export const closeModalAddNewUser = () => ({ type: CLOSE_MODAL_ADD_NEW_USER });
+
+export const OPEN_MODAL_ADD_NEW_SHOP = "OPEN_MODAL_ADD_NEW_SHOP";
+export const CLOSE_MODAL_ADD_NEW_SHOP = "CLOSE_MODAL_ADD_NEW_SHOP";
+export const openModalAddNewShop = () => ({ type: OPEN_MODAL_ADD_NEW_SHOP});
+export const closeModalAddNewShop = () => ({ type: CLOSE_MODAL_ADD_NEW_SHOP });
+
+export const OPEN_CONFIRMATION_MODAL = "OPEN_CONFIRMATION_MODAL";
+export const CLOSE_CONFIRMATION_MODAL = "CLOSE_CONFIRMATION_MODAL";
+export const openConfirmationModal = (contextId) => ({ type: OPEN_CONFIRMATION_MODAL, payload: {contextId}});
+export const closeConfirmationModal = () => ({ type: CLOSE_CONFIRMATION_MODAL });
+
+export const OPEN_MODAL_ADD_NEW_CATEGORY = "OPEN_MODAL_ADD_NEW_CATEGORY";
+export const CLOSE_MODAL_ADD_NEW_CATEGORY = "CLOSE_MODAL_ADD_NEW_CATEGORY";
+export const openModalAddNewCategory = () => ({ type: OPEN_MODAL_ADD_NEW_CATEGORY});
+export const closeModalAddNewCategory = () => ({ type: CLOSE_MODAL_ADD_NEW_CATEGORY });

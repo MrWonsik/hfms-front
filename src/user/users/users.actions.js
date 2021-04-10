@@ -1,6 +1,5 @@
 import { getAllUsersCall, editUserStatusCall, deleteUserCall, createUserCall, editUserPasswordCall } from './users.service'
 import { alertError, alertSuccess } from '../../alert/alert.actions'
-import { closeModalAddNewUser } from '../../modal/modal.actions';
 
 export const GET_USERS_REQUEST = "GET_USERS_REQUEST";
 export const GET_USERS_SUCCESS = "GET_USERS_SUCCESS";
@@ -118,7 +117,7 @@ export const getAllUsers = () => async dispatch => {
     await getAllUsersCall()
         .then(
             users => {
-                dispatch(getUsersSuccess(users.users));
+                dispatch(getUsersSuccess(users));
             },
             error => {
                 dispatch(getUsersFailure());

@@ -12,6 +12,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Alert from "react-bootstrap/Alert";
 import UserTools from "./_components/UserTools";
+import { createBrowserHistory } from "history";
 
 const renderHomepage = (user) => {
   switch (user.role) {
@@ -20,6 +21,8 @@ const renderHomepage = (user) => {
     default: false;
   }
 };
+
+export const history = createBrowserHistory({forceRefresh:true});
 
 const App = () => {
   const [show, setShow] = useState(false);
@@ -31,31 +34,43 @@ const App = () => {
   }));
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(alertClear());
-  }, []);
+  useEffect(() => { 
+    if(alert && alert.message) {
+      setShow(true); 
+    }
+  }, [])
 
   useEffect(() => { 
     setShow(true); 
-  }, [alert])
+  })
+
+  const getAlertHeading = (type) => {
+    switch(type) {
+      case "danger": return "Error";
+      case "success": return "Success";
+      case deafult: return "";
+    }
+  }
 
   return (
     <>
       <Container fluid>
-        <Row className="mb-5">
+        <Row className="mb-6">
           <Col>
             {show && alert.message && (
               <Alert
-                className="fixed-top m-3 alert-main"
+                className="fixed-bottom alert-main"
                 key={alert.message}
                 variant={alert.type}
                 onClose={() => dispatch(alertClear())}
                 dismissible
               >
+                <Alert.Heading>{getAlertHeading(alert.type)}</Alert.Heading>
+                <hr/>
                 <div className = "text-center">{alert.message}</div>
               </Alert>
             )}
-            <BrowserRouter>
+            <BrowserRouter history={history}>
               <>
                 {loggedIn && <UserTools />}
                 <Switch>

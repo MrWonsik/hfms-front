@@ -1,3 +1,5 @@
+import { history } from "../App";
+
 export const httpHelper = {
 	addAuthHeader,
 	handleResponse,
@@ -30,11 +32,9 @@ function handleResponse(response) {
 }
 
 function handleError(error) {
-	let shouldRedirectToLoginPage = false;
 	if (error.response === 401 || typeof error.response === "undefined") {
-		shouldRedirectToLoginPage = true;
+		history.push("/login");
 	}
-	let errorResp = { msg: error.msg ? error.msg : "A server error has occurred: " + error.toString(),
-				shouldRedirectToLoginPage: shouldRedirectToLoginPage};
+	let errorResp = { msg: error.msg ? error.msg : "A server error has occurred: " + error.toString() };
 	return Promise.reject(errorResp);
 }
