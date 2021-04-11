@@ -8,9 +8,9 @@ import Col from "react-bootstrap/Col";
 import { closeModalAddNewCategory } from '../../modal/modal.actions'
 import { createCategory } from "../../finance/finance.actions";
 import { BsCircle, BsCircleFill } from "react-icons/bs";
-import { mapCategoryTypeToDomain } from "../../_helpers";
+import { EXPENSE } from '../../finance/CategoryType';
 
-export const AddNewCategoriesModal = () => {
+export const AddNewCategoryModal = () => {
 
     const dispatch = useDispatch();
 
@@ -22,7 +22,7 @@ export const AddNewCategoriesModal = () => {
     const [submitted, setSubmitted] = useState(false);
     const [categoryName, setCategoryName] = useState("");
     const [colorHex, setColorHex] = useState("");
-    const [categoryType, setCategoryType] = useState("Expense category");
+    const [categoryType, setCategoryType] = useState(EXPENSE);
     const [maximumCost, setMaximumCost] = useState(0);
     const [isFavourite, setIsFavourite] = useState(false);
 
@@ -30,7 +30,7 @@ export const AddNewCategoriesModal = () => {
         dispatch(closeModalAddNewCategory())
         setCategoryName("");
         setColorHex("");
-        setCategoryType("Expense category");
+        setCategoryType(EXPENSE);
         setMaximumCost(0);
         setSubmitted(false);
       }
@@ -45,7 +45,7 @@ export const AddNewCategoriesModal = () => {
                 colorHex: (colorHex ? colorHex : null), 
                 isFavourite,
                 maximumCost,
-                categoryType: mapCategoryTypeToDomain(categoryType)
+                categoryType: categoryType
              }))
             .then((isCategoriesCreated) => {
                 if(isCategoriesCreated) {
@@ -113,7 +113,7 @@ export const AddNewCategoriesModal = () => {
                         <option>Income category</option>
                     </Form.Control>
             </Form.Group>
-            {categoryType === "Expense category" &&
+            {categoryType === EXPENSE &&
                 <Form.Group controlId="maximumCategoryCost">
                     <Form.Label>Maximum category cost:</Form.Label>
                         <Form.Control
@@ -150,4 +150,4 @@ export const AddNewCategoriesModal = () => {
       </Modal>)
 }
 
-export default AddNewCategoriesModal;
+export default AddNewCategoryModal;

@@ -1,3 +1,5 @@
+import { EXPENSE, INCOME } from '../finance/CategoryType';
+
 export const mapRoleToString = (role) => {
     switch(role) {
         case "ROLE_ADMIN": return "admin";
@@ -16,8 +18,8 @@ export const mapRoleToDomain = (role) => {
 
 export const mapCategoryTypeToDomain = (categoryType) => {
     switch(categoryType) {
-        case "Expense category": return "EXPENSE";
-        case "Income category": return "INCOME";
+        case EXPENSE: return "EXPENSE";
+        case INCOME: return "INCOME";
         default: return "undefined";
     }
 }

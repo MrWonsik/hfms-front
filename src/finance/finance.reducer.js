@@ -1,3 +1,4 @@
+import { EXPENSE, INCOME } from '../finance/CategoryType';
 import {
 	GET_SHOPS_REQUEST,
 	GET_SHOPS_SUCCESS,
@@ -6,9 +7,9 @@ import {
 	CREATE_SHOP_FAILURE,
 	CREATE_SHOP_SUCCESS,
 	CREATE_SHOP_REQUEST,
-	GET_EXPENSE_CATEGORIES_FAILURE,
-	GET_EXPENSE_CATEGORIES_SUCCESS,
-	GET_EXPENSE_CATEGORIES_REQUEST,
+	GET_CATEGORIES_FAILURE,
+	GET_CATEGORIES_SUCCESS,
+	GET_CATEGORIES_REQUEST,
 	CREATE_CATEGORY_FAILURE,
 	CREATE_CATEGORY_REQUEST,
 	CREATE_CATEGORY_SUCCESS,
@@ -35,13 +36,14 @@ export const finance = (state = initialState, action) => {
 				...state,
 				isShopsLoading: true,
 			};
-		case GET_SHOPS_SUCCESS:
+		case GET_SHOPS_SUCCESS: {
 			const { shops } = payload;
 			return {
 				...state,
 				shops: shops?.shops,
 				isShopsLoading: false,
 			};
+		}
 		case GET_SHOPS_FAILURE:
 			return {
 				...state,
@@ -54,47 +56,98 @@ export const finance = (state = initialState, action) => {
 				...state,
 				creatingShopInProgress: true,
 			};
-		case CREATE_SHOP_SUCCESS:
+		case CREATE_SHOP_SUCCESS: {
 			const { shop } = payload;
 			state.shops.push(shop);
 			return {
 				...state,
 				creatingShopInProgress: false
 			};
+		}
 		case CREATE_SHOP_FAILURE:
 			return {
 				...state,
 				creatingShopInProgress: false
 			};
-		case GET_EXPENSE_CATEGORIES_REQUEST:
-			return {
-				...state,
-				isExpenseCategoriesLoading: true,
-			};
-		case GET_EXPENSE_CATEGORIES_SUCCESS:
-			const { expenseCategories } = payload;
-			return {
-				...state,
-				expenseCategories: expenseCategories?.expenseCategories,
-				isExpenseCategoriesLoading: false,
-			};
-		case GET_EXPENSE_CATEGORIES_FAILURE:
-			return {
-				...state,
-				isExpenseCategoriesLoading: false,
-			};
+		case GET_CATEGORIES_REQUEST: {
+			const { categoryType } = payload;
+			switch(categoryType) {
+				case EXPENSE: {
+					return {
+						...state,
+						isExpenseCategoriesLoading: true
+					};
+				}
+				case INCOME: {
+					return {
+						...state,
+						isIncomeCategoriesLoading: true
+					}
+				}
+				default:
+					return state;
+			}
+		}
+		case GET_CATEGORIES_SUCCESS: {
+			const { categories, categoryType } = payload;
+			switch(categoryType) {
+				case EXPENSE: {
+					return {
+						...state,
+						expenseCategories: categories?.categories,
+						isExpenseCategoriesLoading: false,
+					};
+				}
+				case INCOME: {
+					return {
+						...state,
+						incomeCategories: categories?.categories,
+						isIncomeCategoriesLoading: false
+					}
+				}
+				default:
+					return state;
+			}
+		}
+		case GET_CATEGORIES_FAILURE: {
+			const { categoryType } = payload;
+			switch(categoryType) {
+				case EXPENSE: {
+					return {
+						...state,
+						isExpenseCategoriesLoading: false
+					};
+				}
+				case INCOME: {
+					return {
+						...state,
+						isIncomeCategoriesLoading: false
+					}
+				}
+				default:
+					return state;
+			}
+		}
 		case CREATE_CATEGORY_REQUEST:
 			return {
 				...state,
 				creatingCategoryInProgress: true,
 			};
-		case CREATE_CATEGORY_SUCCESS:
-			const { category } = payload;
-			state.expenseCategories.push(category);
+		case CREATE_CATEGORY_SUCCESS: {
+			const { category, categoryType } = payload;
+			switch(categoryType) {
+				case EXPENSE: {
+					state.expenseCategories.push(category);
+				} break;
+				case INCOME: {
+					state.incomeCategories.push(category);
+				} break;
+			}
 			return {
 				...state,
 				creatingCategoryInProgress: false
 			};
+		}
 		case CREATE_CATEGORY_FAILURE:
 			return {
 				...state,
@@ -103,7 +156,7 @@ export const finance = (state = initialState, action) => {
 		case IS_FAVOURITE_CATEGORY_SUCCESS: {
 			const { updatedCategory, categoryType } = payload;
 			switch(categoryType) {
-				case "Expense category": {
+				case EXPENSE: {
 					return {
 						...state,
 						expenseCategories: state.expenseCategories.map((expenseCategoryFromState, id) =>
@@ -111,7 +164,7 @@ export const finance = (state = initialState, action) => {
 						),
 					}
 				}
-				case "Income category": {
+				case INCOME: {
 					return {
 						...state,
 						incomeCategories: state.incomeCategories.map((incomeCategoryFromState, id) =>

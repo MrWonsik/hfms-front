@@ -81,7 +81,7 @@ const ShopsTable = () => {
 
     return (
         <>
-            { !shops && isShopsLoading ? <Spinner animation="border text-center" size="lg" /> :  shops && shops.length > 0 ?  
+            { !shops && isShopsLoading ? <div className="text-center"><Spinner animation="border" size="lg" /></div> :  shops?.length > 0 ?  
                 <>
                     <Form.Group className="text-right add-new-container">
                         <BsPlus tabIndex="0" className="icon-add" onClick={handleAddNewShop} onKeyPress={e => e.key === 'Enter' && handleAddNewShop()}/>
@@ -98,10 +98,10 @@ const ShopsTable = () => {
                     />
                     {shops?.map((shop) => (
                         <ConfirmationModal key={shop.id} id={"shop_" + shop.shopName.trim() + "_" + shop.id} confirmationFunction={() => handleDeleteShop(shop.id)} confirmationMessage={"Are you sure you want to delete " + shop.shopName + "?"} />
-                    ))};
+                    ))}
                 </> :
                 <Alert className="text-center" variant="light">
-                    You don't have any shop yet. To add new shop <Alert.Link onClick={handleAddNewShop}>click here</Alert.Link>.
+                    You don`t have any shop yet. To add new shop <Alert.Link onClick={handleAddNewShop}>click here</Alert.Link>.
                 </Alert>
             }
             <AddNewShopModal />

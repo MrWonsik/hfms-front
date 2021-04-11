@@ -8,8 +8,10 @@ import Alert from "react-bootstrap/Alert";
 import { dateSort, sortByName } from '../_helpers/tableBootstrapSorter';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
+import { changeStateFavouriteExepenseCategory, deleteCategory } from '../finance/finance.actions';
+import { EXPENSE } from '../finance/CategoryType';
 
-const CategoriesTable = ({ type, categories, isLoading, handleDeleteCategory, handleIsFavouriteClicked }) => {
+const CategoriesTable = ({ type, categories, isLoading }) => {
 
     const dispatch = useDispatch();
 
@@ -19,6 +21,14 @@ const CategoriesTable = ({ type, categories, isLoading, handleDeleteCategory, ha
 
     const handleAddNewCategory = () => {
         dispatch(openModalAddNewCategory());
+    }
+
+    const handleIsFavouriteClicked = (category) => {
+        dispatch(changeStateFavouriteExepenseCategory(category));
+    }
+
+    const handleDeleteCategory = (id, categoryType) => {
+        dispatch(deleteCategory(id, categoryType));
     }
 
     const products = categories?.map((category) => ({
@@ -32,10 +42,10 @@ const CategoriesTable = ({ type, categories, isLoading, handleDeleteCategory, ha
                 {category.favourite ? 
                     <BsStarFill tabIndex="0" className="table-action-icon" onClick={() => handleIsFavouriteClicked({...category, type})} onKeyPress={e => e.key === 'Enter' && handleIsFavouriteClicked({...category, type})} /> : 
                     <BsStar tabIndex="0" className="table-action-icon" onClick={() => handleIsFavouriteClicked({...category, type})} onKeyPress={e => e.key === 'Enter' && handleIsFavouriteClicked({...category, type})} />}
-                {type === "Expense category" && <BsClipboardData tabIndex="0" className="table-action-icon" onClick={() => console.log("not implemented yet")} onKeyPress={e => e.key === 'Enter' && console.log("not implemented yet")} />}
-                {type === "Expense category" && <BsPencil tabIndex="0" className="table-action-icon" onClick={() => console.log("not implemented yet")} onKeyPress={e => e.key === 'Enter' && console.log("not implemented yet")} />}
+                {type === EXPENSE && <BsClipboardData tabIndex="0" className="table-action-icon" onClick={() => console.log("not implemented yet")} onKeyPress={e => e.key === 'Enter' && console.log("not implemented yet")} />}
+                <BsPencil tabIndex="0" className="table-action-icon" onClick={() => console.log("not implemented yet")} onKeyPress={e => e.key === 'Enter' && console.log("not implemented yet")} />
             </>,
-            maximumCost: type === "Expense category" ? category.currentVersion.maximumCost : null
+            maximumCost: type === EXPENSE ? category.currentVersion.maximumCost : null
     }))
     
     const columns = [{
@@ -54,7 +64,7 @@ const CategoriesTable = ({ type, categories, isLoading, handleDeleteCategory, ha
       }, {
         dataField: 'maximumCost',
         text: "Maximum cost",
-        hidden: type === "Expense category" ? false : true,
+        hidden: type === EXPENSE ? false : true,
         sort: true,
         formatter: (cell) => Math.round(cell * 100 / 100).toFixed(2) + " zł"
       }, {
@@ -95,7 +105,7 @@ const CategoriesTable = ({ type, categories, isLoading, handleDeleteCategory, ha
                         pagination={ paginationFactory(paginationOptions) }
                     />
                     {categories?.map((category) => (
-                        <ConfirmationModal key={category.id} id={"category_" + category.categoryName.trim() + "_" + category.id} confirmationFunction={() => handleDeleteCategory(category.id)} confirmationMessage={"Are you sure you want to delete " + category.categoryName + "?"} />
+                        <ConfirmationModal key={category.id} id={"category_" + category.categoryName.trim() + "_" + category.id} confirmationFunction={() => handleDeleteCategory(category.id, type)} confirmationMessage={"Are you sure you want to delete " + category.categoryName + "?"} />
                     ))}
                 </> :
                 <Alert className="text-center" variant="light">

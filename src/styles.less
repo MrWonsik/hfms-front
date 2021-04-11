@@ -324,3 +324,19 @@ button.btn.btn-secondary {
 		}
 	}
 }
+
+.custom-control-input {
+	&:checked~.custom-control-label::before {
+		border-color: @main-color-dark;
+		background-color: @main-color-dark;	
+	}
+	
+	&:focus~.custom-control-label::before {
+		box-shadow: 0 0 0 0.2rem @main-focus-color-light;
+	}
+	
+	&:not(:disabled):active~.custom-control-label::before {
+		background-color: @main-focus-color-light;
+		border-color: @main-focus-color-light;
+	}
+}
