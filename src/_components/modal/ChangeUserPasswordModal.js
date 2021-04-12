@@ -6,12 +6,9 @@ import Form from "react-bootstrap/Form";
 import Spinner from "react-bootstrap/Spinner";
 import { closeModalChangePasswordUsers } from "../../modal/modal.actions";
 import { editUserPassword } from "../../user/users/users.actions";
-import { useHistory } from "react-router";
 
 
 export const ChangeUserPasswordModal = () => {
-    let history = useHistory();
-
     const dispatch = useDispatch();
 
     const { changePasswordModalUsers, updatingPasswordInProgress } = useSelector(state => ({

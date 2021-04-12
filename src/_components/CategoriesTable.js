@@ -2,7 +2,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import Spinner from "react-bootstrap/Spinner";
 import { BsTrash, BsStarFill, BsStar, BsSquareFill, BsCalendar, BsClipboardData, BsPencil } from 'react-icons/bs'
-import { openConfirmationModal, openModalAddNewCategory } from '../modal/modal.actions';
+import { openConfirmationModal, openModalAddNewCategory, openModalEditMaximumCost } from '../modal/modal.actions';
 import ConfirmationModal from './modal/ConfirmationModal';
 import Alert from "react-bootstrap/Alert";
 import { dateSort, sortByName } from '../_helpers/tableBootstrapSorter';
@@ -10,13 +10,19 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import { changeStateFavouriteExepenseCategory, deleteCategory } from '../finance/finance.actions';
 import { EXPENSE } from '../finance/CategoryType';
+import EditMaximumCostModal from './modal/EditMaximumCostModal';
+import PropTypes from "prop-types";
 
 const CategoriesTable = ({ type, categories, isLoading }) => {
 
     const dispatch = useDispatch();
 
     const showDeleteConfirmationModal = (category) => {
-        dispatch(openConfirmationModal("category_" + category.categoryName.trim() + "_" + category.id));
+        dispatch(openConfirmationModal("category_confirmation_" + category.categoryName.trim() + "_" + category.id));
+    }
+
+    const showEditMaximumCostModal = (category) => {
+        dispatch(openModalEditMaximumCost("category_edit_maximum_cost" + category.categoryName.trim() + "_" + category.id));
     }
 
     const handleAddNewCategory = () => {
@@ -42,7 +48,7 @@ const CategoriesTable = ({ type, categories, isLoading }) => {
                 {category.favourite ? 
                     <BsStarFill tabIndex="0" className="table-action-icon" onClick={() => handleIsFavouriteClicked({...category, type})} onKeyPress={e => e.key === 'Enter' && handleIsFavouriteClicked({...category, type})} /> : 
                     <BsStar tabIndex="0" className="table-action-icon" onClick={() => handleIsFavouriteClicked({...category, type})} onKeyPress={e => e.key === 'Enter' && handleIsFavouriteClicked({...category, type})} />}
-                {type === EXPENSE && <BsClipboardData tabIndex="0" className="table-action-icon" onClick={() => console.log("not implemented yet")} onKeyPress={e => e.key === 'Enter' && console.log("not implemented yet")} />}
+                {type === EXPENSE && <BsClipboardData tabIndex="0" className="table-action-icon" onClick={() => showEditMaximumCostModal(category)} onKeyPress={e => e.key === 'Enter' && showEditMaximumCostModal(category)} />}
                 <BsPencil tabIndex="0" className="table-action-icon" onClick={() => console.log("not implemented yet")} onKeyPress={e => e.key === 'Enter' && console.log("not implemented yet")} />
             </>,
             maximumCost: type === EXPENSE ? category.currentVersion.maximumCost : null
@@ -105,7 +111,10 @@ const CategoriesTable = ({ type, categories, isLoading }) => {
                         pagination={ paginationFactory(paginationOptions) }
                     />
                     {categories?.map((category) => (
-                        <ConfirmationModal key={category.id} id={"category_" + category.categoryName.trim() + "_" + category.id} confirmationFunction={() => handleDeleteCategory(category.id, type)} confirmationMessage={"Are you sure you want to delete " + category.categoryName + "?"} />
+                        <div key={category.id}>
+                            <ConfirmationModal id={"category_confirmation_" + category.categoryName.trim() + "_" + category.id} confirmationFunction={() => handleDeleteCategory(category.id, type)} confirmationMessage={"Are you sure you want to delete " + category.categoryName + "?"} />
+                            {type === EXPENSE && <EditMaximumCostModal id={"category_edit_maximum_cost" + category.categoryName.trim() + "_" + category.id} category={category} />}
+                        </div>
                     ))}
                 </> :
                 <Alert className="text-center" variant="light">
@@ -114,6 +123,12 @@ const CategoriesTable = ({ type, categories, isLoading }) => {
             }
         </>
     );
+}
+
+CategoriesTable.propTypes = {
+    type: PropTypes.string.isRequired, 
+    categories: PropTypes.array.isRequired,
+    isLoading: PropTypes.bool.isRequired
 }
 
 export default CategoriesTable;

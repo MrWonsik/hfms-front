@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Spinner from "react-bootstrap/Spinner";
 import Form from "react-bootstrap/Form";
@@ -110,7 +110,7 @@ const UsersTable = () => {
         alwaysShowAllBtns: false,
     }
 
-    const rowUserDisableClass = (row, rowIndex) => (row.isDisabled ? "disabled" : null)
+    const rowUserDisableClass = (row) => (row.isDisabled ? "disabled" : null)
 
     return (
         <>
