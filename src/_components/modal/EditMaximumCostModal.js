@@ -6,6 +6,7 @@ import { closeModalEditMaximumCost } from '../../modal/modal.actions'
 import {BsArrowRightShort} from 'react-icons/bs'
 import { Form } from "react-bootstrap";
 import PropTypes from "prop-types";
+import { editExpenseCategoryMaximumCost } from "../../finance/finance.actions";
 
 const EditMaximumCostModal = ({ id, category }) => {
 
@@ -28,8 +29,10 @@ const EditMaximumCostModal = ({ id, category }) => {
 
     const handleUpdate = (e) => {
         e.preventDefault();
-        setSubmitted(true);
-        handleClose();
+        setSubmitted(true)
+        if(maximumCost >= 0) {
+            dispatch(editExpenseCategoryMaximumCost( category, maximumCost, validInNextMonth ));
+        }
     };
 
     return (<Modal show={editMaximumCostModal && id === editMaximumCostModal.contextId && editMaximumCostModal.isOpen } onHide={handleClose}>
@@ -39,13 +42,14 @@ const EditMaximumCostModal = ({ id, category }) => {
         <Modal.Body>
         Previous maximum costs:
         {
-        category.expenseCategoryVersions?.sort((a, b) => a.validMonth.localCompare(b)).slice(0, 3).map(version => {
+        //TODO: work on sorting the old versions...
+        category.expenseCategoryVersions?.sort((a, b) => new Date(b.validMonth) - new Date(a.validMonth)).slice(0, 3).map(version => {
             let date = new Date(version.validMonth);
             let year = date.getFullYear();
             var months = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"];
             let month = months[date.getMonth()];
             let isCurrentMonth = category.currentVersion.validMonth === version.validMonth;
-            return <div key={version.id} className={isCurrentMonth && "font-italic"}>
+            return <div key={version.id} className={isCurrentMonth ? "font-italic" : ""}>
                     <BsArrowRightShort className="icon-as-list-pointer"/> {version.maximumCost} zł ({month} {year}) {isCurrentMonth && " - current version"}
             </div>
         })}

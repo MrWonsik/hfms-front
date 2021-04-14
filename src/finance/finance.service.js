@@ -107,3 +107,20 @@ export const deleteCategoryCall = (id, categoryType) => {
 		.then(deletedExpenseCategory => deletedExpenseCategory)
 		.catch(httpHelper.handleError);
 };
+
+export const editExpenseCategoryMaximumCostCall = (categoryId, newMaximumCost, isValidFromNextMonth ) => {
+
+	const requestOptions = {
+		method: "PUT",
+		headers: httpHelper.addAuthHeader(
+			{ "Content-Type": "application/json" },
+			getJwtToken()
+		),
+		body: JSON.stringify({newMaximumCost, isValidFromNextMonth }),
+	};
+
+	return fetch(`${config.apiUrl}/api/category/expense/${categoryId}/version`, requestOptions)
+		.then(httpHelper.handleResponse)
+		.then(editedCategory => editedCategory)
+		.catch(httpHelper.handleError);
+};

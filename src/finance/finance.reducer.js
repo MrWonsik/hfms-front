@@ -13,7 +13,10 @@ import {
 	CREATE_CATEGORY_FAILURE,
 	CREATE_CATEGORY_REQUEST,
 	CREATE_CATEGORY_SUCCESS,
-	IS_FAVOURITE_CATEGORY_SUCCESS
+	IS_FAVOURITE_CATEGORY_SUCCESS,
+	EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_REQUEST,
+	EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_SUCCESS,
+	EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_FAILURE
 } from "./finance.actions";
 
 const initialState = {
@@ -162,7 +165,7 @@ export const finance = (state = initialState, action) => {
 						expenseCategories: state.expenseCategories.map((expenseCategoryFromState, id) =>
 							updatedCategory.id === id ? { ...expenseCategoryFromState, favourite: updatedCategory.favourite } : expenseCategoryFromState
 						),
-					}
+					};
 				}
 				case INCOME: {
 					return {
@@ -170,12 +173,27 @@ export const finance = (state = initialState, action) => {
 						incomeCategories: state.incomeCategories.map((incomeCategoryFromState, id) =>
 							updatedCategory.id === id ? { ...incomeCategoryFromState, favourite: updatedCategory.favourite } : incomeCategoryFromState
 						),
-					}
+					};
 				}
 				default: 
 					return state;
 			}
 		}
+		case EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_REQUEST: 
+			return {
+				...state,
+				isEditExpenseCategoryMaximumCostInProgress: true
+			};
+		case EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_SUCCESS: 
+			return {
+				...state,
+				isEditExpenseCategoryMaximumCostInProgress: false
+			}
+		case EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_FAILURE:
+			return {
+				...state,
+				isEditExpenseCategoryMaximumCostInProgress: false
+			};
 		default: return state;
 	}
 };

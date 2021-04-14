@@ -1,5 +1,6 @@
 import { alertError, alertSuccess } from "../alert/alert.actions";
-import { getShopsCall, createShopCall, deleteShopCall, getCategoriesCall, createCategoryCall, changeStateFavouriteCategoryCall, deleteCategoryCall } from "./finance.service";
+import { EXPENSE } from "./CategoryType";
+import { getShopsCall, createShopCall, deleteShopCall, getCategoriesCall, createCategoryCall, changeStateFavouriteCategoryCall, deleteCategoryCall, editExpenseCategoryMaximumCostCall } from "./finance.service";
 
 export const GET_SHOPS_REQUEST = "GET_SHOPS_REQUEST";
 export const GET_SHOPS_SUCCESS = "GET_SHOPS_SUCCESS";
@@ -169,6 +170,31 @@ export const deleteCategory = ( id, categoryType ) => async dispatch => {
             },
             error => {
                 dispatch(deleteCategoryFailure());
+                dispatch(alertError(error.msg));
+                return Promise.reject(error);
+            }
+        );
+}
+
+export const EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_REQUEST = "EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_REQUEST";
+export const EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_SUCCESS = "EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_SUCCESS";
+export const EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_FAILURE = "EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_FAILURE";
+export const editExpenseCategoryMaximumCostRequest = () => ({ type: EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_REQUEST })
+export const editExpenseCategoryMaximumCostSuccess = () => ({ type: EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_SUCCESS })
+export const editExpenseCategoryMaximumCostFailure = () => ({ type: EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_FAILURE })
+
+export const editExpenseCategoryMaximumCost = ( category, newMaximumCost, isValidFromNextMonth ) => async dispatch => {
+    dispatch(editExpenseCategoryMaximumCostRequest());
+    await editExpenseCategoryMaximumCostCall(category.id, newMaximumCost, isValidFromNextMonth )
+        .then(
+            editedCategoryVersion => {
+                console.log(editedCategoryVersion);
+                dispatch(editExpenseCategoryMaximumCostSuccess());
+                dispatch(getCategories(EXPENSE));
+                dispatch(alertSuccess("Category " + category.categoryName + " maximum cost has been updated."));
+            },
+            error => {
+                dispatch(editExpenseCategoryMaximumCostFailure());
                 dispatch(alertError(error.msg));
                 return Promise.reject(error);
             }
