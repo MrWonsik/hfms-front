@@ -16,7 +16,10 @@ import {
 	IS_FAVOURITE_CATEGORY_SUCCESS,
 	EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_REQUEST,
 	EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_SUCCESS,
-	EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_FAILURE
+	EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_FAILURE,
+	EDIT_CATEGORY_REQUEST,
+	EDIT_CATEGORY_SUCCESS,
+	EDIT_CATEGORY_FAILURE
 } from "./finance.actions";
 
 const initialState = {
@@ -27,7 +30,9 @@ const initialState = {
 	isExpenseCategoriesLoading: false,
 	isIncomeCategoriesLoading: false,
 	creatingCategoryInProgress: false,
-	creatingShopInProgress: false
+	creatingShopInProgress: false,
+	isEditExpenseCategoryMaximumCostInProgress: false,
+	isEditCategoryInProgress: false
 };
 
 export const finance = (state = initialState, action) => {
@@ -193,6 +198,21 @@ export const finance = (state = initialState, action) => {
 			return {
 				...state,
 				isEditExpenseCategoryMaximumCostInProgress: false
+			};
+		case EDIT_CATEGORY_REQUEST: 
+			return {
+				...state,
+				isEditCategoryInProgress: true
+			};
+		case EDIT_CATEGORY_SUCCESS: 
+			return {
+				...state,
+				isEditCategoryInProgress: false
+			}
+		case EDIT_CATEGORY_FAILURE:
+			return {
+				...state,
+				isEditCategoryInProgress: false
 			};
 		default: return state;
 	}

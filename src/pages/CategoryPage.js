@@ -10,6 +10,7 @@ import { BsPlus } from 'react-icons/bs'
 import { openModalAddNewCategory } from '../modal/modal.actions';
 import { getCategories } from '../finance/finance.actions';
 import { EXPENSE, INCOME } from '../finance/CategoryType';
+import { getIconWithActionAndTooltip } from '../_helpers/wrapWithTooltip';
 
 const CategoryPage = () => {
 
@@ -35,7 +36,7 @@ const CategoryPage = () => {
     return (
         <>
             <Form.Group className="text-right add-new-container">
-                <BsPlus tabIndex="0" className="icon-add" onClick={handleAddNewCategory} onKeyPress={e => e.key === 'Enter' && handleAddNewCategory()}/>
+                {getIconWithActionAndTooltip(BsPlus, "icon-add", () => handleAddNewCategory(), "top", "Add new category")}
             </Form.Group>
             <Tabs className="categories-tabs">
                 <Tab eventKey="expense" title="expense">

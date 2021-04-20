@@ -88,7 +88,7 @@ export const changeStateFavouriteCategoryCall = ( category ) => {
 		body: JSON.stringify({ isFavourite: !category.favourite }),
 	};
 
-	return fetch(`${config.apiUrl}/api/category/${type}/${category.id}`, requestOptions)
+	return fetch(`${config.apiUrl}/api/category/${type}/favourite/${category.id}`, requestOptions)
 		.then(httpHelper.handleResponse)
 		.then(expenseCategory => expenseCategory)
 		.catch(httpHelper.handleError);
@@ -120,6 +120,24 @@ export const editExpenseCategoryMaximumCostCall = (categoryId, newMaximumCost, i
 	};
 
 	return fetch(`${config.apiUrl}/api/category/expense/${categoryId}/version`, requestOptions)
+		.then(httpHelper.handleResponse)
+		.then(editedCategoryVersion => editedCategoryVersion)
+		.catch(httpHelper.handleError);
+};
+
+
+export const editCategoryCall = (categoryId, categoryName, colorHex, categoryType ) => {
+	let type = mapCategoryTypeToDomain(categoryType).toLowerCase(); 
+	const requestOptions = {
+		method: "PATCH",
+		headers: httpHelper.addAuthHeader(
+			{ "Content-Type": "application/json" },
+			getJwtToken()
+		),
+		body: JSON.stringify({categoryName, colorHex }),
+	};
+
+	return fetch(`${config.apiUrl}/api/category/${type}/${categoryId}`, requestOptions)
 		.then(httpHelper.handleResponse)
 		.then(editedCategory => editedCategory)
 		.catch(httpHelper.handleError);

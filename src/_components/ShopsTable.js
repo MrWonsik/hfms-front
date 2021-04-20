@@ -11,6 +11,7 @@ import Alert from "react-bootstrap/Alert";
 import { dateSort, sortByName } from '../_helpers/tableBootstrapSorter';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
+import { getIconWithActionAndTooltip } from '../_helpers/wrapWithTooltip';
 
 const ShopsTable = () => {
     const dispatch = useDispatch();
@@ -41,7 +42,7 @@ const ShopsTable = () => {
             date: <><BsCalendar /> {shop.createDate.date} </>,
             time: shop.createDate.time,
             actions: <>
-                <BsTrash tabIndex="0" className="table-action-icon" onClick={() => showDeleteConfirmationModal(shop)} onKeyPress={e => e.key === 'Enter' && showDeleteConfirmationModal(shop)}/>
+                {getIconWithActionAndTooltip(BsTrash, "table-action-icon", () => showDeleteConfirmationModal(shop), "top", "Delete")}
                 {/*TODO: add action to show all expense from this shop*/}
             </>
         }))
@@ -84,7 +85,7 @@ const ShopsTable = () => {
             { !shops && isShopsLoading ? <div className="text-center"><Spinner animation="border" size="lg" /></div> :  shops?.length > 0 ?  
                 <>
                     <Form.Group className="text-right add-new-container">
-                        <BsPlus tabIndex="0" className="icon-add" onClick={handleAddNewShop} onKeyPress={e => e.key === 'Enter' && handleAddNewShop()}/>
+                        {getIconWithActionAndTooltip(BsPlus, "icon-add", () => handleAddNewShop(), "top", "Add new shop")}
                     </Form.Group>
                     <BootstrapTable 
                         classes="list-table" 

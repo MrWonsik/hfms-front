@@ -7,6 +7,7 @@ import { BsPower, BsGearFill } from "react-icons/bs";
 import { openModalChangePassword } from "../modal/modal.actions";
 
 import ChangePasswordModal from "./modal/ChangePasswordModal";
+import HoverTooltip from "../_helpers/wrapWithTooltip";
 
 const UserTools = () => {
 	const dispatch = useDispatch();
@@ -28,12 +29,20 @@ const UserTools = () => {
 					</Navbar.Text>
 					<Nav.Item>
 						<Nav.Link onClick={handleChangePasswordModalOpen}>
-							<BsGearFill className="navbar-icon" />
+							<HoverTooltip
+								el={<BsGearFill className="navbar-icon" />}
+								msg="User settings"
+								placement="bottom" 
+							/>
 						</Nav.Link>
 					</Nav.Item>
 					<Nav.Item>
 						<Nav.Link as={Link} to="/login">
-							<BsPower className="navbar-icon"/>
+							<HoverTooltip
+								el={<BsPower className="navbar-icon"/>}
+								msg="Logout"
+								placement="bottom" 
+							/>
 						</Nav.Link>
 					</Nav.Item>
 				</Nav>

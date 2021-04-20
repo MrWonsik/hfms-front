@@ -1,6 +1,6 @@
 import { alertError, alertSuccess } from "../alert/alert.actions";
 import { EXPENSE } from "./CategoryType";
-import { getShopsCall, createShopCall, deleteShopCall, getCategoriesCall, createCategoryCall, changeStateFavouriteCategoryCall, deleteCategoryCall, editExpenseCategoryMaximumCostCall } from "./finance.service";
+import { getShopsCall, createShopCall, deleteShopCall, getCategoriesCall, createCategoryCall, changeStateFavouriteCategoryCall, deleteCategoryCall, editExpenseCategoryMaximumCostCall, editCategoryCall } from "./finance.service";
 
 export const GET_SHOPS_REQUEST = "GET_SHOPS_REQUEST";
 export const GET_SHOPS_SUCCESS = "GET_SHOPS_SUCCESS";
@@ -188,8 +188,7 @@ export const editExpenseCategoryMaximumCost = ( category, newMaximumCost, isVali
     await editExpenseCategoryMaximumCostCall(category.id, newMaximumCost, isValidFromNextMonth )
         .then(
             editedCategoryVersion => {
-                console.log(editedCategoryVersion);
-                dispatch(editExpenseCategoryMaximumCostSuccess());
+                dispatch(editExpenseCategoryMaximumCostSuccess(editedCategoryVersion));
                 dispatch(getCategories(EXPENSE));
                 dispatch(alertSuccess("Category " + category.categoryName + " maximum cost has been updated."));
             },
@@ -199,4 +198,31 @@ export const editExpenseCategoryMaximumCost = ( category, newMaximumCost, isVali
                 return Promise.reject(error);
             }
         );
+}
+
+export const EDIT_CATEGORY_REQUEST = "EDIT_CATEGORY_REQUEST";
+export const EDIT_CATEGORY_SUCCESS = "EDIT_CATEGORY_SUCCESS";
+export const EDIT_CATEGORY_FAILURE = "EDIT_CATEGORY_FAILURE";
+export const editCategoryRequest = () => ({ type: EDIT_CATEGORY_REQUEST })
+export const editCategorySuccess = () => ({ type: EDIT_CATEGORY_SUCCESS })
+export const editCategoryFailure = () => ({ type: EDIT_CATEGORY_FAILURE })
+
+export const editCategory = (categoryEdited) => async dispatch => {
+    dispatch(editCategoryRequest());
+    let isCategoryUpdated = false;
+    await editCategoryCall(categoryEdited.categoryId, categoryEdited.categoryName, categoryEdited.colorHex, categoryEdited.categoryType)
+        .then(
+            editedCategory => {
+                dispatch(editCategorySuccess(editedCategory));
+                dispatch(getCategories(categoryEdited.categoryType));
+                dispatch(alertSuccess("Category " + editedCategory.categoryName + " has been updated."));
+                isCategoryUpdated = true;
+            },
+            error => {
+                dispatch(editCategoryFailure());
+                dispatch(alertError(error.msg));
+                return Promise.reject(error);
+            }
+        );
+    return Promise.resolve(isCategoryUpdated);
 }

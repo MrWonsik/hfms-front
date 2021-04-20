@@ -2,6 +2,7 @@ import React from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
+import PropTypes from "prop-types";
 import { closeConfirmationModal } from '../../modal/modal.actions'
 
 export const ConfirmationModal = ({ id, confirmationFunction, confirmationMessage}) => {
@@ -35,6 +36,13 @@ export const ConfirmationModal = ({ id, confirmationFunction, confirmationMessag
             <Button type="submit" variant="primary" onClick={handleConfirm}>Yes</Button>
         </Modal.Footer>
       </Modal>)
+}
+
+
+ConfirmationModal.propTypes = {
+    id: PropTypes.string.isRequired,
+    confirmationFunction: PropTypes.func.isRequired,
+    confirmationMessage: PropTypes.string.isRequired
 }
 
 export default ConfirmationModal;

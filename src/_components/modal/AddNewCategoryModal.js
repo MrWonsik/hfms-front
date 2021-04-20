@@ -35,7 +35,7 @@ export const AddNewCategoryModal = () => {
         setSubmitted(false);
       }
 
-    const handleAddNewCategories = (e) => {
+    const handleAddNewCategory = (e) => {
         e.preventDefault();
 
         setSubmitted(true);
@@ -101,7 +101,7 @@ export const AddNewCategoryModal = () => {
                 </Form.Group>
             </Form.Row>
             <Form.Group controlId="categoryType">
-                <Form.Label>Role:</Form.Label>
+                <Form.Label>Category type:</Form.Label>
                     <Form.Control
                         as="select"
                         className={ "form-control"}
@@ -143,7 +143,7 @@ export const AddNewCategoryModal = () => {
         </Modal.Body>
         <Modal.Footer>
             { creatingCategoryInProgress && <Spinner animation="border" size="sm" />}
-            <Button type="submit" variant="primary" onClick={handleAddNewCategories}>
+            <Button type="submit" variant="primary" onClick={handleAddNewCategory}>
                     Create categories
             </Button>
         </Modal.Footer>

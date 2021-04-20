@@ -4,7 +4,7 @@ import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import { closeModalEditMaximumCost } from '../../modal/modal.actions'
 import {BsArrowRightShort} from 'react-icons/bs'
-import { Form } from "react-bootstrap";
+import { Form, Spinner } from "react-bootstrap";
 import PropTypes from "prop-types";
 import { editExpenseCategoryMaximumCost } from "../../finance/finance.actions";
 
@@ -12,8 +12,9 @@ const EditMaximumCostModal = ({ id, category }) => {
 
     const dispatch = useDispatch();
 
-    const { editMaximumCostModal } = useSelector(state => ({
-        editMaximumCostModal: state.modals.editMaximumCostModal
+    const { editMaximumCostModal, isEditExpenseCategoryMaximumCostInProgress } = useSelector(state => ({
+        editMaximumCostModal: state.modals.editMaximumCostModal,
+        isEditExpenseCategoryMaximumCostInProgress: state.finance.isEditExpenseCategoryMaximumCostInProgress
     }));
 
     const [submitted, setSubmitted] = useState(false);
@@ -37,13 +38,12 @@ const EditMaximumCostModal = ({ id, category }) => {
 
     return (<Modal show={editMaximumCostModal && id === editMaximumCostModal.contextId && editMaximumCostModal.isOpen } onHide={handleClose}>
         <Modal.Header closeButton>
-            <Modal.Title>Edit maximum cost (<b>{category.categoryName}</b>)</Modal.Title>
+            <Modal.Title>Plan maximum cost (<b>{category.categoryName}</b>)</Modal.Title>
         </Modal.Header>
         <Modal.Body>
         Previous maximum costs:
         {
-        //TODO: work on sorting the old versions...
-        category.expenseCategoryVersions?.sort((a, b) => new Date(b.validMonth) - new Date(a.validMonth)).slice(0, 3).map(version => {
+        category.expenseCategoryVersions?.sort((b, a) => new Date(b.validMonth) - new Date(a.validMonth)).slice(0, 3).map(version => {
             let date = new Date(version.validMonth);
             let year = date.getFullYear();
             var months = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"];
@@ -81,6 +81,8 @@ const EditMaximumCostModal = ({ id, category }) => {
             </Form.Group>
         </Modal.Body>
         <Modal.Footer>
+             { isEditExpenseCategoryMaximumCostInProgress && <Spinner animation="border" size="sm" />}
+            <Button variant="secondary" onClick={handleClose}>Cancel</Button>
             <Button type="submit" variant="primary" onClick={handleUpdate}>Update</Button>
         </Modal.Footer>
       </Modal>)
