@@ -4,54 +4,51 @@ import { changePage } from '../user/user.actions';
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
 import CategoriesTable from '../_components/CategoriesTable';
-import AddNewCategoriesModal from '../_components/modal/AddNewCategoriesModal';
+import AddNewCategoryModal from '../_components/modal/AddNewCategoryModal';
 import Form from "react-bootstrap/Form";
 import { BsPlus } from 'react-icons/bs'
 import { openModalAddNewCategory } from '../modal/modal.actions';
-import { changeStateFavouriteExepenseCategory, deleteExepenseCategory, getExpenseCategories } from '../finance/finance.actions';
+import { getCategories } from '../finance/finance.actions';
+import { EXPENSE, INCOME } from '../finance/CategoryType';
+import { getIconWithActionAndTooltip } from '../_helpers/wrapWithTooltip';
 
 const CategoryPage = () => {
 
-    const { expenseCategories, isExpenseCategoriesLoading } = useSelector((state) => ({
+    const { expenseCategories, incomeCategories, isExpenseCategoriesLoading, isIncomeCategoriesLoading } = useSelector((state) => ({
         expenseCategories: state.finance.expenseCategories,
-        isExpenseCategoriesLoading: state.finance.isExpenseCategoriesLoading
+        incomeCategories: state.finance.incomeCategories,
+        isExpenseCategoriesLoading: state.finance.isExpenseCategoriesLoading,
+        isIncomeCategoriesLoading: state.finance.isIncomeCategoriesLoading
     }));
 
     const dispatch = useDispatch();
 
     useEffect(() => {
         dispatch(changePage("Category management"))
-        dispatch(getExpenseCategories());
+        dispatch(getCategories(EXPENSE));
+        dispatch(getCategories(INCOME));
     }, []);
 
     const handleAddNewCategory = () => {
         dispatch(openModalAddNewCategory());
     }
 
-    const handleIsFavouriteClicked = (category) => {
-        dispatch(changeStateFavouriteExepenseCategory(category));
-    }
-
-    const handleDeleteCategory = (id) => {
-        dispatch(deleteExepenseCategory(id));
-    }
-
     return (
         <>
             <Form.Group className="text-right add-new-container">
-                <BsPlus tabIndex="0" className="icon-add" onClick={handleAddNewCategory} onKeyPress={e => e.key === 'Enter' && handleAddNewCategory()}/>
+                {getIconWithActionAndTooltip(BsPlus, "icon-add", () => handleAddNewCategory(), "top", "Add new category")}
             </Form.Group>
             <Tabs className="categories-tabs">
                 <Tab eventKey="expense" title="expense">
-                    <CategoriesTable type="expense" categories={expenseCategories} isLoading={isExpenseCategoriesLoading} handleDeleteCategory={handleDeleteCategory} handleIsFavouriteClicked={handleIsFavouriteClicked} />
+                    <CategoriesTable type={EXPENSE} categories={expenseCategories} isLoading={isExpenseCategoriesLoading} />
                 </Tab>
                 <Tab eventKey="income" title="income">
-                    {/* <CategoriesTable /> */}
+                    <CategoriesTable type={INCOME} categories={incomeCategories} isLoading={isIncomeCategoriesLoading} />
                 </Tab>
             </Tabs>
             
 
-            <AddNewCategoriesModal />
+            <AddNewCategoryModal />
         </>
     );
 }

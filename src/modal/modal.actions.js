@@ -38,3 +38,14 @@ export const OPEN_MODAL_ADD_NEW_CATEGORY = "OPEN_MODAL_ADD_NEW_CATEGORY";
 export const CLOSE_MODAL_ADD_NEW_CATEGORY = "CLOSE_MODAL_ADD_NEW_CATEGORY";
 export const openModalAddNewCategory = () => ({ type: OPEN_MODAL_ADD_NEW_CATEGORY});
 export const closeModalAddNewCategory = () => ({ type: CLOSE_MODAL_ADD_NEW_CATEGORY });
+
+
+export const OPEN_MODAL_EDIT_MAXIMUM_COST = "OPEN_MODAL_EDIT_MAXIMUM_COST";
+export const CLOSE_MODAL_EDIT_MAXIMUM_COST = "CLOSE_MODAL_EDIT_MAXIMUM_COST";
+export const openModalEditMaximumCost = (contextId) => ({ type: OPEN_MODAL_EDIT_MAXIMUM_COST, payload: {contextId}});
+export const closeModalEditMaximumCost = () => ({ type: CLOSE_MODAL_EDIT_MAXIMUM_COST });
+
+export const OPEN_MODAL_EDIT_CATEGORY = "OPEN_MODAL_EDIT_CATEGORY";
+export const CLOSE_MODAL_EDIT_CATEGORY = "CLOSE_MODAL_EDIT_CATEGORY";
+export const openModalEditCategory = (contextId) => ({ type: OPEN_MODAL_EDIT_CATEGORY, payload: {contextId}});
+export const closeModalEditCategory = () => ({ type: CLOSE_MODAL_EDIT_CATEGORY });

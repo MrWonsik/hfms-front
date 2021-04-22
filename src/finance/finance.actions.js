@@ -1,5 +1,6 @@
 import { alertError, alertSuccess } from "../alert/alert.actions";
-import { getShopsCall, createShopCall, deleteShopCall, getExpenseCategoriesCall, createExpenseCategoryCall, changeStateFavouriteExepenseCategoryCall, deleteExpenceCategoryCall } from "./finance.service";
+import { EXPENSE } from "./CategoryType";
+import { getShopsCall, createShopCall, deleteShopCall, getCategoriesCall, createCategoryCall, changeStateFavouriteCategoryCall, deleteCategoryCall, editExpenseCategoryMaximumCostCall, editCategoryCall } from "./finance.service";
 
 export const GET_SHOPS_REQUEST = "GET_SHOPS_REQUEST";
 export const GET_SHOPS_SUCCESS = "GET_SHOPS_SUCCESS";
@@ -75,47 +76,47 @@ export const deleteShop = (id) => async dispatch => {
         )
 }
 
-export const GET_EXPENSE_CATEGORIES_REQUEST = "GET_EXPENSE_CATEGORIES_REQUEST";
-export const GET_EXPENSE_CATEGORIES_SUCCESS = "GET_EXPENSE_CATEGORIES_SUCCESS";
-export const GET_EXPENSE_CATEGORIES_FAILURE = "GET_EXPENSE_CATEGORIES_FAILURE";
-export const getExpenseCategoriesRequest = () => ({ type: GET_EXPENSE_CATEGORIES_REQUEST })
-export const getExpenseCategoriesSuccess = (expenseCategories) => ({ type: GET_EXPENSE_CATEGORIES_SUCCESS, payload: {expenseCategories} })
-export const getExpenseCategoriesFailure = () => ({ type: GET_EXPENSE_CATEGORIES_FAILURE })
+export const GET_CATEGORIES_REQUEST = "GET_CATEGORIES_REQUEST";
+export const GET_CATEGORIES_SUCCESS = "GET_CATEGORIES_SUCCESS";
+export const GET_CATEGORIES_FAILURE = "GET_CATEGORIES_FAILURE";
+export const getCategoriesRequest = ( categoryType ) => ({ type: GET_CATEGORIES_REQUEST, payload: {categoryType} })
+export const getCategoriesSuccess = (categories, categoryType) => ({ type: GET_CATEGORIES_SUCCESS, payload: {categories, categoryType} })
+export const getCategoriesFailure = ( categoryType ) => ({ type: GET_CATEGORIES_FAILURE, payload: {categoryType} })
 
-export const getExpenseCategories = () => async dispatch => {
-    dispatch(getExpenseCategoriesRequest());
-    await getExpenseCategoriesCall()
+export const getCategories = ( categoryType ) => async dispatch => {
+    dispatch(getCategoriesRequest( categoryType ));
+    await getCategoriesCall(categoryType)
         .then(
-            expenseCategories => {
-                dispatch(getExpenseCategoriesSuccess(expenseCategories));
+            categories => {
+                dispatch(getCategoriesSuccess(categories, categoryType));
             },
             error => {
-                dispatch(getExpenseCategoriesFailure());
+                dispatch(getCategoriesFailure( categoryType ));
                 dispatch(alertError(error.msg));
                 return Promise.reject(error);
             }
         );
 }
 
-export const CREATE_EXPENSE_CATEGORY_REQUEST = "CREATE_EXPENSE_CATEGORY_REQUEST";
-export const CREATE_EXPENSE_CATEGORY_SUCCESS = "CREATE_EXPENSE_CATEGORY_SUCCESS";
-export const CREATE_EXPENSE_CATEGORY_FAILURE = "CREATE_EXPENSE_CATEGORY_FAILURE";
-export const createExpenseCategoryRequest = () => ({ type: CREATE_EXPENSE_CATEGORY_REQUEST })
-export const createExpenseCategorySuccess = (expenseCategory) => ({ type: CREATE_EXPENSE_CATEGORY_SUCCESS, payload: {expenseCategory} })
-export const createExpenseCategoryFailure = () => ({ type: CREATE_EXPENSE_CATEGORY_FAILURE })
+export const CREATE_CATEGORY_REQUEST = "CREATE_CATEGORY_REQUEST";
+export const CREATE_CATEGORY_SUCCESS = "CREATE_CATEGORY_SUCCESS";
+export const CREATE_CATEGORY_FAILURE = "CREATE_CATEGORY_FAILURE";
+export const createCategoryRequest = () => ({ type: CREATE_CATEGORY_REQUEST })
+export const createCategorySuccess = (category, categoryType) => ({ type: CREATE_CATEGORY_SUCCESS, payload: {category, categoryType} })
+export const createCategoryFailure = () => ({ type: CREATE_CATEGORY_FAILURE })
 
-export const createExpenseCategory = ( category ) => async dispatch => {
-    dispatch(createExpenseCategoryRequest());
+export const createCategory = ( category ) => async dispatch => {
+    dispatch(createCategoryRequest( category.categoryType ));
     let isCategoryCreated = false;
-    await createExpenseCategoryCall(category)
+    await createCategoryCall(category)
         .then(
-            category => {
-                dispatch(createExpenseCategorySuccess(category));
-                dispatch(alertSuccess("Category: " + category.categoryName + " has been created."));
+            createdCategory => {
+                dispatch(createCategorySuccess(createdCategory, category.categoryType));
+                dispatch(alertSuccess("Category: " + createdCategory.categoryName + " has been created."));
                 isCategoryCreated = true;
             },
             error => {
-                dispatch(createExpenseCategoryFailure());
+                dispatch(createCategoryFailure(category.categoryType));
                 dispatch(alertError(error.msg));
                 return Promise.reject(error);
             }
@@ -123,54 +124,105 @@ export const createExpenseCategory = ( category ) => async dispatch => {
     return Promise.resolve(isCategoryCreated);
 }
 
-export const IS_FAVOURITE_EXPENSE_CATEGORY_REQUEST = "IS_FAVOURITE_EXPENSE_CATEGORY_REQUEST";
-export const IS_FAVOURITE_EXPENSE_CATEGORY_SUCCESS = "IS_FAVOURITE_EXPENSE_CATEGORY_SUCCESS";
-export const IS_FAVOURITE_EXPENSE_CATEGORY_FAILURE = "IS_FAVOURITE_EXPENSE_CATEGORY_FAILURE";
-export const changeStateFavouriteExpenseCategoryRequest = () => ({ type: IS_FAVOURITE_EXPENSE_CATEGORY_REQUEST })
-export const changeStateFavouriteExpenseCategorySuccess = (updatedExpenseCategory) => ({ type: IS_FAVOURITE_EXPENSE_CATEGORY_SUCCESS, payload: {updatedExpenseCategory} })
-export const changeStateFavouriteExpenseCategoryFailure = () => ({ type: IS_FAVOURITE_EXPENSE_CATEGORY_FAILURE })
+export const IS_FAVOURITE_CATEGORY_REQUEST = "IS_FAVOURITE_CATEGORY_REQUEST";
+export const IS_FAVOURITE_CATEGORY_SUCCESS = "IS_FAVOURITE_CATEGORY_SUCCESS";
+export const IS_FAVOURITE_CATEGORY_FAILURE = "IS_FAVOURITE_CATEGORY_FAILURE";
+export const changeStateFavouriteCategoryRequest = () => ({ type: IS_FAVOURITE_CATEGORY_REQUEST })
+export const changeStateFavouriteCategorySuccess = (updatedCategory, categoryType) => ({ type: IS_FAVOURITE_CATEGORY_SUCCESS, payload: {updatedCategory, categoryType} })
+export const changeStateFavouriteCategoryFailure = () => ({ type: IS_FAVOURITE_CATEGORY_FAILURE })
 
 export const changeStateFavouriteExepenseCategory = ( category ) => async dispatch => {
-    dispatch(changeStateFavouriteExpenseCategoryRequest());
-    await changeStateFavouriteExepenseCategoryCall(category)
+    dispatch(changeStateFavouriteCategoryRequest());
+    await changeStateFavouriteCategoryCall(category)
         .then(
-            updatedExpenseCategory => {
-                dispatch(changeStateFavouriteExpenseCategorySuccess(updatedExpenseCategory));
-                let msg = "Category: " + updatedExpenseCategory.categoryName + " mark as favourite.";
-                if(!updatedExpenseCategory.favourite) {
-                    msg = "Category: " + updatedExpenseCategory.categoryName + " is not favourite anymore."
+            updatedCategory => {
+                dispatch(changeStateFavouriteCategorySuccess(updatedCategory, category.type));
+                let msg = "Category: " + updatedCategory.categoryName + " mark as favourite.";
+                if(!updatedCategory.favourite) {
+                    msg = "Category: " + updatedCategory.categoryName + " is not favourite anymore."
                 }
-                dispatch(getExpenseCategories());
+                dispatch(getCategories(category.type));
                 dispatch(alertSuccess(msg));
             },
             error => {
-                dispatch(changeStateFavouriteExpenseCategoryFailure());
+                dispatch(changeStateFavouriteCategoryFailure());
                 dispatch(alertError(error.msg));
                 return Promise.reject(error);
             }
         );
 }
 
-export const DELETE_EXPENSE_CATEGORY_REQUEST = "DELETE_EXPENSE_CATEGORY_REQUEST";
-export const DELETE_EXPENSE_CATEGORY_SUCCESS = "DELETE_EXPENSE_CATEGORY_SUCCESS";
-export const DELETE_EXPENSE_CATEGORY_FAILURE = "DELETE_EXPENSE_CATEGORY_FAILURE";
-export const deleteExpenseCategoryRequest = () => ({ type: DELETE_EXPENSE_CATEGORY_REQUEST })
-export const deleteExpenseCategorySuccess = () => ({ type: DELETE_EXPENSE_CATEGORY_SUCCESS })
-export const deleteExpenseCategoryFailure = () => ({ type: DELETE_EXPENSE_CATEGORY_FAILURE })
+export const DELETE_CATEGORY_REQUEST = "DELETE_CATEGORY_REQUEST";
+export const DELETE_CATEGORY_SUCCESS = "DELETE_CATEGORY_SUCCESS";
+export const DELETE_CATEGORY_FAILURE = "DELETE_CATEGORY_FAILURE";
+export const deleteCategoryRequest = () => ({ type: DELETE_CATEGORY_REQUEST })
+export const deleteCategorySuccess = () => ({ type: DELETE_CATEGORY_SUCCESS })
+export const deleteCategoryFailure = () => ({ type: DELETE_CATEGORY_FAILURE })
 
-export const deleteExepenseCategory = ( id ) => async dispatch => {
-    dispatch(deleteExpenseCategoryRequest());
-    await deleteExpenceCategoryCall(id)
+export const deleteCategory = ( id, categoryType ) => async dispatch => {
+    dispatch(deleteCategoryRequest());
+    await deleteCategoryCall(id, categoryType)
         .then(
-            deletedExpenseCategory => {
-                dispatch(deleteExpenseCategorySuccess());
-                dispatch(getExpenseCategories());
-                dispatch(alertSuccess("Category " + deletedExpenseCategory.categoryName + " has been deleted."));
+            deletedCategory => {
+                dispatch(deleteCategorySuccess());
+                dispatch(getCategories(categoryType));
+                dispatch(alertSuccess("Category " + deletedCategory.categoryName + " has been deleted."));
             },
             error => {
-                dispatch(deleteExpenseCategoryFailure());
+                dispatch(deleteCategoryFailure());
                 dispatch(alertError(error.msg));
                 return Promise.reject(error);
             }
         );
+}
+
+export const EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_REQUEST = "EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_REQUEST";
+export const EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_SUCCESS = "EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_SUCCESS";
+export const EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_FAILURE = "EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_FAILURE";
+export const editExpenseCategoryMaximumCostRequest = () => ({ type: EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_REQUEST })
+export const editExpenseCategoryMaximumCostSuccess = () => ({ type: EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_SUCCESS })
+export const editExpenseCategoryMaximumCostFailure = () => ({ type: EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_FAILURE })
+
+export const editExpenseCategoryMaximumCost = ( category, newMaximumCost, isValidFromNextMonth ) => async dispatch => {
+    dispatch(editExpenseCategoryMaximumCostRequest());
+    await editExpenseCategoryMaximumCostCall(category.id, newMaximumCost, isValidFromNextMonth )
+        .then(
+            editedCategoryVersion => {
+                dispatch(editExpenseCategoryMaximumCostSuccess(editedCategoryVersion));
+                dispatch(getCategories(EXPENSE));
+                dispatch(alertSuccess("Category " + category.categoryName + " maximum cost has been updated."));
+            },
+            error => {
+                dispatch(editExpenseCategoryMaximumCostFailure());
+                dispatch(alertError(error.msg));
+                return Promise.reject(error);
+            }
+        );
+}
+
+export const EDIT_CATEGORY_REQUEST = "EDIT_CATEGORY_REQUEST";
+export const EDIT_CATEGORY_SUCCESS = "EDIT_CATEGORY_SUCCESS";
+export const EDIT_CATEGORY_FAILURE = "EDIT_CATEGORY_FAILURE";
+export const editCategoryRequest = () => ({ type: EDIT_CATEGORY_REQUEST })
+export const editCategorySuccess = () => ({ type: EDIT_CATEGORY_SUCCESS })
+export const editCategoryFailure = () => ({ type: EDIT_CATEGORY_FAILURE })
+
+export const editCategory = (categoryEdited) => async dispatch => {
+    dispatch(editCategoryRequest());
+    let isCategoryUpdated = false;
+    await editCategoryCall(categoryEdited.categoryId, categoryEdited.categoryName, categoryEdited.colorHex, categoryEdited.categoryType)
+        .then(
+            editedCategory => {
+                dispatch(editCategorySuccess(editedCategory));
+                dispatch(getCategories(categoryEdited.categoryType));
+                dispatch(alertSuccess("Category " + editedCategory.categoryName + " has been updated."));
+                isCategoryUpdated = true;
+            },
+            error => {
+                dispatch(editCategoryFailure());
+                dispatch(alertError(error.msg));
+                return Promise.reject(error);
+            }
+        );
+    return Promise.resolve(isCategoryUpdated);
 }

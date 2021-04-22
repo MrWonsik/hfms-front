@@ -1,6 +1,9 @@
 import config from "config";
-import { httpHelper } from "../_helpers";
+import { httpHelper, mapCategoryTypeToDomain } from "../_helpers";
 import { getJwtToken } from "../index";
+
+
+// <================= SHOPS:
 
 export const getShopsCall = () => {
 	const requestOptions = {
@@ -41,18 +44,24 @@ export const deleteShopCall = (id) => {
 		.catch(httpHelper.handleError);
 };
 
-export const getExpenseCategoriesCall = () => {
+// <================= CATEGORIES
+
+export const getCategoriesCall = ( categoryType ) => {
+	let type = mapCategoryTypeToDomain(categoryType).toLowerCase(); 
+
 	const requestOptions = {
 		method: "GET",
 		headers: httpHelper.addAuthHeader({}, getJwtToken()),
 	};
 
-	return fetch(`${config.apiUrl}/api/expense-category/`, requestOptions)
+	return fetch(`${config.apiUrl}/api/category/${type}/`, requestOptions)
 		.then(httpHelper.handleResponse)
 		.catch(httpHelper.handleError);
 };
 
-export const createExpenseCategoryCall = (category) => {
+export const createCategoryCall = (category) => {
+	let type = mapCategoryTypeToDomain(category.categoryType); 
+
 	const requestOptions = {
 		method: "POST",
 		headers: httpHelper.addAuthHeader(
@@ -62,15 +71,16 @@ export const createExpenseCategoryCall = (category) => {
 		body: JSON.stringify(category),
 	};
 
-	return fetch(`${config.apiUrl}/api/expense-category/`, requestOptions)
+	return fetch(`${config.apiUrl}/api/category/${type}/`, requestOptions)
 		.then(httpHelper.handleResponse)
-		.then(updatedExpenseCategory => updatedExpenseCategory)
+		.then(createdCategory => createdCategory)
 		.catch(httpHelper.handleError);
 };
 
-export const changeStateFavouriteExepenseCategoryCall = ( category ) => {
+export const changeStateFavouriteCategoryCall = ( category ) => {
+	let type = mapCategoryTypeToDomain(category.type); 
 	const requestOptions = {
-		method: "PUT",
+		method: "PATCH",
 		headers: httpHelper.addAuthHeader(
 			{ "Content-Type": "application/json" },
 			getJwtToken()
@@ -78,20 +88,57 @@ export const changeStateFavouriteExepenseCategoryCall = ( category ) => {
 		body: JSON.stringify({ isFavourite: !category.favourite }),
 	};
 
-	return fetch(`${config.apiUrl}/api/expense-category/${category.id}`, requestOptions)
+	return fetch(`${config.apiUrl}/api/category/${type}/favourite/${category.id}`, requestOptions)
 		.then(httpHelper.handleResponse)
 		.then(expenseCategory => expenseCategory)
 		.catch(httpHelper.handleError);
 };
 
-export const deleteExpenceCategoryCall = (id) => {
+export const deleteCategoryCall = (id, categoryType) => {
+	let type = mapCategoryTypeToDomain(categoryType);
+
 	const requestOptions = {
 		method: "DELETE",
 		headers: httpHelper.addAuthHeader({}, getJwtToken()),
 	};
 
-	return fetch(`${config.apiUrl}/api/expense-category/${id}`, requestOptions)
+	return fetch(`${config.apiUrl}/api/category/${type}/${id}`, requestOptions)
 		.then(httpHelper.handleResponse)
 		.then(deletedExpenseCategory => deletedExpenseCategory)
+		.catch(httpHelper.handleError);
+};
+
+export const editExpenseCategoryMaximumCostCall = (categoryId, newMaximumCost, isValidFromNextMonth ) => {
+
+	const requestOptions = {
+		method: "PUT",
+		headers: httpHelper.addAuthHeader(
+			{ "Content-Type": "application/json" },
+			getJwtToken()
+		),
+		body: JSON.stringify({newMaximumCost, isValidFromNextMonth }),
+	};
+
+	return fetch(`${config.apiUrl}/api/category/expense/${categoryId}/version`, requestOptions)
+		.then(httpHelper.handleResponse)
+		.then(editedCategoryVersion => editedCategoryVersion)
+		.catch(httpHelper.handleError);
+};
+
+
+export const editCategoryCall = (categoryId, categoryName, colorHex, categoryType ) => {
+	let type = mapCategoryTypeToDomain(categoryType).toLowerCase(); 
+	const requestOptions = {
+		method: "PATCH",
+		headers: httpHelper.addAuthHeader(
+			{ "Content-Type": "application/json" },
+			getJwtToken()
+		),
+		body: JSON.stringify({categoryName, colorHex }),
+	};
+
+	return fetch(`${config.apiUrl}/api/category/${type}/${categoryId}`, requestOptions)
+		.then(httpHelper.handleResponse)
+		.then(editedCategory => editedCategory)
 		.catch(httpHelper.handleError);
 };

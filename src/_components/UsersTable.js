@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Spinner from "react-bootstrap/Spinner";
 import Form from "react-bootstrap/Form";
@@ -6,13 +6,13 @@ import { mapRoleToString } from "../_helpers"
 import AddNewUserModal from "./modal/AddNewUserModal"
 import ChangeUserPasswordModal from "./modal/ChangeUserPasswordModal"
 import { BsTrash, BsPersonPlusFill, BsPencil, BsPersonCheck, BsPerson, BsCalendar } from 'react-icons/bs'
-
 import { getAllUsers, editUserStatus, deleteUser } from '../user/users/users.actions';
 import { openConfirmationModal, openModalAddNewUser, openModalChangePasswordUsers } from "../modal/modal.actions";
 import ConfirmationModal from './modal/ConfirmationModal';
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import { dateSort } from "../_helpers/tableBootstrapSorter";
+import { getIconWithActionAndTooltip } from "../_helpers/wrapWithTooltip";
 
 
 const UsersTable = () => {
@@ -46,7 +46,6 @@ const UsersTable = () => {
     const handleAddNewUser = () => {
         dispatch(openModalAddNewUser());
     }
-
     
     let products = [];
     products = users?.map((user) => ({
@@ -59,11 +58,10 @@ const UsersTable = () => {
         actions: <>
             {currentUser.id == user.id ? "" : 
                 <>
-                    {user.isEnabled 
-                    ? <BsPersonCheck tabIndex="0" className="table-action-icon" onClick={() => handleUserStatus(user.id, !user.isEnabled)} onKeyPress={e => e.key === 'Enter' && handleUserStatus(user.id, !user.isEnabled)}/> 
-                    : <BsPerson tabIndex="0" className="table-action-icon" onClick={() => handleUserStatus(user.id, !user.isEnabled)} onKeyPress={e => e.key === 'Enter' && handleUserStatus(user.id, !user.isEnabled)}/>}
-                    <BsPencil tabIndex="0" className="table-action-icon" onClick={() => handleChangeUserPassword(user.id)} onKeyPress={e => e.key === 'Enter' && handleChangeUserPassword(user.id)}/>
-                    <BsTrash tabIndex="0" className="table-action-icon" onClick={() => showDeleteConfirmationModal(user)} onKeyPress={e => e.key === 'Enter' && showDeleteConfirmationModal(user)}/>
+                    {getIconWithActionAndTooltip(BsPersonCheck, "table-action-icon", () => handleUserStatus(user.id, !user.isEnabled), "top", "Disable", user.isEnabled)}
+                    {getIconWithActionAndTooltip(BsPerson, "table-action-icon", () => handleUserStatus(user.id, !user.isEnabled), "top", "Enable", !user.isEnabled)}
+                    {getIconWithActionAndTooltip(BsPencil, "table-action-icon", () => handleChangeUserPassword(user.id), "top", "Edit")}
+                    {getIconWithActionAndTooltip(BsTrash, "table-action-icon", () => showDeleteConfirmationModal(user), "top", "Delete")}
                 </>
             }
         </>
@@ -110,14 +108,14 @@ const UsersTable = () => {
         alwaysShowAllBtns: false,
     }
 
-    const rowUserDisableClass = (row, rowIndex) => (row.isDisabled ? "disabled" : null)
+    const rowUserDisableClass = (row) => (row.isDisabled ? "disabled" : null)
 
     return (
         <>
             {!users && isUsersLoading && products ? <Spinner animation="border text-center" size="lg" /> : 
                 <>
                     <Form.Group className="text-right add-new-container">
-                        <BsPersonPlusFill tabIndex="0" className="icon-add" onClick={() => handleAddNewUser()} onKeyPress={e => e.key === 'Enter' && handleAddNewUser()}/>
+                        {getIconWithActionAndTooltip(BsPersonPlusFill, "icon-add", () => handleAddNewUser(), "top", "Add new user")}
                     </Form.Group>
                     <BootstrapTable 
                         classes="list-table" 

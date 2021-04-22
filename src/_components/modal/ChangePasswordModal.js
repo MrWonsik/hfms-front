@@ -7,11 +7,9 @@ import Spinner from "react-bootstrap/Spinner";
 import { closeModalChangePassword } from '../../modal/modal.actions'
 
 import { changePassword } from '../../user/user.actions';
-import { useHistory } from "react-router";
 
 
 export const ChangePasswordModal = () => {
-    let history = useHistory();
     const dispatch = useDispatch();
 
     const { isModalChangePasswordOpen, updatingPasswordInProgress } = useSelector(state => ({
@@ -39,10 +37,7 @@ export const ChangePasswordModal = () => {
         if (oldPassword && newPassword && repeatedNewPassword) {
             dispatch(
 				changePassword(oldPassword, newPassword, repeatedNewPassword)
-			).then(
-                (isPasswordChanged) => {
-				    isPasswordChanged && handleClose()
-            });
+			).then(isPasswordChanged => isPasswordChanged && handleClose());
         }
       };
 
@@ -61,12 +56,12 @@ export const ChangePasswordModal = () => {
                     onChange={(e) => setOldPassword(e.target.value)}
                     placeholder="Enter your old password"
                 />
-            <Form.Control.Feedback type="invalid">
-                Password is required
-            </Form.Control.Feedback>
+                <Form.Control.Feedback type="invalid">
+                    Password is required
+                </Form.Control.Feedback>
             </Form.Group>
             <Form.Group controlId="newPassword">
-            <Form.Label>New password:</Form.Label>
+                <Form.Label>New password:</Form.Label>
                 <Form.Control
                     type="password"
                     className={ "form-control" + (submitted && !newPassword ? " is-invalid" : "") }
@@ -78,8 +73,8 @@ export const ChangePasswordModal = () => {
                 <Form.Control.Feedback type="invalid">
                     New password is required
                 </Form.Control.Feedback>
-          </Form.Group>
-          <Form.Group controlId="repeatedNewPassword">
+            </Form.Group>
+            <Form.Group controlId="repeatedNewPassword">
                 <Form.Label>Repeat new password:</Form.Label>
                     <Form.Control
                         type="password"

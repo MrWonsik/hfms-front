@@ -1,3 +1,4 @@
+import { EXPENSE, INCOME } from '../finance/CategoryType';
 import {
 	GET_SHOPS_REQUEST,
 	GET_SHOPS_SUCCESS,
@@ -6,21 +7,32 @@ import {
 	CREATE_SHOP_FAILURE,
 	CREATE_SHOP_SUCCESS,
 	CREATE_SHOP_REQUEST,
-	GET_EXPENSE_CATEGORIES_FAILURE,
-	GET_EXPENSE_CATEGORIES_SUCCESS,
-	GET_EXPENSE_CATEGORIES_REQUEST,
-	CREATE_EXPENSE_CATEGORY_FAILURE,
-	CREATE_EXPENSE_CATEGORY_REQUEST,
-	CREATE_EXPENSE_CATEGORY_SUCCESS,
-	IS_FAVOURITE_EXPENSE_CATEGORY_SUCCESS
+	GET_CATEGORIES_FAILURE,
+	GET_CATEGORIES_SUCCESS,
+	GET_CATEGORIES_REQUEST,
+	CREATE_CATEGORY_FAILURE,
+	CREATE_CATEGORY_REQUEST,
+	CREATE_CATEGORY_SUCCESS,
+	IS_FAVOURITE_CATEGORY_SUCCESS,
+	EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_REQUEST,
+	EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_SUCCESS,
+	EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_FAILURE,
+	EDIT_CATEGORY_REQUEST,
+	EDIT_CATEGORY_SUCCESS,
+	EDIT_CATEGORY_FAILURE
 } from "./finance.actions";
 
 const initialState = {
 	shops: [],
 	expenseCategories: [],
+	incomeCategories: [],
 	isShopsLoading: false,
 	isExpenseCategoriesLoading: false,
-	creatingShopInProgress: false
+	isIncomeCategoriesLoading: false,
+	creatingCategoryInProgress: false,
+	creatingShopInProgress: false,
+	isEditExpenseCategoryMaximumCostInProgress: false,
+	isEditCategoryInProgress: false
 };
 
 export const finance = (state = initialState, action) => {
@@ -32,13 +44,14 @@ export const finance = (state = initialState, action) => {
 				...state,
 				isShopsLoading: true,
 			};
-		case GET_SHOPS_SUCCESS:
+		case GET_SHOPS_SUCCESS: {
 			const { shops } = payload;
 			return {
 				...state,
 				shops: shops?.shops,
 				isShopsLoading: false,
 			};
+		}
 		case GET_SHOPS_FAILURE:
 			return {
 				...state,
@@ -51,61 +64,156 @@ export const finance = (state = initialState, action) => {
 				...state,
 				creatingShopInProgress: true,
 			};
-		case CREATE_SHOP_SUCCESS:
+		case CREATE_SHOP_SUCCESS: {
 			const { shop } = payload;
 			state.shops.push(shop);
 			return {
 				...state,
 				creatingShopInProgress: false
 			};
+		}
 		case CREATE_SHOP_FAILURE:
 			return {
 				...state,
 				creatingShopInProgress: false
 			};
-		case GET_EXPENSE_CATEGORIES_REQUEST:
+		case GET_CATEGORIES_REQUEST: {
+			const { categoryType } = payload;
+			switch(categoryType) {
+				case EXPENSE: {
+					return {
+						...state,
+						isExpenseCategoriesLoading: true
+					};
+				}
+				case INCOME: {
+					return {
+						...state,
+						isIncomeCategoriesLoading: true
+					}
+				}
+				default:
+					return state;
+			}
+		}
+		case GET_CATEGORIES_SUCCESS: {
+			const { categories, categoryType } = payload;
+			switch(categoryType) {
+				case EXPENSE: {
+					return {
+						...state,
+						expenseCategories: categories?.categories,
+						isExpenseCategoriesLoading: false,
+					};
+				}
+				case INCOME: {
+					return {
+						...state,
+						incomeCategories: categories?.categories,
+						isIncomeCategoriesLoading: false
+					}
+				}
+				default:
+					return state;
+			}
+		}
+		case GET_CATEGORIES_FAILURE: {
+			const { categoryType } = payload;
+			switch(categoryType) {
+				case EXPENSE: {
+					return {
+						...state,
+						isExpenseCategoriesLoading: false
+					};
+				}
+				case INCOME: {
+					return {
+						...state,
+						isIncomeCategoriesLoading: false
+					}
+				}
+				default:
+					return state;
+			}
+		}
+		case CREATE_CATEGORY_REQUEST:
 			return {
 				...state,
-				isExpenseCategoriesLoading: true,
+				creatingCategoryInProgress: true,
 			};
-		case GET_EXPENSE_CATEGORIES_SUCCESS:
-			const { expenseCategories } = payload;
+		case CREATE_CATEGORY_SUCCESS: {
+			const { category, categoryType } = payload;
+			switch(categoryType) {
+				case EXPENSE: {
+					state.expenseCategories.push(category);
+				} break;
+				case INCOME: {
+					state.incomeCategories.push(category);
+				} break;
+			}
 			return {
 				...state,
-				expenseCategories: expenseCategories?.expenseCategories,
-				isExpenseCategoriesLoading: false,
+				creatingCategoryInProgress: false
 			};
-		case GET_EXPENSE_CATEGORIES_FAILURE:
+		}
+		case CREATE_CATEGORY_FAILURE:
 			return {
 				...state,
-				isExpenseCategoriesLoading: false,
+				creatingCategoryInProgress: false
 			};
-		case CREATE_EXPENSE_CATEGORY_REQUEST:
+		case IS_FAVOURITE_CATEGORY_SUCCESS: {
+			const { updatedCategory, categoryType } = payload;
+			switch(categoryType) {
+				case EXPENSE: {
+					return {
+						...state,
+						expenseCategories: state.expenseCategories.map((expenseCategoryFromState, id) =>
+							updatedCategory.id === id ? { ...expenseCategoryFromState, favourite: updatedCategory.favourite } : expenseCategoryFromState
+						),
+					};
+				}
+				case INCOME: {
+					return {
+						...state,
+						incomeCategories: state.incomeCategories.map((incomeCategoryFromState, id) =>
+							updatedCategory.id === id ? { ...incomeCategoryFromState, favourite: updatedCategory.favourite } : incomeCategoryFromState
+						),
+					};
+				}
+				default: 
+					return state;
+			}
+		}
+		case EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_REQUEST: 
 			return {
 				...state,
-				creatingExpenseCategoryInProgress: true,
+				isEditExpenseCategoryMaximumCostInProgress: true
 			};
-		case CREATE_EXPENSE_CATEGORY_SUCCESS:
-			const { expenseCategory } = payload;
-			state.expenseCategories.push(expenseCategory);
+		case EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_SUCCESS: 
 			return {
 				...state,
-				creatingExpenseCategoryInProgress: false
-			};
-		case CREATE_EXPENSE_CATEGORY_FAILURE:
+				isEditExpenseCategoryMaximumCostInProgress: false
+			}
+		case EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_FAILURE:
 			return {
 				...state,
-				creatingExpenseCategoryInProgress: false
+				isEditExpenseCategoryMaximumCostInProgress: false
 			};
-		case IS_FAVOURITE_EXPENSE_CATEGORY_SUCCESS:
-			const { updatedExpenseCategory } = payload;
+		case EDIT_CATEGORY_REQUEST: 
 			return {
 				...state,
-				expenseCategories: state.expenseCategories.map((expenseCategoryFromState, id) =>
-					updatedExpenseCategory.id === id ? { ...expenseCategoryFromState, favourite: updatedExpenseCategory.favourite } : expenseCategoryFromState
-				),
+				isEditCategoryInProgress: true
 			};
-		default:
-			return state;
+		case EDIT_CATEGORY_SUCCESS: 
+			return {
+				...state,
+				isEditCategoryInProgress: false
+			}
+		case EDIT_CATEGORY_FAILURE:
+			return {
+				...state,
+				isEditCategoryInProgress: false
+			};
+		default: return state;
 	}
 };

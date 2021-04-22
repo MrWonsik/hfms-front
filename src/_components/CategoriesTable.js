@@ -1,24 +1,46 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import Spinner from "react-bootstrap/Spinner";
-import { BsTrash, BsStarFill, BsStar, BsSquareFill, BsCalendar } from 'react-icons/bs'
-import { openConfirmationModal, openModalAddNewCategory } from '../modal/modal.actions';
+import { BsTrash, BsStarFill, BsStar, BsSquareFill, BsCalendar, BsClipboardData, BsPencil } from 'react-icons/bs'
+import { openConfirmationModal, openModalAddNewCategory, openModalEditCategory, openModalEditMaximumCost } from '../modal/modal.actions';
 import ConfirmationModal from './modal/ConfirmationModal';
 import Alert from "react-bootstrap/Alert";
 import { dateSort, sortByName } from '../_helpers/tableBootstrapSorter';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
+import { changeStateFavouriteExepenseCategory, deleteCategory } from '../finance/finance.actions';
+import { EXPENSE } from '../finance/CategoryType';
+import EditMaximumCostModal from './modal/EditMaximumCostModal';
+import PropTypes from "prop-types";
+import { getIconWithActionAndTooltip } from '../_helpers/wrapWithTooltip';
+import EditCategoryModal from './modal/EditCategoryModal';
 
-const CategoriesTable = ({ type, categories, isLoading, handleDeleteCategory, handleIsFavouriteClicked }) => {
+const CategoriesTable = ({ type, categories, isLoading }) => {
 
     const dispatch = useDispatch();
 
     const showDeleteConfirmationModal = (category) => {
-        dispatch(openConfirmationModal("category_" + category.categoryName.trim() + "_" + category.id));
+        dispatch(openConfirmationModal("category_confirmation_" + category.categoryName.trim() + "_" + category.id));
+    }
+
+    const showEditMaximumCostModal = (category) => {
+        dispatch(openModalEditMaximumCost("category_edit_maximum_cost" + category.categoryName.trim() + "_" + category.id));
+    }
+
+    const showEditCategoryModal = (category) => {
+        dispatch(openModalEditCategory("category_edit" + category.categoryName.trim() + "_" + category.id));
     }
 
     const handleAddNewCategory = () => {
         dispatch(openModalAddNewCategory());
+    }
+
+    const handleIsFavouriteClicked = (category) => {
+        dispatch(changeStateFavouriteExepenseCategory(category));
+    }
+
+    const handleDeleteCategory = (id, categoryType) => {
+        dispatch(deleteCategory(id, categoryType));
     }
 
     const products = categories?.map((category) => ({
@@ -28,11 +50,13 @@ const CategoriesTable = ({ type, categories, isLoading, handleDeleteCategory, ha
             created: <><BsCalendar /> {category.createDate.date}</>,
             isFavourite: category.favourite,
             actions: <>
-                <BsTrash tabIndex="0" className="table-action-icon" onClick={() => showDeleteConfirmationModal(category)} onKeyPress={e => e.key === 'Enter' && showDeleteConfirmationModal(category)}/>
-                {category.favourite ? 
-                    <BsStarFill className="table-action-icon" onClick={() => handleIsFavouriteClicked(category)} onKeyPress={e => e.key === 'Enter' && handleIsFavouriteClicked(category)} /> : 
-                    <BsStar className="table-action-icon" onClick={() => handleIsFavouriteClicked(category)} onKeyPress={e => e.key === 'Enter' && handleIsFavouriteClicked(category)} />}
-            </>
+                {getIconWithActionAndTooltip(BsTrash, "table-action-icon", () => showDeleteConfirmationModal(category), "top", "Delete")}
+                {getIconWithActionAndTooltip(BsStarFill, "table-action-icon", () => handleIsFavouriteClicked({...category, type}), "top", "Delete from favourite", category.favourite)}
+                {getIconWithActionAndTooltip(BsStar, "table-action-icon", () => handleIsFavouriteClicked({...category, type}), "top", "Add to favourite", !category.favourite)}
+                {type === EXPENSE && getIconWithActionAndTooltip(BsClipboardData, "table-action-icon", () => showEditMaximumCostModal(category), "top", "Plan maximum cost")}
+                {getIconWithActionAndTooltip(BsPencil, "table-action-icon", () => showEditCategoryModal(category), "top", "Edit")}
+            </>,
+            maximumCost: type === EXPENSE ? category.currentVersion.maximumCost : null
     }))
     
     const columns = [{
@@ -48,6 +72,12 @@ const CategoriesTable = ({ type, categories, isLoading, handleDeleteCategory, ha
         text: 'Created',
         sort: true,
         sortFunc: dateSort
+      }, {
+        dataField: 'maximumCost',
+        text: "Maximum cost", //TODO: Add some description of this coulmn...
+        hidden: type === EXPENSE ? false : true,
+        sort: true,
+        formatter: (cell) => Math.round(cell * 100 / 100).toFixed(2) + " zł"
       }, {
         dataField: 'actions',
         text: 'Action'  
@@ -86,15 +116,25 @@ const CategoriesTable = ({ type, categories, isLoading, handleDeleteCategory, ha
                         pagination={ paginationFactory(paginationOptions) }
                     />
                     {categories?.map((category) => (
-                        <ConfirmationModal key={category.id} id={"category_" + category.categoryName.trim() + "_" + category.id} confirmationFunction={() => handleDeleteCategory(category.id)} confirmationMessage={"Are you sure you want to delete " + category.categoryName + "?"} />
+                        <div key={category.id}>
+                            <ConfirmationModal id={"category_confirmation_" + category.categoryName.trim() + "_" + category.id} confirmationFunction={() => handleDeleteCategory(category.id, type)} confirmationMessage={"Are you sure you want to delete " + category.categoryName + "?"} />
+                            {type === EXPENSE && <EditMaximumCostModal id={"category_edit_maximum_cost" + category.categoryName.trim() + "_" + category.id} category={category} />}
+                            <EditCategoryModal id={"category_edit" + category.categoryName.trim() + "_" + category.id} category={category} categoryType={type}/>
+                        </div>
                     ))}
                 </> :
                 <Alert className="text-center" variant="light">
-                    You don't have any categories yet. To add new category <Alert.Link onClick={handleAddNewCategory}>click here</Alert.Link>.
+                    You don`t have any categories yet. To add new category <Alert.Link onClick={handleAddNewCategory}>click here</Alert.Link>.
                 </Alert>
             }
         </>
     );
+}
+
+CategoriesTable.propTypes = {
+    type: PropTypes.string.isRequired, 
+    categories: PropTypes.array.isRequired,
+    isLoading: PropTypes.bool.isRequired
 }
 
 export default CategoriesTable;
