@@ -1,6 +1,6 @@
 import { alertError, alertSuccess } from "../alert/alert.actions";
 import { EXPENSE } from "./CategoryType";
-import { getShopsCall, createShopCall, deleteShopCall, getCategoriesCall, createCategoryCall, changeStateFavouriteCategoryCall, deleteCategoryCall, editExpenseCategoryMaximumCostCall, editCategoryCall } from "./finance.service";
+import { getShopsCall, createShopCall, deleteShopCall, getCategoriesCall, createCategoryCall, changeStateFavouriteCategoryCall, deleteCategoryCall, editExpenseCategoryMaximumCostCall, editCategoryCall, createTransactionCall } from "./finance.service";
 
 export const GET_SHOPS_REQUEST = "GET_SHOPS_REQUEST";
 export const GET_SHOPS_SUCCESS = "GET_SHOPS_SUCCESS";
@@ -106,17 +106,18 @@ export const createCategorySuccess = (category, categoryType) => ({ type: CREATE
 export const createCategoryFailure = () => ({ type: CREATE_CATEGORY_FAILURE })
 
 export const createCategory = ( category ) => async dispatch => {
-    dispatch(createCategoryRequest( category.categoryType ));
+    dispatch(createCategoryRequest());
+    let type = category.categoryType;
     let isCategoryCreated = false;
     await createCategoryCall(category)
         .then(
             createdCategory => {
-                dispatch(createCategorySuccess(createdCategory, category.categoryType));
+                dispatch(createCategorySuccess(createdCategory, type));
                 dispatch(alertSuccess("Category: " + createdCategory.categoryName + " has been created."));
                 isCategoryCreated = true;
             },
             error => {
-                dispatch(createCategoryFailure(category.categoryType));
+                dispatch(createCategoryFailure());
                 dispatch(alertError(error.msg));
                 return Promise.reject(error);
             }
@@ -225,4 +226,32 @@ export const editCategory = (categoryEdited) => async dispatch => {
             }
         );
     return Promise.resolve(isCategoryUpdated);
+}
+
+export const CREATE_TRANSACTION_REQUEST = "CREATE_TRANSACTION_REQUEST";
+export const CREATE_TRANSACTION_SUCCESS = "CREATE_TRANSACTION_SUCCESS";
+export const CREATE_TRANSACTION_FAILURE = "CREATE_TRANSACTION_FAILURE";
+export const createTransactionRequest = () => ({ type: CREATE_TRANSACTION_REQUEST })
+export const createTransactionSuccess = (transaction, transactionType) => ({ type: CREATE_TRANSACTION_SUCCESS, payload: { transaction, transactionType } })
+export const createTransactionFailure = () => ({ type: CREATE_TRANSACTION_FAILURE })
+
+export const createTransaction = ( transaction ) => async dispatch => {
+    dispatch(createTransactionRequest());
+    let type = transaction.transactionType;
+    let isTransactionCreated = false;
+    await createTransactionCall(transaction)
+        .then(
+            createdTransaction => {
+                dispatch(createTransactionSuccess(createdTransaction, type));
+                // dispatch(getTransactions(type));
+                dispatch(alertSuccess("Transaction: " + createdTransaction.name + " has been created."));
+                isTransactionCreated = true;
+            },
+            error => {
+                dispatch(createTransactionFailure());
+                dispatch(alertError(error.msg));
+                return Promise.reject(error);
+            }
+        );
+    return Promise.resolve(isTransactionCreated);
 }

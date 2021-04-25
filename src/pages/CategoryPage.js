@@ -46,8 +46,6 @@ const CategoryPage = () => {
                     <CategoriesTable type={INCOME} categories={incomeCategories} isLoading={isIncomeCategoriesLoading} />
                 </Tab>
             </Tabs>
-            
-
             <AddNewCategoryModal />
         </>
     );

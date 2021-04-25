@@ -15,7 +15,9 @@ import {
 	OPEN_MODAL_EDIT_MAXIMUM_COST,
 	CLOSE_MODAL_EDIT_MAXIMUM_COST,
 	OPEN_MODAL_EDIT_CATEGORY,
-	CLOSE_MODAL_EDIT_CATEGORY
+	CLOSE_MODAL_EDIT_CATEGORY,
+	OPEN_MODAL_ADD_NEW_TRANSACTION,
+	CLOSE_MODAL_ADD_NEW_TRANSACTION
 } from "./modal.actions";
 
 const initialState = {
@@ -119,6 +121,16 @@ export const modals = (state = initialState, action) => {
 			return {
 				...state,
 				editCategoryModal: {isOpen: false },
+			};
+		case OPEN_MODAL_ADD_NEW_TRANSACTION:
+			return {
+				...state,
+				addNewTransactionModalIsOpen: true,
+			};
+		case CLOSE_MODAL_ADD_NEW_TRANSACTION:
+			return {
+				...state,
+				addNewTransactionModalIsOpen: false,
 			};
 		case MODAL_CLEAR:
 			return {};

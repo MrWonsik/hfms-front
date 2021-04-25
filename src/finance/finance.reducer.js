@@ -19,16 +19,24 @@ import {
 	EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_FAILURE,
 	EDIT_CATEGORY_REQUEST,
 	EDIT_CATEGORY_SUCCESS,
-	EDIT_CATEGORY_FAILURE
+	EDIT_CATEGORY_FAILURE,
+	CREATE_TRANSACTION_REQUEST,
+	CREATE_TRANSACTION_SUCCESS,
+	CREATE_TRANSACTION_FAILURE
 } from "./finance.actions";
+import { EXPENSE_TRANSACTION, INCOME_TRANSACTION } from './TransactionType';
 
 const initialState = {
 	shops: [],
 	expenseCategories: [],
 	incomeCategories: [],
+	expenseTransactions: [],
+	incomeTransactions: [],
 	isShopsLoading: false,
 	isExpenseCategoriesLoading: false,
 	isIncomeCategoriesLoading: false,
+	isExpenseTransactionsLoading: false,
+	isIncomeTransactionsLoading: false,
 	creatingCategoryInProgress: false,
 	creatingShopInProgress: false,
 	isEditExpenseCategoryMaximumCostInProgress: false,
@@ -213,6 +221,31 @@ export const finance = (state = initialState, action) => {
 			return {
 				...state,
 				isEditCategoryInProgress: false
+			};
+		case CREATE_TRANSACTION_REQUEST:
+			return {
+				...state,
+				creatingTransactionInProgress: true,
+			};
+		case CREATE_TRANSACTION_SUCCESS: {
+			const { transaction, transactionType } = payload;
+			switch(transactionType) {
+				case EXPENSE_TRANSACTION: {
+					state.expenseTransactions.push(transaction);
+				} break;
+				case INCOME_TRANSACTION: {
+					state.incomeTransactions.push(transaction);
+				} break;
+			}
+			return {
+				...state,
+				creatingCategoryInProgress: false
+			};
+		}
+		case CREATE_TRANSACTION_FAILURE:
+			return {
+				...state,
+				creatingTransactionInProgress: false
 			};
 		default: return state;
 	}

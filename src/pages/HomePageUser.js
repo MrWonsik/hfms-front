@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Jumbotron } from 'react-bootstrap';
 import { Route, Switch, Link } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -6,7 +6,7 @@ import MainUserPage from "../pages/MainUserPage"
 import CategoryPage from "../pages/CategoryPage"
 import SummaryPage from "../pages/SummaryPage"
 import ShopManagementPage from "./ShopManagementPage"
-import ExpensseAndIncomeListPage from "../pages/ExpensseAndIncomeListPage"
+import TransactionListPage from "./TransactionListPage"
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Nav from "react-bootstrap/Nav";
@@ -20,39 +20,43 @@ const HomePageUser = ({ match }) => {
         currentPage: state.user.currentPage
     }));
 
+    const [currentPageDisplay, setCurrentPageDisplay] = useState(currentPage ? currentPage : "Home");
+
+    const getIconWihtAction = (IconTag, name, url="") => (
+        <Nav.Link as={Link} to={`${match.url}${url}`} 
+            onMouseOver={() => setCurrentPageDisplay(name)} 
+            onMouseOut={() => setCurrentPageDisplay(currentPage)} 
+        >
+            <IconTag 
+                className={'user-page-navbar-icon ' + (currentPage === name ? "current-page" : "")} 
+            />
+        </Nav.Link>
+        
+    );
+
     return (
         <>
+            <div className="home-page-user">
+            <Row className="justify-content-center">
+                <h1 id="current-page" className={currentPage != currentPageDisplay ? "other-page-hover" : ""}>{currentPageDisplay}</h1>
+            </Row>
             <Row className="justify-content-md-center">
                 <Col md="5">
                         <Navbar className="justify-content-between justify-content-center user-page-navbar" >
                             <Nav.Item>
+                                {getIconWihtAction(BsHouse, "Home")}
                             </Nav.Item>
                             <Nav.Item>
-                                <Nav.Link as={Link} to={`${match.url}`}>
-                                    <BsHouse className={"user-page-navbar-icon " + (currentPage === "Home" ? "current-page" : "")}/>
-                                </Nav.Link>
+                                {getIconWihtAction(BsFiles, "Transaction list", "/transaction-list-page")}
                             </Nav.Item>
                             <Nav.Item>
-                                <Nav.Link as={Link} to={`${match.url}/expensse-and-income-list-page`}>
-                                    <BsFiles className={"user-page-navbar-icon " + (currentPage === "Expenses and income list" ? "current-page" : "")}/>
-                                </Nav.Link>
+                                {getIconWihtAction(BsFillPieChartFill, "Summary", "/summary-page")}
                             </Nav.Item>
                             <Nav.Item>
-                                <Nav.Link as={Link} to={`${match.url}/summary-page`}>
-                                    <BsFillPieChartFill className={"user-page-navbar-icon " + (currentPage === "Summary" ? "current-page" : "")}/>
-                                </Nav.Link>
+                                {getIconWihtAction(AiOutlineShop, "Shop management", "/shop-page")}
                             </Nav.Item>
                             <Nav.Item>
-                                <Nav.Link as={Link} to={`${match.url}/shop-page`}>
-                                    <AiOutlineShop className={"user-page-navbar-icon " + (currentPage === "Shop management" ? "current-page" : "")}/>
-                                </Nav.Link>
-                            </Nav.Item>
-                            <Nav.Item>
-                                <Nav.Link as={Link} to={`${match.url}/category-page`}>
-                                    <BsInboxesFill className={"user-page-navbar-icon " + (currentPage === "Category management" ? "current-page" : "")}/>
-                                </Nav.Link>
-                            </Nav.Item>
-                            <Nav.Item>
+                                {getIconWihtAction(BsInboxesFill, "Category management", "/category-page")}
                             </Nav.Item>
                         </Navbar>
                 </Col>
@@ -62,7 +66,7 @@ const HomePageUser = ({ match }) => {
                     <Jumbotron className="user-page-block user-page-content-container">
                         <Switch>
                             <Route path={`${match.path}/summary-page`} component={SummaryPage}/>
-                            <Route path={`${match.path}/expensse-and-income-list-page`} component={ExpensseAndIncomeListPage}/>
+                            <Route path={`${match.path}/transaction-list-page`} component={TransactionListPage}/>
                             <Route path={`${match.path}/shop-page`} component={ShopManagementPage}/>
                             <Route path={`${match.path}/category-page`} component={CategoryPage}/>
                             <Route exact path={`${match.path}`} component={MainUserPage}/>
@@ -71,6 +75,7 @@ const HomePageUser = ({ match }) => {
                     </Jumbotron>
                 </Col>
             </Row>
+            </div>
         </>
     );
 }

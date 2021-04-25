@@ -8,7 +8,7 @@ const HomePageAdmin = () => {
 
   return (
     <>
-      <Row className="justify-content-md-center">
+      <Row className="justify-content-md-center home-page-admin">
         <Col md="9">
           <UsersTable />
         </Col>

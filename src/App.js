@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Route, Switch, Redirect, BrowserRouter, useHistory } from "react-router-dom";
+import { Route, Switch, Redirect, BrowserRouter } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import { alertClear } from "./alert/alert.actions";
@@ -48,7 +48,6 @@ const App = () => {
     switch(type) {
       case "danger": return "Error";
       case "success": return "Success";
-      case deafult: return "";
     }
   }
 
