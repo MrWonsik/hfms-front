@@ -104,7 +104,7 @@ export const deleteCategoryCall = (id, categoryType) => {
 
 	return fetch(`${config.apiUrl}/api/category/${type}/${id}`, requestOptions)
 		.then(httpHelper.handleResponse)
-		.then(deletedExpenseCategory => deletedExpenseCategory)
+		.then(deletedCategory => deletedCategory)
 		.catch(httpHelper.handleError);
 };
 
@@ -143,6 +143,20 @@ export const editCategoryCall = (categoryId, categoryName, colorHex, categoryTyp
 		.catch(httpHelper.handleError);
 };
 
+export const getTransactionsCall = ( transactionType ) => {
+	let type = mapTransactionTypeToDomain(transactionType).toLowerCase(); 
+
+	const requestOptions = {
+		method: "GET",
+		headers: httpHelper.addAuthHeader({}, getJwtToken()),
+	};
+
+	return fetch(`${config.apiUrl}/api/transaction/${type}/`, requestOptions)
+		.then(httpHelper.handleResponse)
+		.catch(httpHelper.handleError);
+};
+
+
 export const createTransactionCall = (transaction) => {
 	let type =	mapTransactionTypeToDomain(transaction.transactionType); 
 	transaction.transactionType = type;
@@ -161,5 +175,19 @@ export const createTransactionCall = (transaction) => {
 	return fetch(`${config.apiUrl}/api/transaction/${type}/`, requestOptions)
 		.then(httpHelper.handleResponse)
 		.then(createdTransaction => createdTransaction)
+		.catch(httpHelper.handleError);
+};
+
+export const deleteTransactionCall = (transactionId, transactionType) => {
+	let type =	mapTransactionTypeToDomain(transactionType); 
+
+	const requestOptions = {
+		method: "DELETE",
+		headers: httpHelper.addAuthHeader({}, getJwtToken()),
+	};
+
+	return fetch(`${config.apiUrl}/api/transaction/${type}/${transactionId}`, requestOptions)
+		.then(httpHelper.handleResponse)
+		.then(deletedTransaction => deletedTransaction)
 		.catch(httpHelper.handleError);
 };

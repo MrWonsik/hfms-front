@@ -21,7 +21,7 @@ export const AddNewCategoryModal = () => {
 
     const [submitted, setSubmitted] = useState(false);
     const [categoryName, setCategoryName] = useState("");
-    const [colorHex, setColorHex] = useState("");
+    const [colorHex, setColorHex] = useState(undefined);
     const [categoryType, setCategoryType] = useState(EXPENSE);
     const [maximumCost, setMaximumCost] = useState(0);
     const [isFavourite, setIsFavourite] = useState(false);
@@ -29,7 +29,7 @@ export const AddNewCategoryModal = () => {
     const handleClose = () => {
         dispatch(closeModalAddNewCategory())
         setCategoryName("");
-        setColorHex("");
+        setColorHex(undefined);
         setCategoryType(EXPENSE);
         setMaximumCost(0);
         setSubmitted(false);

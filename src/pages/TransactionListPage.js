@@ -10,12 +10,13 @@ import { EXPENSE_TRANSACTION, INCOME_TRANSACTION } from '../finance/TransactionT
 import TransactionsTable from '../_components/TransactionsTable';
 import AddNewTransactionModal from '../_components/modal/AddNewTransactionModal';
 import { openModalAddNewTransaction } from '../modal/modal.actions';
+import { getTransactions } from '../finance/finance.actions';
 
 
 const TransactionListPage = () => {
     const dispatch = useDispatch();
 
-    const { expenseTransactions, incomeTransactions, isExpenseTransactionsLoading, isIncomeTransactionsLoading, expenseCategories, incomeCategories } = useSelector(( state ) => ({
+    const { expenseTransactions, incomeTransactions, isExpenseTransactionsLoading, isIncomeTransactionsLoading } = useSelector(( state ) => ({
         expenseTransactions: state.finance.expenseTransactions,
         incomeTransactions: state.finance.incomeTransactions,
         isExpenseTransactionsLoading: state.finance.isExpenseTransactionsLoading,
@@ -25,8 +26,8 @@ const TransactionListPage = () => {
 
     useEffect(() => {
         dispatch(changePage("Transaction list"));
-        // dispatch(getTransactions(EXPENSE_TRANSACTION));
-        // dispatch(getTransactions(INCOME_TRANSACTION));
+        dispatch(getTransactions(EXPENSE_TRANSACTION));
+        // dispatch(getTransactions(INCOME_TRANSACTION)); // not implemented yet in backend
       }, []);
 
     const handleAddNewFinance = () => {
@@ -40,10 +41,10 @@ const TransactionListPage = () => {
             </Form.Group>
             <Tabs className="categories-tabs">
                 <Tab eventKey="expense" title="expense">
-                    <TransactionsTable type={EXPENSE_TRANSACTION} transactions={expenseTransactions} isLoading={isExpenseTransactionsLoading} categories={expenseCategories}/>
+                    <TransactionsTable type={EXPENSE_TRANSACTION} transactions={expenseTransactions} isLoading={isExpenseTransactionsLoading}/>
                 </Tab>
                 <Tab eventKey="income" title="income">
-                    <TransactionsTable type={INCOME_TRANSACTION} transactions={incomeTransactions} isLoading={isIncomeTransactionsLoading} categories={incomeCategories}/>
+                    <TransactionsTable type={INCOME_TRANSACTION} transactions={incomeTransactions} isLoading={isIncomeTransactionsLoading}/>
                 </Tab>
             </Tabs>
             

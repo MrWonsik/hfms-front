@@ -7,18 +7,20 @@ import {
 export const alert = (state = {}, action) => {
   const { type, payload} = action;
   switch (type) {
-    case ALERT_SUCCESS:
+    case ALERT_SUCCESS: {
       const { message: successMessage } = payload
       return {
         type: 'success',
         message: successMessage
       };
-    case ALERT_ERROR:
+    }
+    case ALERT_ERROR: {
       const { message: errorMessage } = payload
       return {
         type: 'danger',
         message: errorMessage
       };
+    }
     case ALERT_CLEAR:
       return {};
     default:

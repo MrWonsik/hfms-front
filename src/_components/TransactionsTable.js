@@ -1,30 +1,40 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import Spinner from "react-bootstrap/Spinner";
-import { BsCalendar } from 'react-icons/bs'
-// import ConfirmationModal from './modal/ConfirmationModal';
+import { BsCalendar, BsPencil, BsTrash } from 'react-icons/bs'
 import Alert from "react-bootstrap/Alert";
 import { dateSort, sortByName } from '../_helpers/tableBootstrapSorter';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import PropTypes from "prop-types";
-import { openModalAddNewTransaction } from '../modal/modal.actions';
+import { openConfirmationModal, openModalAddNewTransaction } from '../modal/modal.actions';
+import { getIconWithActionAndTooltip } from '../_helpers/wrapWithTooltip';
+import ConfirmationModal from './modal/ConfirmationModal';
+import { deleteTransaction } from '../finance/finance.actions';
 
 const TransactionsTable = ({ type, transactions, isLoading }) => {
     const dispatch = useDispatch();
+
+    const showDeleteConfirmationModal = (transaction) => {
+        dispatch(openConfirmationModal("transaction_confirmation_" + transaction.name.trim() + "_" + transaction.id));
+    }
 
     const handleAddTransaction = () => {
         dispatch(openModalAddNewTransaction());
     }
 
-    // const handleDeleteTransaction = (id, categoryType) => {
-    //     // dispatch(deleteTransaction(id, categoryType));
-    // }
+    const handleDeleteTransaction = (id, transactionType) => {
+        dispatch(deleteTransaction(id, transactionType));
+    }
 
     const products = transactions?.map((transaction) => ({
             id: transaction.id,
             transactionName: <>{transaction.name} <span className="additionaly-info">({transaction.id})</span></>,
-            created: <><BsCalendar /> {transaction.createdDate.date}</>,
+            created: <><BsCalendar /> {transaction.createdDate}</>,
+            actions: <>
+                {getIconWithActionAndTooltip(BsPencil, "table-action-icon", () => console.log("not implemented yet"), "top", "Edit")}
+                {getIconWithActionAndTooltip(BsTrash, "table-action-icon", () => showDeleteConfirmationModal(transaction), "top", "Delete")}
+            </>,
     }))
     
     const columns = [{
@@ -38,12 +48,15 @@ const TransactionsTable = ({ type, transactions, isLoading }) => {
         sort: true,
         sortFunc: dateSort
       }, {
+        dataField: 'actions',
+        text: 'Action'  
+      }, {
         dataField: 'id',
         hidden: true
       }];
 
     const defaultSorted = [{
-        dataField: 'name',
+        dataField: 'created',
         order: 'asc'
     }]
     
@@ -70,7 +83,7 @@ const TransactionsTable = ({ type, transactions, isLoading }) => {
                     />
                     {transactions?.map((transaction) => (
                         <div key={transaction.id}>
-                            {/* <ConfirmationModal id={"transaction_confirmation_" + transaction.transactionName.trim() + "_" + transaction.id} confirmationFunction={() => handleDeleteTransaction(transaction.id, type)} confirmationMessage={"Are you sure you want to delete " + transaction.transactionName + "?"} /> */}
+                            <ConfirmationModal id={"transaction_confirmation_" + transaction.name.trim() + "_" + transaction.id} confirmationFunction={() => handleDeleteTransaction(transaction.id, type)} confirmationMessage={"Are you sure you want to delete " + transaction.name + "?"} />
                         </div>
                     ))}
                 </> :
