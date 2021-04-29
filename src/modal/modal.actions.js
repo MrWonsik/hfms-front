@@ -49,3 +49,8 @@ export const OPEN_MODAL_EDIT_CATEGORY = "OPEN_MODAL_EDIT_CATEGORY";
 export const CLOSE_MODAL_EDIT_CATEGORY = "CLOSE_MODAL_EDIT_CATEGORY";
 export const openModalEditCategory = (contextId) => ({ type: OPEN_MODAL_EDIT_CATEGORY, payload: {contextId}});
 export const closeModalEditCategory = () => ({ type: CLOSE_MODAL_EDIT_CATEGORY });
+
+export const OPEN_MODAL_ADD_NEW_TRANSACTION = "OPEN_MODAL_ADD_NEW_TRANSACTION";
+export const CLOSE_MODAL_ADD_NEW_TRANSACTION = "CLOSE_MODAL_ADD_NEW_TRANSACTION";
+export const openModalAddNewTransaction = () => ({ type: OPEN_MODAL_ADD_NEW_TRANSACTION});
+export const closeModalAddNewTransaction = () => ({ type: CLOSE_MODAL_ADD_NEW_TRANSACTION });

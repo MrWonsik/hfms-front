@@ -50,11 +50,11 @@ const CategoriesTable = ({ type, categories, isLoading }) => {
             created: <><BsCalendar /> {category.createDate.date}</>,
             isFavourite: category.favourite,
             actions: <>
-                {getIconWithActionAndTooltip(BsTrash, "table-action-icon", () => showDeleteConfirmationModal(category), "top", "Delete")}
                 {getIconWithActionAndTooltip(BsStarFill, "table-action-icon", () => handleIsFavouriteClicked({...category, type}), "top", "Delete from favourite", category.favourite)}
                 {getIconWithActionAndTooltip(BsStar, "table-action-icon", () => handleIsFavouriteClicked({...category, type}), "top", "Add to favourite", !category.favourite)}
                 {type === EXPENSE && getIconWithActionAndTooltip(BsClipboardData, "table-action-icon", () => showEditMaximumCostModal(category), "top", "Plan maximum cost")}
                 {getIconWithActionAndTooltip(BsPencil, "table-action-icon", () => showEditCategoryModal(category), "top", "Edit")}
+                {getIconWithActionAndTooltip(BsTrash, "table-action-icon", () => showDeleteConfirmationModal(category), "top", "Delete")}
             </>,
             maximumCost: type === EXPENSE ? category.currentVersion.maximumCost : null
     }))

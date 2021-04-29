@@ -19,16 +19,27 @@ import {
 	EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_FAILURE,
 	EDIT_CATEGORY_REQUEST,
 	EDIT_CATEGORY_SUCCESS,
-	EDIT_CATEGORY_FAILURE
+	EDIT_CATEGORY_FAILURE,
+	CREATE_TRANSACTION_REQUEST,
+	CREATE_TRANSACTION_SUCCESS,
+	CREATE_TRANSACTION_FAILURE,
+	GET_TRANSACTIONS_FAILURE,
+	GET_TRANSACTIONS_SUCCESS,
+	GET_TRANSACTIONS_REQUEST
 } from "./finance.actions";
+import { EXPENSE_TRANSACTION, INCOME_TRANSACTION } from './TransactionType';
 
 const initialState = {
 	shops: [],
 	expenseCategories: [],
 	incomeCategories: [],
+	expenseTransactions: [],
+	incomeTransactions: [],
 	isShopsLoading: false,
 	isExpenseCategoriesLoading: false,
 	isIncomeCategoriesLoading: false,
+	isExpenseTransactionsLoading: false,
+	isIncomeTransactionsLoading: false,
 	creatingCategoryInProgress: false,
 	creatingShopInProgress: false,
 	isEditExpenseCategoryMaximumCostInProgress: false,
@@ -213,6 +224,90 @@ export const finance = (state = initialState, action) => {
 			return {
 				...state,
 				isEditCategoryInProgress: false
+			};
+		case GET_TRANSACTIONS_REQUEST: {
+			const { transactionType } = payload;
+			switch(transactionType) {
+				case EXPENSE_TRANSACTION: {
+					return {
+						...state,
+						isExpenseTransactionsLoading: true
+					};
+				}
+				case INCOME_TRANSACTION: {
+					return {
+						...state,
+						isIncomeTransactionsLoading: true
+					}
+				}
+				default:
+					return state;
+			}
+		}
+		case GET_TRANSACTIONS_SUCCESS: {
+			const { transactions, transactionType } = payload;
+			switch(transactionType) {
+				case EXPENSE_TRANSACTION: {
+					return {
+						...state,
+						expenseTransactions: transactions,
+						isExpenseTransactionsLoading: false,
+					};
+				}
+				case INCOME_TRANSACTION: {
+					return {
+						...state,
+						incomeTransactions: transactions,
+						isIncomeTransactionsLoading: false
+					}
+				}
+				default:
+					return state;
+			}
+		}
+		case GET_TRANSACTIONS_FAILURE: {
+			const { transactionType } = payload;
+			switch(transactionType) {
+				case EXPENSE_TRANSACTION: {
+					return {
+						...state,
+						isExpenseTransactionsLoading: false
+					};
+				}
+				case INCOME_TRANSACTION: {
+					return {
+						...state,
+						isIncomeTransactionsLoading: false
+					}
+				}
+				default:
+					return state;
+			}
+		}
+		case CREATE_TRANSACTION_REQUEST:
+			return {
+				...state,
+				creatingTransactionInProgress: true,
+			};
+		case CREATE_TRANSACTION_SUCCESS: {
+			const { transaction, transactionType } = payload;
+			switch(transactionType) {
+				case EXPENSE_TRANSACTION: {
+					state.expenseTransactions.push(transaction);
+				} break;
+				case INCOME_TRANSACTION: {
+					state.incomeTransactions.push(transaction);
+				} break;
+			}
+			return {
+				...state,
+				creatingTransactionInProgress: false
+			};
+		}
+		case CREATE_TRANSACTION_FAILURE:
+			return {
+				...state,
+				creatingTransactionInProgress: false
 			};
 		default: return state;
 	}

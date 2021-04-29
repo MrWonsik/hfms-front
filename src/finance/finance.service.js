@@ -1,5 +1,5 @@
 import config from "config";
-import { httpHelper, mapCategoryTypeToDomain } from "../_helpers";
+import { httpHelper, mapCategoryTypeToDomain, mapTransactionTypeToDomain } from "../_helpers";
 import { getJwtToken } from "../index";
 
 
@@ -61,7 +61,7 @@ export const getCategoriesCall = ( categoryType ) => {
 
 export const createCategoryCall = (category) => {
 	let type = mapCategoryTypeToDomain(category.categoryType); 
-
+	category.categoryType = type;
 	const requestOptions = {
 		method: "POST",
 		headers: httpHelper.addAuthHeader(
@@ -104,7 +104,7 @@ export const deleteCategoryCall = (id, categoryType) => {
 
 	return fetch(`${config.apiUrl}/api/category/${type}/${id}`, requestOptions)
 		.then(httpHelper.handleResponse)
-		.then(deletedExpenseCategory => deletedExpenseCategory)
+		.then(deletedCategory => deletedCategory)
 		.catch(httpHelper.handleError);
 };
 
@@ -140,5 +140,54 @@ export const editCategoryCall = (categoryId, categoryName, colorHex, categoryTyp
 	return fetch(`${config.apiUrl}/api/category/${type}/${categoryId}`, requestOptions)
 		.then(httpHelper.handleResponse)
 		.then(editedCategory => editedCategory)
+		.catch(httpHelper.handleError);
+};
+
+export const getTransactionsCall = ( transactionType ) => {
+	let type = mapTransactionTypeToDomain(transactionType).toLowerCase(); 
+
+	const requestOptions = {
+		method: "GET",
+		headers: httpHelper.addAuthHeader({}, getJwtToken()),
+	};
+
+	return fetch(`${config.apiUrl}/api/transaction/${type}/`, requestOptions)
+		.then(httpHelper.handleResponse)
+		.catch(httpHelper.handleError);
+};
+
+
+export const createTransactionCall = (transaction) => {
+	let type =	mapTransactionTypeToDomain(transaction.transactionType); 
+	transaction.transactionType = type;
+	const formData = new FormData();
+	transaction.receiptFile && formData.append("file", transaction.receiptFile);
+	formData.append('transaction', new Blob([JSON.stringify(transaction)], {
+		type: "application/json"
+	}));
+
+	const requestOptions = {
+		method: "POST",
+		headers: httpHelper.addAuthHeader({}, getJwtToken()),
+		body: formData,
+	};
+
+	return fetch(`${config.apiUrl}/api/transaction/${type}/`, requestOptions)
+		.then(httpHelper.handleResponse)
+		.then(createdTransaction => createdTransaction)
+		.catch(httpHelper.handleError);
+};
+
+export const deleteTransactionCall = (transactionId, transactionType) => {
+	let type =	mapTransactionTypeToDomain(transactionType); 
+
+	const requestOptions = {
+		method: "DELETE",
+		headers: httpHelper.addAuthHeader({}, getJwtToken()),
+	};
+
+	return fetch(`${config.apiUrl}/api/transaction/${type}/${transactionId}`, requestOptions)
+		.then(httpHelper.handleResponse)
+		.then(deletedTransaction => deletedTransaction)
 		.catch(httpHelper.handleError);
 };

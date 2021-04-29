@@ -111,7 +111,6 @@ button.btn.btn-secondary {
 .navbar-main {
 	margin-left: -15px;
 	margin-right: -15px;
-	margin-bottom: 15px;
 
 	.nav-item {
 		border-radius: 4px;
@@ -344,4 +343,48 @@ button.btn.btn-secondary {
 .icon-as-list-pointer {
 	font-size: 20px;
 	vertical-align: sub;
+}
+
+#current-page {
+	color: @main-color-dark; 
+
+	&.other-page-hover {
+		color: @main-focus-color-light;
+	}
+}
+
+.home-page-admin, .page-not-found-container {
+	margin-top: 100px;
+}
+
+.home-page-user {
+	margin-top: 20px;
+}
+
+@media (min-width: 960px) {
+	.navbar-main {
+		position: absolute;
+		right: 3px;
+	}
+}
+
+.invalid-feedback {
+	color: #a70010;
+	font-weight: bold;
+}
+
+.transaction-add-position-icon, .transaction-delete-position-icon {
+	font-size: 22px;
+
+	&:hover {
+		cursor:pointer;
+	}
+}
+
+.transaction-delete-position-icon {
+	height: 40px;
+}
+
+.trash-no-label {
+	width: 20px;
 }

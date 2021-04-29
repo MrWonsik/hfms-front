@@ -100,7 +100,7 @@ const MainUserPage = () => {
                                   .sort((a,b) => ( new Date(b.createDate.date) - new Date(a.createDate.date)))
                                   .slice(0, 5)
                                   .map(category => (
-                                    <ListGroup.Item key={category.id}>{category.categoryName} <span className="additionaly-info">({category.createDate.date})</span></ListGroup.Item>
+                                    <ListGroup.Item key={category.id + category.categoryName}>{category.categoryName} <span className="additionaly-info">({category.createDate.date})</span></ListGroup.Item>
                                   ))}
                                   <ListGroup.Item className="text-right"><Link className="" to="/home/category-page">see more</Link></ListGroup.Item>
                           </ListGroup>
