@@ -77,7 +77,6 @@ export const AddNewTransactionModal = () => {
     const handleAddNewTransaction = (e) => {
         e.preventDefault();
         setSubmitted(true);
-        console.log(positionListForm);
         if (transactionName && transactionType && cost && cost >= 0 && category && category.name !== "Please wait" && positionListForm.every(position => position.positionName !== "")) {
             dispatch(createTransaction({ 
                 name: transactionName, 
@@ -86,7 +85,8 @@ export const AddNewTransactionModal = () => {
                 shop: shop,
                 receiptFile: receiptFile,
                 categoryId: category.id,
-                expensePositions: positionListForm
+                expensePositions: positionListForm,
+                transactionDate: transactionDate,
              }))
             .then((isCategoriesCreated) => {
                 if(isCategoriesCreated) {
@@ -208,10 +208,10 @@ export const AddNewTransactionModal = () => {
                                 type="text"
                                 className="form-control"
                                 name="shop"
-                                value={shop?.name}
+                                value={shop?.shopName}
                                 onChange={(e) => {
                                     let element = document.querySelector("option[value=\"" + e.target.value + "\"]");
-                                    setShop({id: element != null ? element.getAttribute("id") : undefined, name: e.target.value})
+                                    setShop({id: element != null ? element.getAttribute("id") : undefined, shopName: e.target.value})
                                 }}
                                 placeholder="Enter shop name"
                             />

@@ -235,9 +235,9 @@ export const getTransactionsRequest = ( transactionType ) => ({ type: GET_TRANSA
 export const getTransactionsSuccess = (transactions, transactionType) => ({ type: GET_TRANSACTIONS_SUCCESS, payload: {transactions, transactionType} })
 export const getTransactionsFailure = ( transactionType ) => ({ type: GET_TRANSACTIONS_FAILURE, payload: {transactionType} })
 
-export const getTransactions = ( transactionType ) => async dispatch => {
+export const getTransactions = ( transactionType, date ) => async dispatch => {
     dispatch(getTransactionsRequest( transactionType ));
-    await getTransactionsCall(transactionType)
+    await getTransactionsCall(transactionType, date)
         .then(
             transactions => {
                 dispatch(getTransactionsSuccess(transactions, transactionType));

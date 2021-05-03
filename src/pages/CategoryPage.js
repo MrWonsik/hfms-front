@@ -36,7 +36,7 @@ const CategoryPage = () => {
     return (
         <>
             <Form.Group className="text-right add-new-container">
-                {getIconWithActionAndTooltip(BsPlus, "icon-add", () => handleAddNewCategory(), "top", "Add new category")}
+                {getIconWithActionAndTooltip(BsPlus, "table-icon-action", () => handleAddNewCategory(), "top", "Add new category")}
             </Form.Group>
             <Tabs className="categories-tabs">
                 <Tab eventKey="expense" title="expense">

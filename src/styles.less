@@ -232,7 +232,7 @@ button.btn.btn-secondary {
 	}
 }
 
-.icon-add {
+.table-icon-action {
 	font-size: 50px;
 	color: @main-color-dark;
 
@@ -242,6 +242,11 @@ button.btn.btn-secondary {
 		color: @main-focus-color-light;
 		transition: color 0.15s ease-in-out, color 0.15s ease-in-out;
 		cursor: pointer;
+	}
+
+	&.disabled {
+		color: rgb(197, 196, 196);
+		cursor: default;
 	}
 }
 
@@ -387,4 +392,21 @@ button.btn.btn-secondary {
 
 .trash-no-label {
 	width: 20px;
+}
+
+.income-transaction-cost-style {
+	color: green;
+	font-weight: 700;
+}
+
+.expense-transaction-cost-style {
+	color: red;
+	font-weight: 700;
+}
+
+.transaction-current-year-and-month {
+	font-size: 28px;
+	color: @main-color-dark;
+	text-align: center;
+	width: 230px;
 }

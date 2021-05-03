@@ -11,7 +11,7 @@ export const getShopsCall = () => {
 		headers: httpHelper.addAuthHeader({}, getJwtToken()),
 	};
 
-	return fetch(`${config.apiUrl}/api/shop/`, requestOptions)
+	return fetch(`${config.apiUrl}/api/shop`, requestOptions)
 		.then(httpHelper.handleResponse)
 		.catch(httpHelper.handleError);
 };
@@ -26,7 +26,7 @@ export const createShopCall = (shopName) => {
 		body: JSON.stringify({ shopName }),
 	};
 
-	return fetch(`${config.apiUrl}/api/shop/`, requestOptions)
+	return fetch(`${config.apiUrl}/api/shop`, requestOptions)
 		.then(httpHelper.handleResponse)
 		.then(shop => shop)
 		.catch(httpHelper.handleError);
@@ -54,7 +54,7 @@ export const getCategoriesCall = ( categoryType ) => {
 		headers: httpHelper.addAuthHeader({}, getJwtToken()),
 	};
 
-	return fetch(`${config.apiUrl}/api/category/${type}/`, requestOptions)
+	return fetch(`${config.apiUrl}/api/category/${type}`, requestOptions)
 		.then(httpHelper.handleResponse)
 		.catch(httpHelper.handleError);
 };
@@ -71,7 +71,7 @@ export const createCategoryCall = (category) => {
 		body: JSON.stringify(category),
 	};
 
-	return fetch(`${config.apiUrl}/api/category/${type}/`, requestOptions)
+	return fetch(`${config.apiUrl}/api/category/${type}`, requestOptions)
 		.then(httpHelper.handleResponse)
 		.then(createdCategory => createdCategory)
 		.catch(httpHelper.handleError);
@@ -143,7 +143,7 @@ export const editCategoryCall = (categoryId, categoryName, colorHex, categoryTyp
 		.catch(httpHelper.handleError);
 };
 
-export const getTransactionsCall = ( transactionType ) => {
+export const getTransactionsCall = ( transactionType, date ) => {
 	let type = mapTransactionTypeToDomain(transactionType).toLowerCase(); 
 
 	const requestOptions = {
@@ -151,7 +151,9 @@ export const getTransactionsCall = ( transactionType ) => {
 		headers: httpHelper.addAuthHeader({}, getJwtToken()),
 	};
 
-	return fetch(`${config.apiUrl}/api/transaction/${type}/`, requestOptions)
+	let urlGetRequest = date ? `${config.apiUrl}/api/transaction/${type}?year=${date.year}&month=${date.month + 1}` : `${config.apiUrl}/api/transaction/${type}`; 
+
+	return fetch(urlGetRequest, requestOptions)
 		.then(httpHelper.handleResponse)
 		.catch(httpHelper.handleError);
 };
@@ -172,7 +174,7 @@ export const createTransactionCall = (transaction) => {
 		body: formData,
 	};
 
-	return fetch(`${config.apiUrl}/api/transaction/${type}/`, requestOptions)
+	return fetch(`${config.apiUrl}/api/transaction/${type}`, requestOptions)
 		.then(httpHelper.handleResponse)
 		.then(createdTransaction => createdTransaction)
 		.catch(httpHelper.handleError);

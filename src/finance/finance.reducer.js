@@ -38,8 +38,7 @@ const initialState = {
 	isShopsLoading: false,
 	isExpenseCategoriesLoading: false,
 	isIncomeCategoriesLoading: false,
-	isExpenseTransactionsLoading: false,
-	isIncomeTransactionsLoading: false,
+	isTransactionsLoading: false,
 	creatingCategoryInProgress: false,
 	creatingShopInProgress: false,
 	isEditExpenseCategoryMaximumCostInProgress: false,
@@ -226,23 +225,10 @@ export const finance = (state = initialState, action) => {
 				isEditCategoryInProgress: false
 			};
 		case GET_TRANSACTIONS_REQUEST: {
-			const { transactionType } = payload;
-			switch(transactionType) {
-				case EXPENSE_TRANSACTION: {
-					return {
-						...state,
-						isExpenseTransactionsLoading: true
-					};
-				}
-				case INCOME_TRANSACTION: {
-					return {
-						...state,
-						isIncomeTransactionsLoading: true
-					}
-				}
-				default:
-					return state;
-			}
+			return {
+				...state,
+				isTransactionsLoading: true
+			};
 		}
 		case GET_TRANSACTIONS_SUCCESS: {
 			const { transactions, transactionType } = payload;
@@ -250,40 +236,26 @@ export const finance = (state = initialState, action) => {
 				case EXPENSE_TRANSACTION: {
 					return {
 						...state,
-						expenseTransactions: transactions,
-						isExpenseTransactionsLoading: false,
+						expenseTransactions: transactions.map(transaction => ({...transaction, type: transactionType})),
+						isTransactionsLoading: false,
 					};
 				}
 				case INCOME_TRANSACTION: {
 					return {
 						...state,
-						incomeTransactions: transactions,
-						isIncomeTransactionsLoading: false
+						incomeTransactions: transactions.map(transaction => ({...transaction, type: transactionType})),
+						isTransactionsLoading: false
 					}
 				}
 				default:
 					return state;
 			}
 		}
-		case GET_TRANSACTIONS_FAILURE: {
-			const { transactionType } = payload;
-			switch(transactionType) {
-				case EXPENSE_TRANSACTION: {
-					return {
-						...state,
-						isExpenseTransactionsLoading: false
-					};
-				}
-				case INCOME_TRANSACTION: {
-					return {
-						...state,
-						isIncomeTransactionsLoading: false
-					}
-				}
-				default:
-					return state;
+		case GET_TRANSACTIONS_FAILURE: 
+			return {
+				...state,
+				isTransactionsLoading: false
 			}
-		}
 		case CREATE_TRANSACTION_REQUEST:
 			return {
 				...state,
@@ -293,10 +265,10 @@ export const finance = (state = initialState, action) => {
 			const { transaction, transactionType } = payload;
 			switch(transactionType) {
 				case EXPENSE_TRANSACTION: {
-					state.expenseTransactions.push(transaction);
+					state.expenseTransactions.push({...transaction, type: transactionType});
 				} break;
 				case INCOME_TRANSACTION: {
-					state.incomeTransactions.push(transaction);
+					state.incomeTransactions.push({...transaction, type: transactionType});
 				} break;
 			}
 			return {

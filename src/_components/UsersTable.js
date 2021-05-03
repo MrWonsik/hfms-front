@@ -13,6 +13,7 @@ import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import { dateSort } from "../_helpers/tableBootstrapSorter";
 import { getIconWithActionAndTooltip } from "../_helpers/wrapWithTooltip";
+import Loader from "../_helpers/Loader";
 
 
 const UsersTable = () => {
@@ -112,10 +113,10 @@ const UsersTable = () => {
 
     return (
         <>
-            {!users && isUsersLoading && products ? <Spinner animation="border text-center" size="lg" /> : 
+            {!users && isUsersLoading && products ? <Loader /> : 
                 <>
                     <Form.Group className="text-right add-new-container">
-                        {getIconWithActionAndTooltip(BsPersonPlusFill, "icon-add", () => handleAddNewUser(), "top", "Add new user")}
+                        {getIconWithActionAndTooltip(BsPersonPlusFill, "table-icon-action", () => handleAddNewUser(), "top", "Add new user")}
                     </Form.Group>
                     <BootstrapTable 
                         classes="list-table" 
