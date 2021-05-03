@@ -12,6 +12,7 @@ import { dateSort, sortByName } from '../_helpers/tableBootstrapSorter';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import { getIconWithActionAndTooltip } from '../_helpers/wrapWithTooltip';
+import Loader from '../_helpers/Loader';
 
 const ShopsTable = () => {
     const dispatch = useDispatch();
@@ -82,10 +83,10 @@ const ShopsTable = () => {
 
     return (
         <>
-            { !shops && isShopsLoading ? <div className="text-center"><Spinner animation="border" size="lg" /></div> :  shops?.length > 0 ?  
+            { !shops && isShopsLoading ? <Loader /> :  shops?.length > 0 ?  
                 <>
                     <Form.Group className="text-right add-new-container">
-                        {getIconWithActionAndTooltip(BsPlus, "icon-add", () => handleAddNewShop(), "top", "Add new shop")}
+                        {getIconWithActionAndTooltip(BsPlus, "table-icon-action", () => handleAddNewShop(), "top", "Add new shop")}
                     </Form.Group>
                     <BootstrapTable 
                         classes="list-table" 

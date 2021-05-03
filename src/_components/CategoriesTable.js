@@ -14,6 +14,7 @@ import EditMaximumCostModal from './modal/EditMaximumCostModal';
 import PropTypes from "prop-types";
 import { getIconWithActionAndTooltip } from '../_helpers/wrapWithTooltip';
 import EditCategoryModal from './modal/EditCategoryModal';
+import Loader from '../_helpers/Loader';
 
 const CategoriesTable = ({ type, categories, isLoading }) => {
 
@@ -103,7 +104,7 @@ const CategoriesTable = ({ type, categories, isLoading }) => {
 
     return (
         <>
-            { !categories && isLoading === true ? <Spinner animation="border text-center" size="lg" /> :  categories?.length > 0 ?  
+            { isLoading === true ? <Loader /> :  categories?.length > 0 ?  
                 <>
                     <BootstrapTable 
                         classes="list-table" 

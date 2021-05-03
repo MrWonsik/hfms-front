@@ -1,19 +1,64 @@
-import React from 'react';
-import { useDispatch } from 'react-redux';
-import Spinner from "react-bootstrap/Spinner";
+import React, { useEffect, useState } from 'react';
+import { BsChevronCompactLeft, BsChevronCompactRight, BsPlus } from 'react-icons/bs';
+import { changePage } from '../user/user.actions';
+import { getIconWithActionAndTooltip } from '../_helpers/wrapWithTooltip';
+import Form from 'react-bootstrap/Form';
+import { EXPENSE_TRANSACTION, INCOME_TRANSACTION } from '../finance/TransactionType';
+import { useDispatch, useSelector } from 'react-redux';
 import { BsCalendar, BsPencil, BsTrash } from 'react-icons/bs'
 import Alert from "react-bootstrap/Alert";
-import { dateSort, sortByName } from '../_helpers/tableBootstrapSorter';
+import { dateSort } from '../_helpers/tableBootstrapSorter';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
-import PropTypes from "prop-types";
 import { openConfirmationModal, openModalAddNewTransaction } from '../modal/modal.actions';
-import { getIconWithActionAndTooltip } from '../_helpers/wrapWithTooltip';
 import ConfirmationModal from './modal/ConfirmationModal';
 import { deleteTransaction } from '../finance/finance.actions';
+import Loader from '../_helpers/Loader';
+import { getTransactions } from '../finance/finance.actions';
+import { getMonth } from '../_helpers/dateHelper';
+import moment from 'moment';
 
-const TransactionsTable = ({ type, transactions, isLoading }) => {
+const TransactionsTable = () => {
     const dispatch = useDispatch();
+
+    let [date, setDate] = useState(moment());
+
+    useEffect(() => {
+        dispatch(changePage("Transaction list"));
+        dispatch(getTransactions(EXPENSE_TRANSACTION, {year: date.year(), month: date.month()} ));
+        dispatch(getTransactions(INCOME_TRANSACTION, {year: date.year(), month: date.month()} )); // not implemented yet in backend
+      }, []);
+
+      const handleAddNewFinance = () => {
+        dispatch(openModalAddNewTransaction());
+    }
+
+    useEffect(() => {
+        dispatch(getTransactions(EXPENSE_TRANSACTION, {year: date.year(), month: date.month()} ));
+        dispatch(getTransactions(INCOME_TRANSACTION, {year: date.year(), month: date.month()} )); // not implemented yet in backend
+    }, [date])
+    
+    const { expenseTransactions, incomeTransactions, isLoading } = useSelector(( state ) => ({
+        expenseTransactions: state.finance.expenseTransactions,
+        incomeTransactions: state.finance.incomeTransactions,
+        isLoading: state.finance.isTransactionsLoading
+    }));
+
+    let transactions = expenseTransactions.concat(incomeTransactions);
+
+    const generateTransactionsMap = () => {
+        return  transactions?.map((transaction) => ({
+            id: transaction.id,
+            name: <>{transaction.name} <span className="additionaly-info">({transaction.id})</span></>,
+            created: <><BsCalendar /> {transaction.createdDate}</>,
+            cost: transaction.cost,
+            actions: <>
+                {getIconWithActionAndTooltip(BsPencil, "table-action-icon", () => console.log("not implemented yet"), "top", "Edit")}
+                {getIconWithActionAndTooltip(BsTrash, "table-action-icon", () => showDeleteConfirmationModal(transaction), "top", "Delete")}
+            </>,
+            type: transaction.type
+        }))
+    }
 
     const showDeleteConfirmationModal = (transaction) => {
         dispatch(openConfirmationModal("transaction_confirmation_" + transaction.name.trim() + "_" + transaction.id));
@@ -27,26 +72,36 @@ const TransactionsTable = ({ type, transactions, isLoading }) => {
         dispatch(deleteTransaction(id, transactionType));
     }
 
-    const products = transactions?.map((transaction) => ({
-            id: transaction.id,
-            transactionName: <>{transaction.name} <span className="additionaly-info">({transaction.id})</span></>,
-            created: <><BsCalendar /> {transaction.createdDate}</>,
-            actions: <>
-                {getIconWithActionAndTooltip(BsPencil, "table-action-icon", () => console.log("not implemented yet"), "top", "Edit")}
-                {getIconWithActionAndTooltip(BsTrash, "table-action-icon", () => showDeleteConfirmationModal(transaction), "top", "Delete")}
-            </>,
-    }))
+    const costFormatter = (cell, transactionRow) => {
+        switch(transactionRow.type) {
+            case EXPENSE_TRANSACTION:
+                return (
+                    <span className={"expense-transaction-cost-style"} >
+                        - {cell} zł
+                    </span>
+                )
+            case INCOME_TRANSACTION:
+                return (
+                    <span className={"income-transaction-cost-style"} >
+                        + {cell} zł
+                    </span>
+                )
+        }
+    }
     
     const columns = [{
-        dataField: 'transactionName',
+        dataField: 'name',
         text: 'Name',
-        sort: true,
-        sortFunc: sortByName
       }, {
         dataField: 'created',
         text: 'Created',
         sort: true,
         sortFunc: dateSort
+      }, {
+        dataField: 'cost',
+        text: 'Cost',
+        formatter: costFormatter,
+        formatExtraData: transactions
       }, {
         dataField: 'actions',
         text: 'Action'  
@@ -69,13 +124,25 @@ const TransactionsTable = ({ type, transactions, isLoading }) => {
 
     return (
         <>
-            { !transactions && isLoading === true ? <Spinner animation="border text-center" size="lg" /> :  transactions?.length > 0 ?  
+            <Form.Group className="d-flex add-new-container">
+                <div className="date-selector-container d-flex ml-auto mr-auto">
+                    {getIconWithActionAndTooltip(BsChevronCompactLeft, "table-icon-action", () => setDate((curDate) => curDate.clone().subtract(1, "months")), "top", "Previous month")}
+                        <span className="transaction-current-year-and-month">{getMonth(date.month())} - {date.year()}</span>
+                    {date.month() === moment().month() && date.year() === moment().year() 
+                    ? getIconWithActionAndTooltip(BsChevronCompactRight, "table-icon-action disabled", () => "", "top", "Disabled") 
+                    : getIconWithActionAndTooltip(BsChevronCompactRight, "table-icon-action", () => setDate((curDate) => curDate.clone().add(1, "months")), "top", "Next month")}
+                </div>
+                <div className="float-right">
+                    {getIconWithActionAndTooltip(BsPlus, "table-icon-action", () => handleAddNewFinance(), "top", "Add new transaction")}
+                </div>
+            </Form.Group>
+            { isLoading === true ? <Loader /> :  transactions?.length > 0 ?  
                 <>
                     <BootstrapTable 
                         classes="list-table" 
                         bootstrap4 
                         keyField="id" 
-                        data={ products } 
+                        data={ generateTransactionsMap() } 
                         columns={ columns }
                         bordered={false}
                         defaultSorted={defaultSorted}
@@ -83,7 +150,7 @@ const TransactionsTable = ({ type, transactions, isLoading }) => {
                     />
                     {transactions?.map((transaction) => (
                         <div key={transaction.id}>
-                            <ConfirmationModal id={"transaction_confirmation_" + transaction.name.trim() + "_" + transaction.id} confirmationFunction={() => handleDeleteTransaction(transaction.id, type)} confirmationMessage={"Are you sure you want to delete " + transaction.name + "?"} />
+                            <ConfirmationModal id={"transaction_confirmation_" + transaction.name.trim() + "_" + transaction.id} confirmationFunction={() => handleDeleteTransaction(transaction.id, transaction.type)} confirmationMessage={"Are you sure you want to delete " + transaction.name + "?"} />
                         </div>
                     ))}
                 </> :
@@ -93,12 +160,6 @@ const TransactionsTable = ({ type, transactions, isLoading }) => {
             }
         </>
     );
-}
-
-TransactionsTable.propTypes = {
-    type: PropTypes.string.isRequired, 
-    transactions: PropTypes.array.isRequired,
-    isLoading: PropTypes.bool.isRequired
 }
 
 export default TransactionsTable;

@@ -132,7 +132,7 @@ export const AddNewCategoryModal = () => {
                 </Form.Group>
             }
             <Form.Group controlId="isFavourite">
-                <Form.Check //TODO: Change color of switch!
+                <Form.Check
                     type="switch"
                     name="isFavourite"
                     onChange={() => setIsFavourite(!isFavourite)}

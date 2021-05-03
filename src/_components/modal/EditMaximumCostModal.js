@@ -7,6 +7,7 @@ import {BsArrowRightShort} from 'react-icons/bs'
 import { Form, Spinner } from "react-bootstrap";
 import PropTypes from "prop-types";
 import { editExpenseCategoryMaximumCost } from "../../finance/finance.actions";
+import { getMonth } from "../../_helpers/dateHelper";
 
 const EditMaximumCostModal = ({ id, category }) => {
 
@@ -46,8 +47,7 @@ const EditMaximumCostModal = ({ id, category }) => {
         category.expenseCategoryVersions?.sort((b, a) => new Date(b.validMonth) - new Date(a.validMonth)).slice(0, 3).map(version => {
             let date = new Date(version.validMonth);
             let year = date.getFullYear();
-            var months = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"];
-            let month = months[date.getMonth()];
+            let month = getMonth(date.getMonth());
             let isCurrentMonth = category.currentVersion.validMonth === version.validMonth;
             return <div key={version.id} className={isCurrentMonth ? "font-italic" : ""}>
                     <BsArrowRightShort className="icon-as-list-pointer"/> {version.maximumCost} zł ({month} {year}) {isCurrentMonth && " - current version"}
@@ -71,7 +71,7 @@ const EditMaximumCostModal = ({ id, category }) => {
                 </Form.Control.Feedback>
             </Form.Group>
             <Form.Group controlId="validInNextMonth">
-                <Form.Check //TODO: Change color of switch!
+                <Form.Check
                     type="switch"
                     name="validInNextMonth"
                     onChange={() => setValidInNextMonth(!validInNextMonth)}
