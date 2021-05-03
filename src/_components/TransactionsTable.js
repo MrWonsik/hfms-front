@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BsChevronCompactLeft, BsChevronCompactRight, BsPlus } from 'react-icons/bs';
+import { BsChevronCompactLeft, BsChevronCompactRight, BsEye, BsPlus } from 'react-icons/bs';
 import { changePage } from '../user/user.actions';
 import { getIconWithActionAndTooltip } from '../_helpers/wrapWithTooltip';
 import Form from 'react-bootstrap/Form';
@@ -10,13 +10,14 @@ import Alert from "react-bootstrap/Alert";
 import { dateSort } from '../_helpers/tableBootstrapSorter';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
-import { openConfirmationModal, openModalAddNewTransaction } from '../modal/modal.actions';
+import { openConfirmationModal, openModalAddNewTransaction, openTransactionDetailsModal } from '../modal/modal.actions';
 import ConfirmationModal from './modal/ConfirmationModal';
 import { deleteTransaction } from '../finance/finance.actions';
 import Loader from '../_helpers/Loader';
 import { getTransactions } from '../finance/finance.actions';
 import { getMonth } from '../_helpers/dateHelper';
 import moment from 'moment';
+import TransactionDetailsModal from './modal/TransactionDetailsModal';
 
 const TransactionsTable = () => {
     const dispatch = useDispatch();
@@ -53,11 +54,16 @@ const TransactionsTable = () => {
             created: <><BsCalendar /> {transaction.createdDate}</>,
             cost: transaction.cost,
             actions: <>
+                {getIconWithActionAndTooltip(BsEye, "table-action-icon", () => showTransactionDetails(transaction), "top", "Show details")}
                 {getIconWithActionAndTooltip(BsPencil, "table-action-icon", () => console.log("not implemented yet"), "top", "Edit")}
                 {getIconWithActionAndTooltip(BsTrash, "table-action-icon", () => showDeleteConfirmationModal(transaction), "top", "Delete")}
             </>,
             type: transaction.type
         }))
+    }
+
+    const showTransactionDetails = (transaction) => {
+        dispatch(openTransactionDetailsModal("transaction_details_" + transaction.name.trim() + "_" + transaction.id));
     }
 
     const showDeleteConfirmationModal = (transaction) => {
@@ -148,9 +154,12 @@ const TransactionsTable = () => {
                         defaultSorted={defaultSorted}
                         pagination={ paginationFactory(paginationOptions) }
                     />
+
                     {transactions?.map((transaction) => (
                         <div key={transaction.id}>
+                            {console.log(transaction)}
                             <ConfirmationModal id={"transaction_confirmation_" + transaction.name.trim() + "_" + transaction.id} confirmationFunction={() => handleDeleteTransaction(transaction.id, transaction.type)} confirmationMessage={"Are you sure you want to delete " + transaction.name + "?"} />
+                            <TransactionDetailsModal id={"transaction_details_" + transaction.name.trim() + "_" + transaction.id} transaction={transaction} />
                         </div>
                     ))}
                 </> :
