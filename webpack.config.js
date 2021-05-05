@@ -23,6 +23,10 @@ module.exports = {
                     { loader: 'css-loader' },
                     { loader: 'less-loader' }
                 ]
+            },
+            {
+                test: /\.(jpe?g|png|gif|svg)$/i, 
+                loader: 'file-loader',
             }
         ]
     },

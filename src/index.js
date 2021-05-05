@@ -6,6 +6,7 @@ import { PersistGate } from 'redux-persist/lib/integration/react'
 import { configureStore } from './_helpers';
 import App from './App';
 
+import 'react-image-lightbox/style.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import './styles.less';

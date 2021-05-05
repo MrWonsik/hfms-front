@@ -25,7 +25,10 @@ import {
 	CREATE_TRANSACTION_FAILURE,
 	GET_TRANSACTIONS_FAILURE,
 	GET_TRANSACTIONS_SUCCESS,
-	GET_TRANSACTIONS_REQUEST
+	GET_TRANSACTIONS_REQUEST,
+	GET_EXPENSE_FILE_SUCCESS,
+	GET_EXPENSE_FILE_FAILURE,
+	GET_EXPENSE_FILE_REQUEST
 } from "./finance.actions";
 import { EXPENSE_TRANSACTION, INCOME_TRANSACTION } from './TransactionType';
 
@@ -42,7 +45,9 @@ const initialState = {
 	creatingCategoryInProgress: false,
 	creatingShopInProgress: false,
 	isEditExpenseCategoryMaximumCostInProgress: false,
-	isEditCategoryInProgress: false
+	isEditCategoryInProgress: false,
+	expenseFileRequestLoading: false,
+	expenseDetailsBytes: ""
 };
 
 export const finance = (state = initialState, action) => {
@@ -280,6 +285,24 @@ export const finance = (state = initialState, action) => {
 			return {
 				...state,
 				creatingTransactionInProgress: false
+			};
+		case GET_EXPENSE_FILE_REQUEST:
+			return {
+				...state,
+				expenseFileRequestLoading: true,
+			};
+		case GET_EXPENSE_FILE_SUCCESS: {
+			const { transactionBytes } = payload;
+			return {
+				...state,
+				expenseDetailsBytes: `data:image/jpg;base64, ${transactionBytes}`,
+				expenseFileRequestLoading: false
+			}
+		}
+		case GET_EXPENSE_FILE_FAILURE:
+			return {
+				...state,
+				expenseFileRequestLoading: false
 			};
 		default: return state;
 	}

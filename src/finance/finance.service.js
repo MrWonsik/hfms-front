@@ -193,3 +193,14 @@ export const deleteTransactionCall = (transactionId, transactionType) => {
 		.then(deletedTransaction => deletedTransaction)
 		.catch(httpHelper.handleError);
 };
+
+export const getExpenseFileCall = ( transactionId, receiptId ) => {
+	const requestOptions = {
+		method: "GET",
+		headers: httpHelper.addAuthHeader({}, getJwtToken()),
+	};
+
+	return fetch(`${config.apiUrl}/api/transaction/expense/${transactionId}/file/${receiptId}`, requestOptions)
+		.then(httpHelper.handleFileResponse)
+		.catch(httpHelper.handleError);
+};

@@ -1,9 +1,9 @@
-import { history } from "../App";
 
 export const httpHelper = {
 	addAuthHeader,
 	handleResponse,
 	handleError,
+	handleFileResponse
 };
 
 function addAuthHeader(headers, token) {
@@ -31,10 +31,21 @@ function handleResponse(response) {
 	});
 }
 
+function handleFileResponse(response) {
+	return response.text().then((text) => {
+		const data = text;
+		if (!response.ok) {
+			const error = {
+				msg: (data && data.message) || response.statusText,
+			};
+			error.response = response.status;
+			return Promise.reject(error);
+		}
+		return data;
+	});
+}
+
 function handleError(error) {
-	if (error.response === 401 || typeof error.response === "undefined") {
-		history.push("/login");
-	}
 	let errorResp = { msg: error.msg ? error.msg : "A server error has occurred: " + error.toString() };
 	return Promise.reject(errorResp);
 }

@@ -12,7 +12,7 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import { openConfirmationModal, openModalAddNewTransaction, openTransactionDetailsModal } from '../modal/modal.actions';
 import ConfirmationModal from './modal/ConfirmationModal';
-import { deleteTransaction } from '../finance/finance.actions';
+import { deleteTransaction, getTransactionFile } from '../finance/finance.actions';
 import Loader from '../_helpers/Loader';
 import { getTransactions } from '../finance/finance.actions';
 import { getMonth } from '../_helpers/dateHelper';
@@ -30,7 +30,7 @@ const TransactionsTable = () => {
         dispatch(getTransactions(INCOME_TRANSACTION, {year: date.year(), month: date.month()} )); // not implemented yet in backend
       }, []);
 
-      const handleAddNewFinance = () => {
+    const handleAddNewFinance = () => {
         dispatch(openModalAddNewTransaction());
     }
 
@@ -63,6 +63,9 @@ const TransactionsTable = () => {
     }
 
     const showTransactionDetails = (transaction) => {
+        if(transaction.receiptId !== null) {
+            dispatch(getTransactionFile(transaction.id, transaction.receiptId))
+        }
         dispatch(openTransactionDetailsModal("transaction_details_" + transaction.name.trim() + "_" + transaction.id));
     }
 
@@ -157,7 +160,6 @@ const TransactionsTable = () => {
 
                     {transactions?.map((transaction) => (
                         <div key={transaction.id}>
-                            {console.log(transaction)}
                             <ConfirmationModal id={"transaction_confirmation_" + transaction.name.trim() + "_" + transaction.id} confirmationFunction={() => handleDeleteTransaction(transaction.id, transaction.type)} confirmationMessage={"Are you sure you want to delete " + transaction.name + "?"} />
                             <TransactionDetailsModal id={"transaction_details_" + transaction.name.trim() + "_" + transaction.id} transaction={transaction} />
                         </div>

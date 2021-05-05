@@ -1,6 +1,6 @@
 import { alertError, alertSuccess } from "../alert/alert.actions";
 import { EXPENSE } from "./CategoryType";
-import { getShopsCall, createShopCall, deleteShopCall, getCategoriesCall, createCategoryCall, changeStateFavouriteCategoryCall, deleteCategoryCall, editExpenseCategoryMaximumCostCall, editCategoryCall, createTransactionCall, getTransactionsCall, deleteTransactionCall } from "./finance.service";
+import { getShopsCall, createShopCall, deleteShopCall, getCategoriesCall, createCategoryCall, changeStateFavouriteCategoryCall, deleteCategoryCall, editExpenseCategoryMaximumCostCall, editCategoryCall, createTransactionCall, getTransactionsCall, deleteTransactionCall, getExpenseFileCall } from "./finance.service";
 
 export const GET_SHOPS_REQUEST = "GET_SHOPS_REQUEST";
 export const GET_SHOPS_SUCCESS = "GET_SHOPS_SUCCESS";
@@ -297,6 +297,29 @@ export const deleteTransaction = ( transactionId, transactionType ) => async dis
             },
             error => {
                 dispatch(deleteTransactionFailure());
+                dispatch(alertError(error.msg));
+                return Promise.reject(error);
+            }
+        );
+}
+
+export const GET_EXPENSE_FILE_REQUEST = "GET_EXPENSE_FILE_REQUEST";
+export const GET_EXPENSE_FILE_SUCCESS = "GET_EXPENSE_FILE_SUCCESS";
+export const GET_EXPENSE_FILE_FAILURE = "GET_EXPENSE_FILE_FAILURE";
+export const getExpenseFileRequest = () => ({ type: GET_EXPENSE_FILE_REQUEST })
+export const getExpenseFileSuccess = (transactionBytes) => ({ type: GET_EXPENSE_FILE_SUCCESS, payload: {transactionBytes} })
+export const getExpenseFileFailure = () => ({ type: GET_EXPENSE_FILE_FAILURE })
+
+export const getTransactionFile = ( transactionId, receiptId ) => async dispatch => {
+    dispatch(getExpenseFileRequest( ));
+    await getExpenseFileCall(transactionId, receiptId)
+        .then(
+            transactionBytes => {
+                dispatch(getExpenseFileSuccess(transactionBytes));
+            },
+            error => {
+                console.error(error);
+                dispatch(getExpenseFileFailure());
                 dispatch(alertError(error.msg));
                 return Promise.reject(error);
             }
