@@ -58,7 +58,7 @@ const EditMaximumCostModal = ({ id, category }) => {
                 <Form.Label>Current maximum category cost:</Form.Label>
                 <Form.Control
                     type="number"
-                    className={ "form-control" + (submitted && maximumCost < 0 ? " is-invalid" : "")}
+                    className={(submitted && maximumCost < 0 ? " is-invalid" : "")}
                     name="maximumCategoryCost"
                     value={maximumCost}
                     onChange={(e) => setMaximumCost(e.target.value)}

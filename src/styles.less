@@ -60,8 +60,12 @@ button.btn.btn-primary {
 		box-shadow: 0 0 0 0.2rem @main-focus-color-light;
 	}
 
-	&:hover {
+	&:hover:not(:disabled):not(.disabled) {
 		background-color: @main-color-focus-dark;
+	}
+
+	&.disabled:hover {
+		cursor: default;
 	}
 }
 
@@ -86,7 +90,7 @@ button.btn.btn-secondary {
 	}
 }
 
-.form-group {
+.form-group, .transaction-detail-container {
 	input,
 	select {
 		border-color: @main-color-dark;
@@ -428,7 +432,7 @@ button.btn.btn-secondary {
 }
 
 .transaction-image-container {
-	border: 1px solid @main-font-color;
+	border: 1px dotted @main-color-dark;
 	display: flex;
 	flex-direction: column;
     height: 100%;
@@ -452,5 +456,22 @@ button.btn.btn-secondary {
 
 	&.disabled {
 		display: none;
+	}
+}
+
+.transaction-detail-form-row-2 {
+	padding: 3px;
+}
+
+.transaction-detail-container {
+	margin-bottom: 15px;
+}
+
+.transaction-details-label-date {
+	width: 100%;
+	margin-right: 6px;
+	
+	.transaction-details-date-input {
+		margin-left: 4px;
 	}
 }
