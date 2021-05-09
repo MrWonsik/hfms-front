@@ -88,8 +88,8 @@ export const AddNewTransactionModal = () => {
                 expensePositions: positionListForm,
                 transactionDate: transactionDate,
              }))
-            .then((isCategoriesCreated) => {
-                if(isCategoriesCreated) {
+            .then((isTransactionCreated) => {
+                if(isTransactionCreated) {
                     handleClose();
                 }
             });
@@ -123,7 +123,7 @@ export const AddNewTransactionModal = () => {
                         Transaction name is required
                     </Form.Control.Feedback>
                     </Form.Group>
-                    <Form.Group as={Col} sm={2} controlId="cost">
+                    <Form.Group as={Col} controlId="cost">
                             <Form.Label>Cost:</Form.Label>
                             <Form.Control
                                 type="number"
@@ -208,17 +208,17 @@ export const AddNewTransactionModal = () => {
                                 type="text"
                                 className="form-control"
                                 name="shop"
-                                value={shop?.shopName}
+                                value={shop?.name}
                                 onChange={(e) => {
                                     let element = document.querySelector("option[value=\"" + e.target.value + "\"]");
-                                    setShop({id: element != null ? element.getAttribute("id") : undefined, shopName: e.target.value})
+                                    setShop({id: element != null ? element.getAttribute("id") : undefined, name: e.target.value})
                                 }}
                                 placeholder="Enter shop name"
                             />
                             {shops &&
                                 <datalist id="shop-list">
                                     {shops.map(shop => 
-                                        <option id={shop.id} key={shop.id} value={shop.shopName}>{shop.createDate.date}</option>
+                                        <option id={shop.id} key={shop.id} value={shop.name}>{shop.createDate.date}</option>
                                     )}
                                 </datalist>
                             }

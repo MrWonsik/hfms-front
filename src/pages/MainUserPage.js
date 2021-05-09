@@ -122,7 +122,7 @@ const MainUserPage = () => {
                                   .sort((a,b) => ( new Date(b.createDate.date) - new Date(a.createDate.date)))
                                   .slice(0, 5)
                                   .map(shop => (
-                                    <ListGroup.Item key={shop.id}>{shop.shopName} <span className="additionaly-info">({shop.createDate.date})</span></ListGroup.Item>
+                                    <ListGroup.Item key={shop.id}>{shop.name} <span className="additionaly-info">({shop.createDate.date})</span></ListGroup.Item>
                                   ))}
                                   <ListGroup.Item className="text-right"><Link className="" to="/home/shop-page">see more</Link></ListGroup.Item>
                           </ListGroup>

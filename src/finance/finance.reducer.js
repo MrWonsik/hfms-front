@@ -28,7 +28,16 @@ import {
 	GET_TRANSACTIONS_REQUEST,
 	GET_EXPENSE_FILE_SUCCESS,
 	GET_EXPENSE_FILE_FAILURE,
-	GET_EXPENSE_FILE_REQUEST
+	GET_EXPENSE_FILE_REQUEST,
+	DELETE_EXPENSE_FILE_REQUEST,
+	DELETE_EXPENSE_FILE_SUCCESS,
+	DELETE_EXPENSE_FILE_FAILURE,
+	UPLOAD_EXPENSE_FILE_REQUEST,
+	UPLOAD_EXPENSE_FILE_SUCCESS,
+	UPLOAD_EXPENSE_FILE_FAILURE,
+	UPDATE_TRANSACTION_REQUEST,
+	UPDATE_TRANSACTION_SUCCESS,
+	UPDATE_TRANSACTION_FAILURE
 } from "./finance.actions";
 import { EXPENSE_TRANSACTION, INCOME_TRANSACTION } from './TransactionType';
 
@@ -44,6 +53,8 @@ const initialState = {
 	isTransactionsLoading: false,
 	creatingCategoryInProgress: false,
 	creatingShopInProgress: false,
+	creatingTransactionInProgress: false,
+	updateTransactionInProgress: false,
 	isEditExpenseCategoryMaximumCostInProgress: false,
 	isEditCategoryInProgress: false,
 	expenseFileRequestLoading: false,
@@ -286,20 +297,100 @@ export const finance = (state = initialState, action) => {
 				...state,
 				creatingTransactionInProgress: false
 			};
+
+		case UPDATE_TRANSACTION_REQUEST:
+			return {
+				...state,
+				updateTransactionInProgress: true,
+			};
+		case UPDATE_TRANSACTION_SUCCESS: {
+			const { transaction, type } = payload;
+			transaction.type = type;
+			switch(type) {
+				case EXPENSE_TRANSACTION: {
+					return {
+						...state,
+						expenseTransactions: state.expenseTransactions.map((expenseTransactionsState) =>
+							transaction.id === expenseTransactionsState.id ? transaction : expenseTransactionsState
+						),
+						updateTransactionInProgress: false
+					};
+				} 
+				case INCOME_TRANSACTION: {
+					return {
+						...state,
+						incomeTransactions: state.incomeTransactions.map((incomeTransactionsState) => 
+							transaction.id === incomeTransactionsState.id ? transaction : incomeTransactionsState
+						),
+						updateTransactionInProgress: false
+					};
+				}
+				default: return { ...state, updateTransactionInProgress: false };
+			}
+			
+		}
+		case UPDATE_TRANSACTION_FAILURE:
+			return {
+				...state,
+				updateTransactionInProgress: false
+			};
+
 		case GET_EXPENSE_FILE_REQUEST:
 			return {
 				...state,
 				expenseFileRequestLoading: true,
 			};
 		case GET_EXPENSE_FILE_SUCCESS: {
-			const { transactionBytes } = payload;
+			const { transactionFile } = payload;
 			return {
 				...state,
-				expenseDetailsBytes: `data:image/jpg;base64, ${transactionBytes}`,
+				expenseDetailsBytes: `data:image/jpg;base64, ${transactionFile.base64Resource}`,
 				expenseFileRequestLoading: false
 			}
 		}
 		case GET_EXPENSE_FILE_FAILURE:
+			return {
+				...state,
+				expenseFileRequestLoading: false
+			};
+		case DELETE_EXPENSE_FILE_REQUEST:
+			return {
+				...state,
+				expenseFileRequestLoading: true,
+			};
+		case DELETE_EXPENSE_FILE_SUCCESS: {
+			const { transactionId } = payload;
+			return {
+				...state,
+				expenseTransactions: state.expenseTransactions.map((expenseTransactionsState) => 
+							transactionId === expenseTransactionsState.id ? { ...expenseTransactionsState, receiptId: null } : expenseTransactionsState
+						),
+				expenseDetailsBytes: null,
+				expenseFileRequestLoading: false
+			}
+		}
+		case DELETE_EXPENSE_FILE_FAILURE:
+			return {
+				...state,
+				expenseFileRequestLoading: false
+			};
+		case UPLOAD_EXPENSE_FILE_REQUEST:
+			return {
+				...state,
+				expenseFileRequestLoading: true,
+			};
+		case UPLOAD_EXPENSE_FILE_SUCCESS: {
+			const { transactionId, transactionFile } = payload;
+			return {
+				...state,
+				expenseTransactions: state.expenseTransactions.map((expenseTransactionsState) => 
+					transactionId === expenseTransactionsState.id ? { ...expenseTransactionsState, receiptId: transactionFile.id } : expenseTransactionsState
+				),
+				expenseDetailsBytes: `data:image/jpg;base64, ${transactionFile.base64Resource}`,
+				expenseFileRequestLoading: false
+			}
+		}
+		case UPLOAD_EXPENSE_FILE_FAILURE:
 			return {
 				...state,
 				expenseFileRequestLoading: false

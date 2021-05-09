@@ -9,24 +9,23 @@ import Lightbox from 'react-image-lightbox';
 import { BsPlusCircle, BsTrash, BsTrashFill, BsUpload } from "react-icons/bs";
 import { getIconWithActionAndTooltip } from "../../_helpers/wrapWithTooltip";
 import { EXPENSE_TRANSACTION } from "../../finance/TransactionType";
+import { deleteTransactionFile, updateTransaction, uploadTransactionFile } from "../../finance/finance.actions";
+import cloneDeep from "lodash/cloneDeep"
 
 export const TransactionDetailsModal = ({ id, transaction }) => {
     const dispatch = useDispatch();
 
-    const { transactionDetailsModal, expenseFileRequestLoading, expenseDetailsBytes, expenseCategories, incomeCategories, shops } = useSelector(state => ({
+    const { transactionDetailsModal, expenseFileRequestLoading, expenseDetailsBytes, expenseCategories, incomeCategories, shops, updateTransactionInProgress } = useSelector(state => ({
         transactionDetailsModal: state.modals.transactionDetailsModal,
         expenseFileRequestLoading: state.finance.expenseFileRequestLoading,
         expenseDetailsBytes: state.finance.expenseDetailsBytes,
         expenseCategories: state.finance.expenseCategories,
         incomeCategories: state.finance.incomeCategories,
         shops: state.finance.shops,
+        updateTransactionInProgress: state.finance.updateTransactionInProgress
     }));
 
     let [openImage, setOpenImage] = useState(false);
-
-    const handleClose = () => {
-        dispatch(closeTransactionDetailsModal())
-    }
 
     const getFormattedDate = () => {
         let date = new Date(transaction.createdDate);
@@ -36,41 +35,65 @@ export const TransactionDetailsModal = ({ id, transaction }) => {
         return `${day} ${month} ${year}`;
     }
 
-    const uploadFile = () => {
-        console.log("uploadFile");
+    const uploadFile = (file, transactionId) => {
+        dispatch(uploadTransactionFile(transactionId, file));
     }
 
-    const deleteFile = () => {
-        console.log("deleteFile");
+    const deleteFile = (transactionId) => {
+        dispatch(deleteTransactionFile(transactionId))
     }
 
-    const updateTransaction = () => {
+    const updateTransactionHandleClick = () => {
         if(!updatable) {
             return;
         }
 
         setSubmitted(true);
+        if (transactionName && cost && cost >= 0 && category && category.name !== "Please wait" && expensePositionList.every(position => position.positionName !== "")) {
+            dispatch(updateTransaction ({
+                id: transaction.id,
+                name: transactionName, 
+                cost: cost,
+                transactionType: transaction.type,
+                shop: shop,
+                categoryId: category.id,
+                expensePositions: expensePositionList,
+                transactionDate: transactionDate,
+             }))
+            .then((isTransactionUpdated) => {
+                if(isTransactionUpdated) {
+                    dispatch(closeTransactionDetailsModal());
+                }
+            });
+        }
+    }
 
-        console.log(transactionName);
-        console.log(cost);
-        console.log(category);
-        console.log(shop)
-        console.log(transactionDate);
-        console.log(expensePositionList);
+    const handleClose = () => {
+        dispatch(closeTransactionDetailsModal())
+        setSubmitted(false);
+        setTransactionName(transaction.name);
+        setCost(transaction.cost);
+        setCategory({ id: transaction.category?.id, name: transaction.category?.name});
+        setShop({id: transaction.shop?.id, name: transaction.shop?.name});
+        setTransactionDate(transaction.createdDate);
+        setExpensePositionList(cloneDeep(transaction.expensePositionList));
     }
 
     const [submitted, setSubmitted] = useState(false);
     const [transactionName, setTransactionName] = useState(transaction.name);
     const [cost, setCost] = useState(transaction.cost);
-    const [category, setCategory] = useState({ name: transaction.categoryName});
-    const [shop, setShop] = useState({shopName: transaction.shopName});
+    const [category, setCategory] = useState({ id: transaction.category?.id, name: transaction.category?.name});
+    const [shop, setShop] = useState({id: transaction.shop?.id, name: transaction.shop?.name});
     const [transactionDate, setTransactionDate] = useState(transaction.createdDate);
     const [updatable, setUpdatable] = useState(false);
-    const [expensePositionList, setExpensePositionList] = useState(transaction.expensePositionList);
-    //TODO: i need an id in expensePositions list and in shop object!
+    const [expensePositionList, setExpensePositionList] = useState(cloneDeep(transaction.expensePositionList));
+
+    const clickUploadFile = () => {
+        document.getElementById("upload-file-id").click();
+    }
 
     const addNewPositionToList = () => {
-        setExpensePositionList([...expensePositionList, {expensePositionName: "", size: 1, cost: 0}]);
+        setExpensePositionList([...expensePositionList, {id: null, positionName: "", size: 1, cost: 0}]);
     }
 
     const deletePositionFromList = (index) => {
@@ -82,7 +105,7 @@ export const TransactionDetailsModal = ({ id, transaction }) => {
 
     const updatePositionName = index => e => {
         let position = [...expensePositionList];
-        position[index].expensePositionName = e.target.value;
+        position[index].positionName = e.target.value;
         setExpensePositionList(position);
     }
     
@@ -101,15 +124,15 @@ export const TransactionDetailsModal = ({ id, transaction }) => {
     useEffect(() => {
         if(transactionName !== transaction.name ||
             cost !== transaction.cost ||
-            category?.name !== transaction.categoryName ||
-            shop?.shopName !== transaction.shopName || 
+            category?.name !== transaction.category?.name ||
+            (shop?.name !== transaction.shop?.name && shop?.id !== transaction.shop?.id) || 
             JSON.stringify(expensePositionList) != JSON.stringify(transaction.expensePositionList) || 
             transactionDate !== transaction.createdDate) {
             setUpdatable(true);
         } else {
             setUpdatable(false);
         }
-    }, [transactionName, cost, category, shop, transactionDate, updatable, expensePositionList])
+    }, [transactionName, cost, category, shop, transactionDate, expensePositionList])
 
 
     const getOptions = (categories) => {
@@ -194,19 +217,19 @@ export const TransactionDetailsModal = ({ id, transaction }) => {
                                 <Form.Control
                                     list="shop-list"
                                     type="text"
-                                    className={submitted && !shop.shopName ? " is-invalid" : ""}
+                                    className={submitted && !shop.name ? " is-invalid" : ""}
                                     name="shop"
-                                    value={shop.shopName ? shop.shopName : ""}
+                                    value={shop.name ? shop.name : ""}
                                     onChange={(e) => {
                                         let element = document.querySelector("option[value=\"" + e.target.value + "\"]");
-                                        setShop({id: element != null ? element.getAttribute("id") : undefined, shopName: e.target.value})
+                                        setShop({id: element != null ? element.getAttribute("id") : undefined, name: e.target.value})
                                     }}
-                                    placeholder={submitted && !shop.shopName ? "Shop name is required" : "Shop name"}
+                                    placeholder={submitted && !shop.name ? "Shop name is required" : "Shop name"}
                                 />
                                 {shops &&
                                     <datalist id="shop-list">
                                         {shops.map(shop => 
-                                            <option id={shop.id} key={shop.id} value={shop.shopName}>{shop.createDate.date}</option>
+                                            <option id={shop.id} key={shop.id} value={shop.name}>{shop.createDate.date}</option>
                                         )}
                                     </datalist>
                                 }
@@ -225,8 +248,9 @@ export const TransactionDetailsModal = ({ id, transaction }) => {
                                 }
                             </div>
                             <div className="text-center">
-                                {getIconWithActionAndTooltip(BsUpload, "transaction-image-icon" + (transaction.receiptId ? " disabled" : ""), () => uploadFile(), "top", "Upload file")} 
-                                {getIconWithActionAndTooltip(BsTrash, "transaction-image-icon" + (!transaction.receiptId ? " disabled" : ""), () => deleteFile(), "top", "Delete file")} 
+                                {getIconWithActionAndTooltip(BsUpload, "transaction-image-icon" + (transaction.receiptId ? " disabled" : ""), () => clickUploadFile(), "top", "Upload file")}
+                                <Form.File id="upload-file-id" hidden onChange={(e) => uploadFile(e.target.files[0], transaction.id)}/>
+                                {getIconWithActionAndTooltip(BsTrash, "transaction-image-icon" + (!transaction.receiptId ? " disabled" : ""), () => deleteFile(transaction.id), "top", "Delete file")} 
                             </div>
                         </Col>
                     </Form.Row>
@@ -253,9 +277,9 @@ export const TransactionDetailsModal = ({ id, transaction }) => {
                                         <Form.Group as={Col} controlId={"positionName" + index}>
                                             <Form.Control
                                                 type="text"
-                                                className={submitted && position?.expensePositionName === "" ? " is-invalid" : ""}
+                                                className={submitted && position?.positionName === "" ? " is-invalid" : ""}
                                                 name={"positionName" + index}
-                                                value={position?.expensePositionName}
+                                                value={position?.positionName}
                                                 onChange={updatePositionName(index)}
                                                 placeholder="Enter position"
                                             />
@@ -303,8 +327,9 @@ export const TransactionDetailsModal = ({ id, transaction }) => {
                     })}
                 </Modal.Body>
                 <Modal.Footer>
+                     { updateTransactionInProgress && <Spinner animation="border" size="sm" />}
                     <Button variant="secondary" onClick={() => handleClose()}>Close</Button>
-                    <Button type="submit" variant="primary" className={!updatable && "disabled"} onClick={() => updateTransaction()}>Update</Button>
+                    <Button type="submit" variant="primary" className={!updatable && "disabled"} onClick={() => updateTransactionHandleClick()}>Update</Button>
                 </Modal.Footer>
             </Modal>
             </>)

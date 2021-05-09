@@ -1,6 +1,6 @@
 import { alertError, alertSuccess } from "../alert/alert.actions";
 import { EXPENSE } from "./CategoryType";
-import { getShopsCall, createShopCall, deleteShopCall, getCategoriesCall, createCategoryCall, changeStateFavouriteCategoryCall, deleteCategoryCall, editExpenseCategoryMaximumCostCall, editCategoryCall, createTransactionCall, getTransactionsCall, deleteTransactionCall, getExpenseFileCall } from "./finance.service";
+import { getShopsCall, createShopCall, deleteShopCall, getCategoriesCall, createCategoryCall, changeStateFavouriteCategoryCall, deleteCategoryCall, editExpenseCategoryMaximumCostCall, editCategoryCall, createTransactionCall, getTransactionsCall, deleteTransactionCall, getExpenseFileCall, deleteExpenseFileCall, uploadExpenseFileCall, updateTransactionCall } from "./finance.service";
 
 export const GET_SHOPS_REQUEST = "GET_SHOPS_REQUEST";
 export const GET_SHOPS_SUCCESS = "GET_SHOPS_SUCCESS";
@@ -34,14 +34,14 @@ export const createShopRequest = () => ({ type: CREATE_SHOP_REQUEST })
 export const createShopSuccess = (shop) => ({ type: CREATE_SHOP_SUCCESS, payload: {shop} })
 export const createShopFailure = () => ({ type: CREATE_SHOP_FAILURE })
 
-export const createShop = (shopName) => async dispatch => {
+export const createShop = (name) => async dispatch => {
     dispatch(createShopRequest());
     let isShopCreated = false;
-    await createShopCall(shopName)
+    await createShopCall(name)
         .then(
             shop => {
                 dispatch(createShopSuccess(shop));
-                dispatch(alertSuccess("Shop: " + shop.shopName + " has been created."));
+                dispatch(alertSuccess("Shop: " + shop.name + " has been created."));
                 isShopCreated = true;
             },
             error => {
@@ -66,7 +66,7 @@ export const deleteShop = (id) => async dispatch => {
             shop => {
                 dispatch(shopDeleteSuccess(shop.id));
                 dispatch(getShops());
-                dispatch(alertSuccess("Shop: " + shop.shopName + " has been deleted."))
+                dispatch(alertSuccess("Shop: " + shop.name + " has been deleted."))
             },
             error => {
                 dispatch(shopDeleteFailure());
@@ -279,6 +279,34 @@ export const createTransaction = ( transaction ) => async dispatch => {
     return Promise.resolve(isTransactionCreated);
 }
 
+export const UPDATE_TRANSACTION_REQUEST = "UPDATE_TRANSACTION_REQUEST";
+export const UPDATE_TRANSACTION_SUCCESS = "UPDATE_TRANSACTION_SUCCESS";
+export const UPDATE_TRANSACTION_FAILURE = "UPDATE_TRANSACTION_FAILURE";
+export const updateTransactionRequest = () => ({ type: UPDATE_TRANSACTION_REQUEST })
+export const updateTransactionSuccess = (transaction, type) => ({ type: UPDATE_TRANSACTION_SUCCESS, payload: { transaction, type } })
+export const updateTransactionFailure = () => ({ type: UPDATE_TRANSACTION_FAILURE })
+
+export const updateTransaction = ( transaction ) => async dispatch => {
+    dispatch(updateTransactionRequest());
+    let type = transaction.transactionType;
+    let isTransactionUpdated = false;
+    await updateTransactionCall(transaction)
+        .then(
+            updatedTransaction => {
+                dispatch(updateTransactionSuccess(updatedTransaction, type));
+                dispatch(getTransactions(type));
+                dispatch(alertSuccess("Transaction: " + updatedTransaction.name + " has been updated."));
+                isTransactionUpdated = true;
+            },
+            error => {
+                dispatch(updateTransactionFailure());
+                dispatch(alertError(error.msg));
+                return Promise.reject(error);
+            }
+        );
+    return Promise.resolve(isTransactionUpdated);
+}
+
 export const DELETE_TRANSACTION_REQUEST = "DELETE_TRANSACTION_REQUEST";
 export const DELETE_TRANSACTION_SUCCESS = "DELETE_TRANSACTION_SUCCESS";
 export const DELETE_TRANSACTION_FAILURE = "DELETE_TRANSACTION_FAILURE";
@@ -307,19 +335,67 @@ export const GET_EXPENSE_FILE_REQUEST = "GET_EXPENSE_FILE_REQUEST";
 export const GET_EXPENSE_FILE_SUCCESS = "GET_EXPENSE_FILE_SUCCESS";
 export const GET_EXPENSE_FILE_FAILURE = "GET_EXPENSE_FILE_FAILURE";
 export const getExpenseFileRequest = () => ({ type: GET_EXPENSE_FILE_REQUEST })
-export const getExpenseFileSuccess = (transactionBytes) => ({ type: GET_EXPENSE_FILE_SUCCESS, payload: {transactionBytes} })
+export const getExpenseFileSuccess = (transactionFile) => ({ type: GET_EXPENSE_FILE_SUCCESS, payload: {transactionFile} })
 export const getExpenseFileFailure = () => ({ type: GET_EXPENSE_FILE_FAILURE })
 
-export const getTransactionFile = ( transactionId, receiptId ) => async dispatch => {
+export const getTransactionFile = ( transactionId ) => async dispatch => {
     dispatch(getExpenseFileRequest( ));
-    await getExpenseFileCall(transactionId, receiptId)
+    await getExpenseFileCall(transactionId)
         .then(
-            transactionBytes => {
-                dispatch(getExpenseFileSuccess(transactionBytes));
+            transactionFile => {
+                dispatch(getExpenseFileSuccess(transactionFile));
             },
             error => {
                 console.error(error);
                 dispatch(getExpenseFileFailure());
+                dispatch(alertError(error.msg));
+                return Promise.reject(error);
+            }
+        );
+}
+
+export const DELETE_EXPENSE_FILE_REQUEST = "DELETE_EXPENSE_FILE_REQUEST";
+export const DELETE_EXPENSE_FILE_SUCCESS = "DELETE_EXPENSE_FILE_SUCCESS";
+export const DELETE_EXPENSE_FILE_FAILURE = "DELETE_EXPENSE_FILE_FAILURE";
+export const deleteExpenseFileRequest = () => ({ type: DELETE_EXPENSE_FILE_REQUEST })
+export const deleteExpenseFileSuccess = (transactionId) => ({ type: DELETE_EXPENSE_FILE_SUCCESS, payload: {transactionId} })
+export const deleteExpenseFileFailure = () => ({ type: DELETE_EXPENSE_FILE_FAILURE })
+
+export const deleteTransactionFile = ( transactionId ) => async dispatch => {
+    dispatch(deleteExpenseFileRequest());
+    await deleteExpenseFileCall(transactionId)
+        .then(
+            () => {
+                dispatch(deleteExpenseFileSuccess(transactionId));
+                dispatch(alertSuccess("Transaction file has been deleted."));
+            },
+            error => {
+                console.error(error);
+                dispatch(deleteExpenseFileFailure());
+                dispatch(alertError(error.msg));
+                return Promise.reject(error);
+            }
+        );
+}
+
+export const UPLOAD_EXPENSE_FILE_REQUEST = "UPLOAD_EXPENSE_FILE_REQUEST";
+export const UPLOAD_EXPENSE_FILE_SUCCESS = "UPLOAD_EXPENSE_FILE_SUCCESS";
+export const UPLOAD_EXPENSE_FILE_FAILURE = "UPLOAD_EXPENSE_FILE_FAILURE";
+export const uploadExpenseFileRequest = () => ({ type: UPLOAD_EXPENSE_FILE_REQUEST })
+export const uploadExpenseFileSuccess = (transactionId, transactionFile) => ({ type: UPLOAD_EXPENSE_FILE_SUCCESS, payload: {transactionId, transactionFile} })
+export const uploadExpenseFileFailure = () => ({ type: UPLOAD_EXPENSE_FILE_FAILURE })
+
+export const uploadTransactionFile = ( transactionId, receiptFile ) => async dispatch => {
+    dispatch(uploadExpenseFileRequest());
+    await uploadExpenseFileCall(transactionId, receiptFile)
+        .then(
+            transactionFile => {
+                dispatch(uploadExpenseFileSuccess(transactionId, transactionFile));
+                dispatch(alertSuccess("Transaction file has been uploaded."));
+            },
+            error => {
+                console.error(error);
+                dispatch(uploadExpenseFileFailure());
                 dispatch(alertError(error.msg));
                 return Promise.reject(error);
             }

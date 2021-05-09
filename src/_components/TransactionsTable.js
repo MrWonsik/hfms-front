@@ -5,7 +5,7 @@ import { getIconWithActionAndTooltip } from '../_helpers/wrapWithTooltip';
 import Form from 'react-bootstrap/Form';
 import { EXPENSE_TRANSACTION, INCOME_TRANSACTION } from '../finance/TransactionType';
 import { useDispatch, useSelector } from 'react-redux';
-import { BsCalendar, BsPencil, BsTrash } from 'react-icons/bs'
+import { BsCalendar, BsTrash } from 'react-icons/bs'
 import Alert from "react-bootstrap/Alert";
 import { dateSort } from '../_helpers/tableBootstrapSorter';
 import BootstrapTable from 'react-bootstrap-table-next';
@@ -27,18 +27,18 @@ const TransactionsTable = () => {
     useEffect(() => {
         dispatch(changePage("Transaction list"));
         dispatch(getTransactions(EXPENSE_TRANSACTION, {year: date.year(), month: date.month()} ));
-        dispatch(getTransactions(INCOME_TRANSACTION, {year: date.year(), month: date.month()} )); // not implemented yet in backend
+        // dispatch(getTransactions(INCOME_TRANSACTION, {year: date.year(), month: date.month()} )); // not implemented yet in backend
       }, []);
 
+    useEffect(() => {
+        dispatch(getTransactions(EXPENSE_TRANSACTION, {year: date.year(), month: date.month()} ));
+        // dispatch(getTransactions(INCOME_TRANSACTION, {year: date.year(), month: date.month()} )); // not implemented yet in backend
+    }, [date])
+    
     const handleAddNewFinance = () => {
         dispatch(openModalAddNewTransaction());
     }
 
-    useEffect(() => {
-        dispatch(getTransactions(EXPENSE_TRANSACTION, {year: date.year(), month: date.month()} ));
-        dispatch(getTransactions(INCOME_TRANSACTION, {year: date.year(), month: date.month()} )); // not implemented yet in backend
-    }, [date])
-    
     const { expenseTransactions, incomeTransactions, isLoading } = useSelector(( state ) => ({
         expenseTransactions: state.finance.expenseTransactions,
         incomeTransactions: state.finance.incomeTransactions,
@@ -63,7 +63,7 @@ const TransactionsTable = () => {
 
     const showTransactionDetails = (transaction) => {
         if(transaction.receiptId !== null) {
-            dispatch(getTransactionFile(transaction.id, transaction.receiptId))
+            dispatch(getTransactionFile(transaction.id))
         }
         dispatch(openTransactionDetailsModal("transaction_details_" + transaction.name.trim() + "_" + transaction.id));
     }
