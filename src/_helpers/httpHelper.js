@@ -1,9 +1,8 @@
-import { history } from "../App";
 
 export const httpHelper = {
 	addAuthHeader,
 	handleResponse,
-	handleError,
+	handleError
 };
 
 function addAuthHeader(headers, token) {
@@ -32,9 +31,6 @@ function handleResponse(response) {
 }
 
 function handleError(error) {
-	if (error.response === 401 || typeof error.response === "undefined") {
-		history.push("/login");
-	}
 	let errorResp = { msg: error.msg ? error.msg : "A server error has occurred: " + error.toString() };
 	return Promise.reject(errorResp);
 }

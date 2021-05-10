@@ -88,8 +88,8 @@ export const AddNewTransactionModal = () => {
                 expensePositions: positionListForm,
                 transactionDate: transactionDate,
              }))
-            .then((isCategoriesCreated) => {
-                if(isCategoriesCreated) {
+            .then((isTransactionCreated) => {
+                if(isTransactionCreated) {
                     handleClose();
                 }
             });
@@ -113,7 +113,7 @@ export const AddNewTransactionModal = () => {
                         <Form.Label>Transaction name:</Form.Label>
                         <Form.Control
                             type="text"
-                            className={ "form-control" + (submitted && !transactionName ? " is-invalid" : "") }
+                            className={(submitted && !transactionName ? " is-invalid" : "") }
                             name="transactionName"
                             value={transactionName}
                             onChange={(e) => setTransactionName(e.target.value)}
@@ -123,11 +123,11 @@ export const AddNewTransactionModal = () => {
                         Transaction name is required
                     </Form.Control.Feedback>
                     </Form.Group>
-                    <Form.Group as={Col} sm={2} controlId="cost">
+                    <Form.Group as={Col} controlId="cost">
                             <Form.Label>Cost:</Form.Label>
                             <Form.Control
                                 type="number"
-                                className={ "form-control" + (submitted && cost < 0 ? " is-invalid" : "")}
+                                className={(submitted && cost < 0 ? " is-invalid" : "")}
                                 name="cost"
                                 value={cost}
                                 onChange={(e) => setMaximumCost(e.target.value)}
@@ -208,17 +208,17 @@ export const AddNewTransactionModal = () => {
                                 type="text"
                                 className="form-control"
                                 name="shop"
-                                value={shop?.shopName}
+                                value={shop?.name}
                                 onChange={(e) => {
                                     let element = document.querySelector("option[value=\"" + e.target.value + "\"]");
-                                    setShop({id: element != null ? element.getAttribute("id") : undefined, shopName: e.target.value})
+                                    setShop({id: element != null ? element.getAttribute("id") : undefined, name: e.target.value})
                                 }}
                                 placeholder="Enter shop name"
                             />
                             {shops &&
                                 <datalist id="shop-list">
                                     {shops.map(shop => 
-                                        <option id={shop.id} key={shop.id} value={shop.shopName}>{shop.createDate.date}</option>
+                                        <option id={shop.id} key={shop.id} value={shop.name}>{shop.createDate.date}</option>
                                     )}
                                 </datalist>
                             }
@@ -246,7 +246,7 @@ export const AddNewTransactionModal = () => {
                                         <Form.Group as={Col} controlId={"positionName" + index}>
                                             <Form.Control
                                                 type="text"
-                                                className={ "form-control" + (submitted && position?.positionName === "" ? " is-invalid" : "") }
+                                                className={submitted && position?.positionName === "" ? " is-invalid" : ""}
                                                 name={"positionName" + index}
                                                 value={position?.positionName}
                                                 onChange={updatePositionName(index)}
@@ -259,7 +259,7 @@ export const AddNewTransactionModal = () => {
                                         <Form.Group as={Col} xs={3} controlId={"positionSize" + index}>
                                             <Form.Control
                                                 type="number"
-                                                className={ "form-control" }
+                                                className={submitted && position?.size <= 0 ? " is-invalid" : ""}
                                                 name={"positionSize" + index}
                                                 value={position?.size}
                                                 onChange={updatePositionSize(index)}
@@ -267,11 +267,14 @@ export const AddNewTransactionModal = () => {
                                                 step="0.01"
                                                 placeholder="0.00"
                                             />
+                                            <Form.Control.Feedback type="invalid">
+                                                Size must be bigger than 0.
+                                            </Form.Control.Feedback>
                                         </Form.Group>
                                         <Form.Group as={Col} xs={3} controlId={"positionCost" + index}>
                                             <Form.Control
                                                 type="number"
-                                                className={ "form-control" }
+                                                className={submitted && position?.cost <= 0 ? " is-invalid" : ""}
                                                 name={"positionCost" + index}
                                                 value={position?.cost}
                                                 onChange={updatePositionCost(index)}
@@ -279,6 +282,9 @@ export const AddNewTransactionModal = () => {
                                                 step="0.01"
                                                 placeholder="0.00"
                                             />
+                                            <Form.Control.Feedback type="invalid">
+                                                Cost must be bigger than 0.
+                                            </Form.Control.Feedback>
                                         </Form.Group>
                                         {getIconWithActionAndTooltip(
                                                                     BsTrashFill,

@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getShops, deleteShop } from '../finance/finance.actions';
-import Spinner from "react-bootstrap/Spinner";
 import Form from "react-bootstrap/Form";
 import { BsTrash, BsPlus, BsCalendar } from 'react-icons/bs'
 import { openConfirmationModal, openModalAddNewShop } from '../modal/modal.actions';
@@ -26,7 +25,7 @@ const ShopsTable = () => {
     }, []);
 
     const showDeleteConfirmationModal = (shop) => {
-        dispatch(openConfirmationModal("shop_" + shop.shopName.trim() + "_" + shop.id));
+        dispatch(openConfirmationModal("shop_" + shop.name.trim() + "_" + shop.id));
     }
 
     const handleDeleteShop = (id) => {
@@ -39,7 +38,7 @@ const ShopsTable = () => {
 
     const products = shops?.map((shop) => ({
             id: shop.id,
-            shopName: <>{shop.shopName} <span className="additionaly-info">({shop.id})</span></>,
+            name: <>{shop.name} <span className="additionaly-info">({shop.id})</span></>,
             date: <><BsCalendar /> {shop.createDate.date} </>,
             time: shop.createDate.time,
             actions: <>
@@ -48,7 +47,7 @@ const ShopsTable = () => {
             </>
         }))
     const columns = [{
-        dataField: 'shopName',
+        dataField: 'name',
         text: 'Shop name',
         sort: true,
         sortFunc: sortByName
@@ -70,7 +69,7 @@ const ShopsTable = () => {
       }];
 
     const defaultSorted = [{
-        dataField: 'shopName',
+        dataField: 'name',
         order: 'asc'
     }]
     
@@ -99,7 +98,7 @@ const ShopsTable = () => {
                         pagination={ paginationFactory(paginationOptions) }
                     />
                     {shops?.map((shop) => (
-                        <ConfirmationModal key={shop.id} id={"shop_" + shop.shopName.trim() + "_" + shop.id} confirmationFunction={() => handleDeleteShop(shop.id)} confirmationMessage={"Are you sure you want to delete " + shop.shopName + "?"} />
+                        <ConfirmationModal key={shop.id} id={"shop_" + shop.name.trim() + "_" + shop.id} confirmationFunction={() => handleDeleteShop(shop.id)} confirmationMessage={"Are you sure you want to delete " + shop.name + "?"} />
                     ))}
                 </> :
                 <Alert className="text-center" variant="light">

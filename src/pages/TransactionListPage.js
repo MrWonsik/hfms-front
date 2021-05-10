@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import TransactionsTable from '../_components/TransactionsTable';
 import AddNewTransactionModal from '../_components/modal/AddNewTransactionModal';
 

@@ -23,7 +23,7 @@ export const createShopCall = (shopName) => {
 			{ "Content-Type": "application/json" },
 			getJwtToken()
 		),
-		body: JSON.stringify({ shopName }),
+		body: JSON.stringify({ name: shopName }),
 	};
 
 	return fetch(`${config.apiUrl}/api/shop`, requestOptions)
@@ -191,5 +191,61 @@ export const deleteTransactionCall = (transactionId, transactionType) => {
 	return fetch(`${config.apiUrl}/api/transaction/${type}/${transactionId}`, requestOptions)
 		.then(httpHelper.handleResponse)
 		.then(deletedTransaction => deletedTransaction)
+		.catch(httpHelper.handleError);
+};
+
+export const getExpenseFileCall = ( transactionId ) => {
+	const requestOptions = {
+		method: "GET",
+		headers: httpHelper.addAuthHeader({}, getJwtToken()),
+	};
+
+	return fetch(`${config.apiUrl}/api/transaction/expense/${transactionId}/file`, requestOptions)
+		.then(httpHelper.handleResponse)
+		.catch(httpHelper.handleError);
+};
+
+export const deleteExpenseFileCall = ( transactionId ) => {
+	const requestOptions = {
+		method: "DELETE",
+		headers: httpHelper.addAuthHeader({}, getJwtToken()),
+	};
+
+	return fetch(`${config.apiUrl}/api/transaction/expense/${transactionId}/file`, requestOptions)
+		.then(httpHelper.handleFileResponse)
+		.catch(httpHelper.handleError);
+};
+
+export const uploadExpenseFileCall = ( transactionId, receiptFile ) => {
+	const formData = new FormData();
+	receiptFile && formData.append("file", receiptFile);
+
+	const requestOptions = {
+		method: "POST",
+		headers: httpHelper.addAuthHeader({}, getJwtToken()),
+		body: formData,
+	};
+
+	return fetch(`${config.apiUrl}/api/transaction/expense/${transactionId}/file`, requestOptions)
+		.then(httpHelper.handleResponse)
+		.then(transactionFile => transactionFile)
+		.catch(httpHelper.handleError);
+};
+
+export const updateTransactionCall = ( transaction ) => {
+	let type =	mapTransactionTypeToDomain(transaction.transactionType); 
+	transaction.transactionType = type;
+	const requestOptions = {
+		method: "PUT",
+		headers: httpHelper.addAuthHeader(
+			{ "Content-Type": "application/json" },
+			getJwtToken()
+		),
+		body: JSON.stringify(transaction),
+	};
+
+	return fetch(`${config.apiUrl}/api/transaction/${type}/${transaction.id}`, requestOptions)
+		.then(httpHelper.handleResponse)
+		.then(editedTransaction => editedTransaction)
 		.catch(httpHelper.handleError);
 };
