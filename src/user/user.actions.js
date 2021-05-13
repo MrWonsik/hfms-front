@@ -1,5 +1,8 @@
 import { loginRequestCall, changePasswordRequestCall } from './user.service';
-import { alertError, alertSuccess } from '../alert/alert.actions';
+import { alertClear, alertError, alertSuccess } from '../alert/alert.actions';
+import { getUsersClear } from './users/users.actions';
+import { clearModal } from '../modal/modal.actions';
+import { clearFinances } from '../finance/finance.actions';
 
 export const LOGIN_REQUEST = "USER_LOGIN_REQUEST";
 const loginRequest = (user) => ({ type: LOGIN_REQUEST, payload: { user } })
@@ -28,7 +31,15 @@ export const login = (username, password) => async dispatch => {
 };
 
 export const LOGOUT = 'USER_LOGOUT';
-export const logout = () => ({type: LOGOUT });
+export const logoutUser = () => ({type: LOGOUT });
+
+export const logout = () => async dispatch => {
+    dispatch(logoutUser());
+	dispatch(getUsersClear());
+	dispatch(clearModal());
+	dispatch(clearFinances());
+	// dispatch(alertClear());
+} 
 
 export const CHANGE_PASSWORD_REQUEST = 'USER_CHANGE_PASSWORD_REQUEST';
 const changePasswordRequest = () => ({ type: CHANGE_PASSWORD_REQUEST })
@@ -60,4 +71,9 @@ export const changePassword = (oldPassword, newPassword, repeatedNewPassword) =>
 };
 
 export const CHANGE_PAGE = 'CHANGE_PAGE';
-export const changePage = (pageName) => ({ type: CHANGE_PAGE, payload: { pageName }})
+export const setChangePage = (pageName) => ({ type: CHANGE_PAGE, payload: { pageName }})
+
+export const changePage = (pageName) => async dispatch => {
+    dispatch(alertClear());
+    dispatch(setChangePage(pageName));
+}

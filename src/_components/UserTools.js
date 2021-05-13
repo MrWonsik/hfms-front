@@ -8,6 +8,7 @@ import { openModalChangePassword } from "../modal/modal.actions";
 
 import ChangePasswordModal from "./modal/ChangePasswordModal";
 import HoverTooltip from "../_helpers/wrapWithTooltip";
+import { alertSuccess } from "../alert/alert.actions";
 
 const UserTools = () => {
 	const dispatch = useDispatch();
@@ -18,6 +19,10 @@ const UserTools = () => {
 
 	const handleChangePasswordModalOpen = () => {
 		dispatch(openModalChangePassword());
+	};
+
+	const handleLogout = () => {
+		dispatch(alertSuccess("Logout successfully!"));
 	};
 
 	return (
@@ -37,7 +42,7 @@ const UserTools = () => {
 						</Nav.Link>
 					</Nav.Item>
 					<Nav.Item>
-						<Nav.Link as={Link} to="/login">
+						<Nav.Link as={Link} to="/login" onClick={handleLogout}>
 							<HoverTooltip
 								el={<BsPower className="navbar-icon"/>}
 								msg="Logout"
