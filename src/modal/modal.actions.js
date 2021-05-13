@@ -42,8 +42,8 @@ export const closeModalAddNewCategory = () => ({ type: CLOSE_MODAL_ADD_NEW_CATEG
 
 export const OPEN_MODAL_EDIT_MAXIMUM_COST = "OPEN_MODAL_EDIT_MAXIMUM_COST";
 export const CLOSE_MODAL_EDIT_MAXIMUM_COST = "CLOSE_MODAL_EDIT_MAXIMUM_COST";
-export const openModalEditMaximumCost = (contextId) => ({ type: OPEN_MODAL_EDIT_MAXIMUM_COST, payload: {contextId}});
-export const closeModalEditMaximumCost = () => ({ type: CLOSE_MODAL_EDIT_MAXIMUM_COST });
+export const openModalEditMaximumAmount = (contextId) => ({ type: OPEN_MODAL_EDIT_MAXIMUM_COST, payload: {contextId}});
+export const closeModalEditMaximumAmount = () => ({ type: CLOSE_MODAL_EDIT_MAXIMUM_COST });
 
 export const OPEN_MODAL_EDIT_CATEGORY = "OPEN_MODAL_EDIT_CATEGORY";
 export const CLOSE_MODAL_EDIT_CATEGORY = "CLOSE_MODAL_EDIT_CATEGORY";

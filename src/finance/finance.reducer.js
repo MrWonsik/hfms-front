@@ -55,7 +55,7 @@ const initialState = {
 	creatingShopInProgress: false,
 	creatingTransactionInProgress: false,
 	updateTransactionInProgress: false,
-	isEditExpenseCategoryMaximumCostInProgress: false,
+	isEditExpenseCategoryMaximumAmountInProgress: false,
 	isEditCategoryInProgress: false,
 	expenseFileRequestLoading: false,
 	expenseDetailsBytes: ""
@@ -213,17 +213,17 @@ export const finance = (state = initialState, action) => {
 		case EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_REQUEST: 
 			return {
 				...state,
-				isEditExpenseCategoryMaximumCostInProgress: true
+				isEditExpenseCategoryMaximumAmountInProgress: true
 			};
 		case EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_SUCCESS: 
 			return {
 				...state,
-				isEditExpenseCategoryMaximumCostInProgress: false
+				isEditExpenseCategoryMaximumAmountInProgress: false
 			}
 		case EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_FAILURE:
 			return {
 				...state,
-				isEditExpenseCategoryMaximumCostInProgress: false
+				isEditExpenseCategoryMaximumAmountInProgress: false
 			};
 		case EDIT_CATEGORY_REQUEST: 
 			return {

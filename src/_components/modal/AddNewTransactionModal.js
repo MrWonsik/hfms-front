@@ -28,13 +28,13 @@ export const AddNewTransactionModal = () => {
     const [category, setCategory] = useState(undefined);
     const [shop, setShop] = useState(undefined);
     const [transactionType, setTransactionType] = useState(EXPENSE_TRANSACTION);
-    const [cost, setMaximumCost] = useState(0);
+    const [amount, setMaximumAmount] = useState(0);
     const [receiptFile, setReceiptFile] = useState(undefined);
     const [transactionDate, setTransactionDate] = useState(new Date().toISOString().split('T')[0]);
     const [positionListForm, setPositionListForm] = useState([]);
 
     const addNewPositionToList = () => {
-        setPositionListForm([...positionListForm, {positionName: "", size: 1, cost: 0}]);
+        setPositionListForm([...positionListForm, {positionName: "", size: 1, amount: 0}]);
     }
 
     const deletePositionFromList = (index) => {
@@ -50,9 +50,9 @@ export const AddNewTransactionModal = () => {
         setPositionListForm(position);
     }
     
-    const updatePositionCost = index => e => {
+    const updatePositionAmount = index => e => {
         let position = [...positionListForm];
-        position[index].cost = e.target.value;
+        position[index].amount = e.target.value;
         setPositionListForm(position);
     }
 
@@ -66,7 +66,7 @@ export const AddNewTransactionModal = () => {
         dispatch(closeModalAddNewTransaction())
         setTransactionName("");
         setTransactionType(EXPENSE_TRANSACTION);
-        setMaximumCost(0);
+        setMaximumAmount(0);
         setSubmitted(false);
         setCategory(undefined);
         setReceiptFile(undefined);
@@ -77,10 +77,10 @@ export const AddNewTransactionModal = () => {
     const handleAddNewTransaction = (e) => {
         e.preventDefault();
         setSubmitted(true);
-        if (transactionName && transactionType && cost && cost >= 0 && category && category.name !== "Please wait" && positionListForm.every(position => position.positionName !== "")) {
+        if (transactionName && transactionType && amount && amount >= 0 && category && category.name !== "Please wait" && positionListForm.every(position => position.positionName !== "")) {
             dispatch(createTransaction({ 
                 name: transactionName, 
-                cost: cost,
+                amount: amount,
                 transactionType: transactionType,
                 shop: shop,
                 receiptFile: receiptFile,
@@ -123,20 +123,20 @@ export const AddNewTransactionModal = () => {
                         Transaction name is required
                     </Form.Control.Feedback>
                     </Form.Group>
-                    <Form.Group as={Col} controlId="cost">
-                            <Form.Label>Cost:</Form.Label>
+                    <Form.Group as={Col} controlId="amount">
+                            <Form.Label>Amount:</Form.Label>
                             <Form.Control
                                 type="number"
-                                className={(submitted && cost < 0 ? " is-invalid" : "")}
-                                name="cost"
-                                value={cost}
-                                onChange={(e) => setMaximumCost(e.target.value)}
+                                className={(submitted && amount < 0 ? " is-invalid" : "")}
+                                name="amount"
+                                value={amount}
+                                onChange={(e) => setMaximumAmount(e.target.value)}
                                 min="0"
                                 step="0.01"
                                 placeholder="0,00"
                             />
                             <Form.Control.Feedback type="invalid">
-                                Please provide correct positive number cost. 
+                                Please provide correct positive number amount. 
                             </Form.Control.Feedback>
                     </Form.Group>
                     <Form.Group as={Col} controlId="transactionDate">
@@ -232,11 +232,11 @@ export const AddNewTransactionModal = () => {
                                                                     "top", "Click to add new position")}
                     <br/>
                     <br/>
-                    {positionListForm.length > 0 &&
+                    {positionListForm?.length > 0 &&
                         <Form.Row>
                             <Form.Label as={Col}>Name:</Form.Label>
                             <Form.Label as={Col} xs={3}>Quantity:</Form.Label>
-                            <Form.Label as={Col} xs={3}>Cost:</Form.Label>
+                            <Form.Label as={Col} xs={3}>Amount:</Form.Label>
                             <div className="trash-no-label"></div>
                         </Form.Row>
                     }
@@ -271,19 +271,19 @@ export const AddNewTransactionModal = () => {
                                                 Size must be bigger than 0.
                                             </Form.Control.Feedback>
                                         </Form.Group>
-                                        <Form.Group as={Col} xs={3} controlId={"positionCost" + index}>
+                                        <Form.Group as={Col} xs={3} controlId={"positionAmount" + index}>
                                             <Form.Control
                                                 type="number"
-                                                className={submitted && position?.cost <= 0 ? " is-invalid" : ""}
-                                                name={"positionCost" + index}
-                                                value={position?.cost}
-                                                onChange={updatePositionCost(index)}
+                                                className={submitted && position?.amount <= 0 ? " is-invalid" : ""}
+                                                name={"positionAmount" + index}
+                                                value={position?.amount}
+                                                onChange={updatePositionAmount(index)}
                                                 min="0"
                                                 step="0.01"
                                                 placeholder="0.00"
                                             />
                                             <Form.Control.Feedback type="invalid">
-                                                Cost must be bigger than 0.
+                                                Amount must be bigger than 0.
                                             </Form.Control.Feedback>
                                         </Form.Group>
                                         {getIconWithActionAndTooltip(

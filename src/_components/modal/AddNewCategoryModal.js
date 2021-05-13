@@ -23,7 +23,7 @@ export const AddNewCategoryModal = () => {
     const [categoryName, setCategoryName] = useState("");
     const [colorHex, setColorHex] = useState(undefined);
     const [categoryType, setCategoryType] = useState(EXPENSE);
-    const [maximumCost, setMaximumCost] = useState(0);
+    const [maximumAmount, setMaximumAmount] = useState(0);
     const [isFavourite, setIsFavourite] = useState(false);
 
     const handleClose = () => {
@@ -31,7 +31,7 @@ export const AddNewCategoryModal = () => {
         setCategoryName("");
         setColorHex(undefined);
         setCategoryType(EXPENSE);
-        setMaximumCost(0);
+        setMaximumAmount(0);
         setSubmitted(false);
       }
 
@@ -44,7 +44,7 @@ export const AddNewCategoryModal = () => {
                 categoryName, 
                 colorHex: (colorHex ? colorHex : null), 
                 isFavourite,
-                maximumCost,
+                maximumAmount,
                 categoryType: categoryType
              }))
             .then((isCategoriesCreated) => {
@@ -114,20 +114,20 @@ export const AddNewCategoryModal = () => {
                     </Form.Control>
             </Form.Group>
             {categoryType === EXPENSE &&
-                <Form.Group controlId="maximumCategoryCost">
-                    <Form.Label>Maximum category cost:</Form.Label>
+                <Form.Group controlId="maximumCategoryAmount">
+                    <Form.Label>Maximum category amount:</Form.Label>
                         <Form.Control
                             type="number"
-                            className={ "form-control" + (submitted && maximumCost < 0 ? " is-invalid" : "")}
-                            name="maximumCategoryCost"
-                            value={maximumCost}
-                            onChange={(e) => setMaximumCost(e.target.value)}
+                            className={ "form-control" + (submitted && maximumAmount < 0 ? " is-invalid" : "")}
+                            name="maximumCategoryAmount"
+                            value={maximumAmount}
+                            onChange={(e) => setMaximumAmount(e.target.value)}
                             min="0"
                             step="0.01"
                             placeholder="0,00"
                         />
                         <Form.Control.Feedback type="invalid">
-                            Please provide correct positive number set maximum cost (or 0 to not set any maximum value). 
+                            Please provide correct positive number set maximum amount (or 0 to not set any maximum value). 
                         </Form.Control.Feedback>
                 </Form.Group>
             }

@@ -96,7 +96,7 @@ const MainUserPage = () => {
                        expenseCategories?.length > 0 || incomeCategories?.length > 0 ?
                         <> 
                           <ListGroup variant="flush">
-                            {expenseCategories.concat(incomeCategories).sort((a,b) => (b.createDate.time.localeCompare(a.createDate.time)))
+                            {expenseCategories?.concat(incomeCategories).sort((a,b) => (b.createDate.time.localeCompare(a.createDate.time)))
                                   .sort((a,b) => ( new Date(b.createDate.date) - new Date(a.createDate.date)))
                                   .slice(0, 5)
                                   .map(category => (

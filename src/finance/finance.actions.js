@@ -1,6 +1,6 @@
 import { alertError, alertSuccess } from "../alert/alert.actions";
 import { EXPENSE } from "./CategoryType";
-import { getShopsCall, createShopCall, deleteShopCall, getCategoriesCall, createCategoryCall, changeStateFavouriteCategoryCall, deleteCategoryCall, editExpenseCategoryMaximumCostCall, editCategoryCall, createTransactionCall, getTransactionsCall, deleteTransactionCall, getExpenseFileCall, deleteExpenseFileCall, uploadExpenseFileCall, updateTransactionCall } from "./finance.service";
+import { getShopsCall, createShopCall, deleteShopCall, getCategoriesCall, createCategoryCall, changeStateFavouriteCategoryCall, deleteCategoryCall, editExpenseCategoryMaximumAmountCall, editCategoryCall, createTransactionCall, getTransactionsCall, deleteTransactionCall, getExpenseFileCall, deleteExpenseFileCall, uploadExpenseFileCall, updateTransactionCall } from "./finance.service";
 
 export const GET_SHOPS_REQUEST = "GET_SHOPS_REQUEST";
 export const GET_SHOPS_SUCCESS = "GET_SHOPS_SUCCESS";
@@ -180,21 +180,21 @@ export const deleteCategory = ( id, categoryType ) => async dispatch => {
 export const EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_REQUEST = "EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_REQUEST";
 export const EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_SUCCESS = "EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_SUCCESS";
 export const EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_FAILURE = "EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_FAILURE";
-export const editExpenseCategoryMaximumCostRequest = () => ({ type: EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_REQUEST })
-export const editExpenseCategoryMaximumCostSuccess = () => ({ type: EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_SUCCESS })
-export const editExpenseCategoryMaximumCostFailure = () => ({ type: EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_FAILURE })
+export const editExpenseCategoryMaximumAmountRequest = () => ({ type: EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_REQUEST })
+export const editExpenseCategoryMaximumAmountSuccess = () => ({ type: EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_SUCCESS })
+export const editExpenseCategoryMaximumAmountFailure = () => ({ type: EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_FAILURE })
 
-export const editExpenseCategoryMaximumCost = ( category, newMaximumCost, isValidFromNextMonth ) => async dispatch => {
-    dispatch(editExpenseCategoryMaximumCostRequest());
-    await editExpenseCategoryMaximumCostCall(category.id, newMaximumCost, isValidFromNextMonth )
+export const editExpenseCategoryMaximumAmount = ( category, newMaximumAmount, isValidFromNextMonth ) => async dispatch => {
+    dispatch(editExpenseCategoryMaximumAmountRequest());
+    await editExpenseCategoryMaximumAmountCall(category.id, newMaximumAmount, isValidFromNextMonth )
         .then(
             editedCategoryVersion => {
-                dispatch(editExpenseCategoryMaximumCostSuccess(editedCategoryVersion));
+                dispatch(editExpenseCategoryMaximumAmountSuccess(editedCategoryVersion));
                 dispatch(getCategories(EXPENSE));
-                dispatch(alertSuccess("Category " + category.categoryName + " maximum cost has been updated."));
+                dispatch(alertSuccess("Category " + category.categoryName + " maximum amount has been updated."));
             },
             error => {
-                dispatch(editExpenseCategoryMaximumCostFailure());
+                dispatch(editExpenseCategoryMaximumAmountFailure());
                 dispatch(alertError(error.msg));
                 return Promise.reject(error);
             }

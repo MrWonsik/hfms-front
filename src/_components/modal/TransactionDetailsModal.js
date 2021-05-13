@@ -14,6 +14,7 @@ import cloneDeep from "lodash/cloneDeep"
 
 export const TransactionDetailsModal = ({ id, transaction }) => {
     const dispatch = useDispatch();
+    const isExpenseTransaction = transaction.type === EXPENSE_TRANSACTION;
 
     const { transactionDetailsModal, expenseFileRequestLoading, expenseDetailsBytes, expenseCategories, incomeCategories, shops, updateTransactionInProgress } = useSelector(state => ({
         transactionDetailsModal: state.modals.transactionDetailsModal,
@@ -49,11 +50,14 @@ export const TransactionDetailsModal = ({ id, transaction }) => {
         }
 
         setSubmitted(true);
-        if (transactionName && cost && cost >= 0 && category && category.name !== "Please wait" && expensePositionList.every(position => position.positionName !== "")) {
+        if (transactionName && amount && amount >= 0 && category && category.name !== "Please wait") {
+            if(isExpenseTransaction && !(expensePositionList?.every(position => position.positionName !== ""))) {
+                return;
+            }
             dispatch(updateTransaction ({
                 id: transaction.id,
                 name: transactionName, 
-                cost: cost,
+                amount: amount,
                 transactionType: transaction.type,
                 shop: shop,
                 categoryId: category.id,
@@ -72,7 +76,7 @@ export const TransactionDetailsModal = ({ id, transaction }) => {
         dispatch(closeTransactionDetailsModal())
         setSubmitted(false);
         setTransactionName(transaction.name);
-        setCost(transaction.cost);
+        setAmount(transaction.amount);
         setCategory({ id: transaction.category?.id, name: transaction.category?.name});
         setShop({id: transaction.shop?.id, name: transaction.shop?.name});
         setTransactionDate(transaction.createdDate);
@@ -81,7 +85,7 @@ export const TransactionDetailsModal = ({ id, transaction }) => {
 
     const [submitted, setSubmitted] = useState(false);
     const [transactionName, setTransactionName] = useState(transaction.name);
-    const [cost, setCost] = useState(transaction.cost);
+    const [amount, setAmount] = useState(transaction.amount);
     const [category, setCategory] = useState({ id: transaction.category?.id, name: transaction.category?.name});
     const [shop, setShop] = useState({id: transaction.shop?.id, name: transaction.shop?.name});
     const [transactionDate, setTransactionDate] = useState(transaction.createdDate);
@@ -93,7 +97,7 @@ export const TransactionDetailsModal = ({ id, transaction }) => {
     }
 
     const addNewPositionToList = () => {
-        setExpensePositionList([...expensePositionList, {id: null, positionName: "", size: 1, cost: 0}]);
+        setExpensePositionList([...expensePositionList, {id: null, positionName: "", size: 1, amount: 0}]);
     }
 
     const deletePositionFromList = (index) => {
@@ -109,9 +113,9 @@ export const TransactionDetailsModal = ({ id, transaction }) => {
         setExpensePositionList(position);
     }
     
-    const updatePositionCost = index => e => {
+    const updatePositionAmount = index => e => {
         let position = [...expensePositionList];
-        position[index].cost = e.target.value;
+        position[index].amount = e.target.value;
         setExpensePositionList(position);
     }
 
@@ -123,7 +127,7 @@ export const TransactionDetailsModal = ({ id, transaction }) => {
 
     useEffect(() => {
         if(transactionName !== transaction.name ||
-            cost !== transaction.cost ||
+            amount !== transaction.amount ||
             category?.name !== transaction.category?.name ||
             (shop?.name !== transaction.shop?.name && shop?.id !== transaction.shop?.id) || 
             JSON.stringify(expensePositionList) != JSON.stringify(transaction.expensePositionList) || 
@@ -132,7 +136,7 @@ export const TransactionDetailsModal = ({ id, transaction }) => {
         } else {
             setUpdatable(false);
         }
-    }, [transactionName, cost, category, shop, transactionDate, expensePositionList])
+    }, [transactionName, amount, category, shop, transactionDate, expensePositionList])
 
 
     const getOptions = (categories) => {
@@ -143,13 +147,13 @@ export const TransactionDetailsModal = ({ id, transaction }) => {
     return (
             <>
             {openImage && <Lightbox mainSrc={expenseDetailsBytes} onCloseRequest={() => setOpenImage(false)}/> }
-            <Modal size="lg" show={transactionDetailsModal && id === transactionDetailsModal.contextId && transactionDetailsModal.isOpen} onHide={handleClose}>
+            <Modal size={isExpenseTransaction ? "lg" : "md"} show={transactionDetailsModal && id === transactionDetailsModal.contextId && transactionDetailsModal.isOpen} onHide={handleClose}>
                 <Modal.Header closeButton>
                     <Modal.Title>{transaction.name} - {getFormattedDate()}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body className="transaction-details-container">
                     <Form.Row className="transaction-detail-container">
-                        <Col sm={6}>
+                        <Col sm={isExpenseTransaction ? 6 : 12} className="transaction-detail-form-col">
                         <Form.Row className="transaction-detail-form-row-2">
                             <Form.Label className="transaction-details-label">Name:</Form.Label>
                             <Col>
@@ -177,17 +181,17 @@ export const TransactionDetailsModal = ({ id, transaction }) => {
                                 </Form.Label>
                         </Form.Row>
                         <Form.Row className="transaction-detail-form-row-2"> 
-                            <Form.Label className="transaction-details-label">Cost:</Form.Label>
+                            <Form.Label className="transaction-details-label">Amount:</Form.Label>
                             <Col>
                                 <Form.Control
                                     type="number"
-                                    className={(submitted && cost <= 0 ? " is-invalid" : "")}
-                                    name="cost"
-                                    value={cost}
-                                    onChange={(e) => setCost(e.target.value)}
+                                    className={(submitted && amount <= 0 ? " is-invalid" : "")}
+                                    name="amount"
+                                    value={amount}
+                                    onChange={(e) => setAmount(e.target.value)}
                                     min="0"
                                     step="0.01"
-                                    placeholder={submitted && cost <= 0 ? "Cost > 0" : "0,00"}
+                                    placeholder={submitted && amount <= 0 ? "Amount > 0" : "0,00"}
                                 />
                             </Col>
                         </Form.Row>
@@ -206,11 +210,11 @@ export const TransactionDetailsModal = ({ id, transaction }) => {
                                     }}
                                 >
                                     <option>Please select</option>
-                                    {transaction.type === EXPENSE_TRANSACTION ? getOptions(expenseCategories) : getOptions(incomeCategories) }
+                                    {isExpenseTransaction ? getOptions(expenseCategories) : getOptions(incomeCategories) }
                                 </Form.Control>
                             </Col>
                         </Form.Row>
-                        {transaction.type === EXPENSE_TRANSACTION && 
+                        {isExpenseTransaction && 
                         <Form.Row className="transaction-detail-form-row-2">
                             <Form.Label className="transaction-details-label">Shop name:</Form.Label>
                             <Col>
@@ -237,94 +241,100 @@ export const TransactionDetailsModal = ({ id, transaction }) => {
                         </Form.Row>
                         }
                         </Col>
-                        <Col sm={6}>
-                            <div className="transaction-image-container">
-                                {transaction.receiptId ?
-                                    expenseFileRequestLoading 
-                                    ? <div className="text-center"><Spinner animation="border" size="sm" /></div>
-                                    : <Image src={expenseDetailsBytes} alt="recipt" className="transaction-image" onClick={() => setOpenImage(true)} fluid />
-                                :
-                                    <div className="text-center">No image</div>
-                                }
-                            </div>
-                            <div className="text-center">
-                                {getIconWithActionAndTooltip(BsUpload, "transaction-image-icon" + (transaction.receiptId ? " disabled" : ""), () => clickUploadFile(), "top", "Upload file")}
-                                <Form.File id="upload-file-id" hidden onChange={(e) => uploadFile(e.target.files[0], transaction.id)}/>
-                                {getIconWithActionAndTooltip(BsTrash, "transaction-image-icon" + (!transaction.receiptId ? " disabled" : ""), () => deleteFile(transaction.id), "top", "Delete file")} 
-                            </div>
-                        </Col>
+                        {transaction.type == EXPENSE_TRANSACTION && 
+                            <Col sm={6} className="transaction-detail-form-col">
+                                <div className="transaction-image-container">
+                                    {transaction.receiptId ?
+                                        expenseFileRequestLoading 
+                                        ? <div className="text-center"><Spinner animation="border" size="sm" /></div>
+                                        : <Image src={expenseDetailsBytes} alt="recipt" className="transaction-image" onClick={() => setOpenImage(true)} fluid />
+                                    :
+                                        <div className="text-center">No image</div>
+                                    }
+                                </div>
+                                <div className="text-center">
+                                    {getIconWithActionAndTooltip(BsUpload, "transaction-image-icon" + (transaction.receiptId ? " disabled" : ""), () => clickUploadFile(), "top", "Upload file")}
+                                    <Form.File id="upload-file-id" hidden onChange={(e) => uploadFile(e.target.files[0], transaction.id)}/>
+                                    {getIconWithActionAndTooltip(BsTrash, "transaction-image-icon" + (!transaction.receiptId ? " disabled" : ""), () => deleteFile(transaction.id), "top", "Delete file")} 
+                                </div>
+                            </Col>
+                        }
                     </Form.Row>
                     <br/>
                     <hr></hr>
-                    <span>Position list (optional) </span>{getIconWithActionAndTooltip(
-                                                                    BsPlusCircle,
-                                                                    "transaction-add-position-icon", 
-                                                                    () => addNewPositionToList(),
-                                                                    "top", "Click to add new position")}
-                    <br/>
-                    <br/>
-                    {expensePositionList.length > 0 &&
-                        <Form.Row>
-                            <Form.Label as={Col}>Name:</Form.Label>
-                            <Form.Label as={Col} xs={3}>Quantity:</Form.Label>
-                            <Form.Label as={Col} xs={3}>Cost:</Form.Label>
-                            <div className="trash-no-label"></div>
-                        </Form.Row>
-                    }
-                    {expensePositionList?.map((position,index) => {
-                        return <div key={index}>
-                                    <Form.Row>
-                                        <Form.Group as={Col} controlId={"positionName" + index}>
-                                            <Form.Control
-                                                type="text"
-                                                className={submitted && position?.positionName === "" ? " is-invalid" : ""}
-                                                name={"positionName" + index}
-                                                value={position?.positionName}
-                                                onChange={updatePositionName(index)}
-                                                placeholder="Enter position"
-                                            />
-                                            <Form.Control.Feedback type="invalid">
-                                                Transaction name is required
-                                            </Form.Control.Feedback>
-                                        </Form.Group>
-                                        <Form.Group as={Col} xs={3} controlId={"positionSize" + index}>
-                                            <Form.Control
-                                                type="number"
-                                                className={submitted && position?.size <= 0 ? " is-invalid" : ""}
-                                                name={"positionSize" + index}
-                                                value={position?.size}
-                                                onChange={updatePositionSize(index)}
-                                                min="0"
-                                                step="0.01"
-                                                placeholder="0.00"
-                                            />
-                                            <Form.Control.Feedback type="invalid">
-                                                Size must be bigger than 0.
-                                            </Form.Control.Feedback>
-                                        </Form.Group>
-                                        <Form.Group as={Col} xs={3} controlId={"positionCost" + index}>
-                                            <Form.Control
-                                                type="number"
-                                                className={submitted && position?.cost <= 0 ? " is-invalid" : ""}
-                                                name={"positionCost" + index}
-                                                value={position?.cost}
-                                                onChange={updatePositionCost(index)}
-                                                min="0"
-                                                step="0.01"
-                                                placeholder="0.00"
-                                            />
-                                            <Form.Control.Feedback type="invalid">
-                                                Cost must be bigger than 0.
-                                            </Form.Control.Feedback>
-                                        </Form.Group>
-                                        {getIconWithActionAndTooltip(
-                                                                    BsTrashFill,
-                                                                    "transaction-delete-position-icon", 
-                                                                    () => deletePositionFromList(index),
-                                                                    "top", "Click to delete position")}
-                                    </Form.Row>
-                                </div>
-                    })}
+                    { transaction.type == EXPENSE_TRANSACTION &&
+                        <> 
+                            <span>Position list (optional) </span>{getIconWithActionAndTooltip(
+                                                                            BsPlusCircle,
+                                                                            "transaction-add-position-icon", 
+                                                                            () => addNewPositionToList(),
+                                                                            "top", "Click to add new position")}
+                            <br/>
+                            <br/>
+                            {expensePositionList?.length > 0 &&
+                                <Form.Row>
+                                    <Form.Label as={Col}>Name:</Form.Label>
+                                    <Form.Label as={Col} xs={3}>Quantity:</Form.Label>
+                                    <Form.Label as={Col} xs={3}>Amount:</Form.Label>
+                                    <div className="trash-no-label"></div>
+                                </Form.Row>
+                            }
+                            {expensePositionList?.map((position,index) => {
+                                return <div key={index}>
+                                            <Form.Row>
+                                                <Form.Group as={Col} controlId={"positionName" + index}>
+                                                    <Form.Control
+                                                        type="text"
+                                                        className={submitted && position?.positionName === "" ? " is-invalid" : ""}
+                                                        name={"positionName" + index}
+                                                        value={position?.positionName}
+                                                        onChange={updatePositionName(index)}
+                                                        placeholder="Enter position"
+                                                    />
+                                                    <Form.Control.Feedback type="invalid">
+                                                        Transaction name is required
+                                                    </Form.Control.Feedback>
+                                                </Form.Group>
+                                                <Form.Group as={Col} xs={3} controlId={"positionSize" + index}>
+                                                    <Form.Control
+                                                        type="number"
+                                                        className={submitted && position?.size <= 0 ? " is-invalid" : ""}
+                                                        name={"positionSize" + index}
+                                                        value={position?.size}
+                                                        onChange={updatePositionSize(index)}
+                                                        min="0"
+                                                        step="0.01"
+                                                        placeholder="0.00"
+                                                    />
+                                                    <Form.Control.Feedback type="invalid">
+                                                        Size must be bigger than 0.
+                                                    </Form.Control.Feedback>
+                                                </Form.Group>
+                                                <Form.Group as={Col} xs={3} controlId={"positionAmount" + index}>
+                                                    <Form.Control
+                                                        type="number"
+                                                        className={submitted && position?.amount <= 0 ? " is-invalid" : ""}
+                                                        name={"positionAmount" + index}
+                                                        value={position?.amount}
+                                                        onChange={updatePositionAmount(index)}
+                                                        min="0"
+                                                        step="0.01"
+                                                        placeholder="0.00"
+                                                    />
+                                                    <Form.Control.Feedback type="invalid">
+                                                        Amount must be bigger than 0.
+                                                    </Form.Control.Feedback>
+                                                </Form.Group>
+                                                {getIconWithActionAndTooltip(
+                                                                            BsTrashFill,
+                                                                            "transaction-delete-position-icon", 
+                                                                            () => deletePositionFromList(index),
+                                                                            "top", "Click to delete position")}
+                                            </Form.Row>
+                                        </div>
+                            })}
+                        </>
+                    }     
                 </Modal.Body>
                 <Modal.Footer>
                      { updateTransactionInProgress && <Spinner animation="border" size="sm" />}

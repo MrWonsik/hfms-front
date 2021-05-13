@@ -27,7 +27,7 @@ const initialState = {
 	changePasswordModalUsers: { isOpen: false, id: ""},
 	addNewUserModalIsOpen: false,
 	confirmationModal: { isOpen: false, id: ""},
-	editMaximumCostModal: { isOpen: false, id: ""},
+	editMaximumAmountModal: { isOpen: false, id: ""},
 	addNewCategoryModalIsOpen: false,
 	editCategoryModal: {isOpen: false, id: ""},
 	transactionDetailsModalIsOpen: false
@@ -94,13 +94,13 @@ export const modals = (state = initialState, action) => {
 			const { contextId } = payload;
 			return {
 				...state,
-				editMaximumCostModal: {isOpen: true, contextId },
+				editMaximumAmountModal: {isOpen: true, contextId },
 			};
 		}
 		case CLOSE_MODAL_EDIT_MAXIMUM_COST:
 			return {
 				...state,
-				editMaximumCostModal: {isOpen: false },
+				editMaximumAmountModal: {isOpen: false },
 			};
 		case OPEN_MODAL_ADD_NEW_CATEGORY:
 			return {
