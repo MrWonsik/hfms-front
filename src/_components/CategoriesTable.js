@@ -1,8 +1,7 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import Spinner from "react-bootstrap/Spinner";
 import { BsTrash, BsStarFill, BsStar, BsSquareFill, BsCalendar, BsClipboardData, BsPencil } from 'react-icons/bs'
-import { openConfirmationModal, openModalAddNewCategory, openModalEditCategory, openModalEditMaximumCost } from '../modal/modal.actions';
+import { openConfirmationModal, openModalAddNewCategory, openModalEditCategory, openModalEditMaximumAmount } from '../modal/modal.actions';
 import ConfirmationModal from './modal/ConfirmationModal';
 import Alert from "react-bootstrap/Alert";
 import { dateSort, sortByName } from '../_helpers/tableBootstrapSorter';
@@ -10,7 +9,7 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import { changeStateFavouriteExepenseCategory, deleteCategory } from '../finance/finance.actions';
 import { EXPENSE } from '../finance/CategoryType';
-import EditMaximumCostModal from './modal/EditMaximumCostModal';
+import EditMaximumAmountModal from './modal/EditMaximumAmountModal';
 import PropTypes from "prop-types";
 import { getIconWithActionAndTooltip } from '../_helpers/wrapWithTooltip';
 import EditCategoryModal from './modal/EditCategoryModal';
@@ -24,8 +23,8 @@ const CategoriesTable = ({ type, categories, isLoading }) => {
         dispatch(openConfirmationModal("category_confirmation_" + category.categoryName.trim() + "_" + category.id));
     }
 
-    const showEditMaximumCostModal = (category) => {
-        dispatch(openModalEditMaximumCost("category_edit_maximum_cost" + category.categoryName.trim() + "_" + category.id));
+    const showEditMaximumAmountModal = (category) => {
+        dispatch(openModalEditMaximumAmount("category_edit_maximum_amount" + category.categoryName.trim() + "_" + category.id));
     }
 
     const showEditCategoryModal = (category) => {
@@ -53,11 +52,11 @@ const CategoriesTable = ({ type, categories, isLoading }) => {
             actions: <>
                 {getIconWithActionAndTooltip(BsStarFill, "table-action-icon", () => handleIsFavouriteClicked({...category, type}), "top", "Delete from favourite", category.favourite)}
                 {getIconWithActionAndTooltip(BsStar, "table-action-icon", () => handleIsFavouriteClicked({...category, type}), "top", "Add to favourite", !category.favourite)}
-                {type === EXPENSE && getIconWithActionAndTooltip(BsClipboardData, "table-action-icon", () => showEditMaximumCostModal(category), "top", "Plan maximum cost")}
+                {type === EXPENSE && getIconWithActionAndTooltip(BsClipboardData, "table-action-icon", () => showEditMaximumAmountModal(category), "top", "Plan maximum amount")}
                 {getIconWithActionAndTooltip(BsPencil, "table-action-icon", () => showEditCategoryModal(category), "top", "Edit")}
                 {getIconWithActionAndTooltip(BsTrash, "table-action-icon", () => showDeleteConfirmationModal(category), "top", "Delete")}
             </>,
-            maximumCost: type === EXPENSE ? category.currentVersion.maximumCost : null
+            maximumAmount: type === EXPENSE ? category.currentVersion.maximumAmount : null
     }))
     
     const columns = [{
@@ -74,8 +73,8 @@ const CategoriesTable = ({ type, categories, isLoading }) => {
         sort: true,
         sortFunc: dateSort
       }, {
-        dataField: 'maximumCost',
-        text: "Maximum cost", //TODO: Add some description of this coulmn...
+        dataField: 'maximumAmount',
+        text: "Maximum amount", //TODO: Add some description of this coulmn...
         hidden: type === EXPENSE ? false : true,
         sort: true,
         formatter: (cell) => Math.round(cell * 100 / 100).toFixed(2) + " zł"
@@ -119,7 +118,7 @@ const CategoriesTable = ({ type, categories, isLoading }) => {
                     {categories?.map((category) => (
                         <div key={category.id}>
                             <ConfirmationModal id={"category_confirmation_" + category.categoryName.trim() + "_" + category.id} confirmationFunction={() => handleDeleteCategory(category.id, type)} confirmationMessage={"Are you sure you want to delete " + category.categoryName + "?"} />
-                            {type === EXPENSE && <EditMaximumCostModal id={"category_edit_maximum_cost" + category.categoryName.trim() + "_" + category.id} category={category} />}
+                            {type === EXPENSE && <EditMaximumAmountModal id={"category_edit_maximum_amount" + category.categoryName.trim() + "_" + category.id} category={category} />}
                             <EditCategoryModal id={"category_edit" + category.categoryName.trim() + "_" + category.id} category={category} categoryType={type}/>
                         </div>
                     ))}

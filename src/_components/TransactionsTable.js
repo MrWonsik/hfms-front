@@ -27,12 +27,12 @@ const TransactionsTable = () => {
     useEffect(() => {
         dispatch(changePage("Transaction list"));
         dispatch(getTransactions(EXPENSE_TRANSACTION, {year: date.year(), month: date.month()} ));
-        // dispatch(getTransactions(INCOME_TRANSACTION, {year: date.year(), month: date.month()} )); // not implemented yet in backend
+        dispatch(getTransactions(INCOME_TRANSACTION, {year: date.year(), month: date.month()} ));
       }, []);
 
     useEffect(() => {
         dispatch(getTransactions(EXPENSE_TRANSACTION, {year: date.year(), month: date.month()} ));
-        // dispatch(getTransactions(INCOME_TRANSACTION, {year: date.year(), month: date.month()} )); // not implemented yet in backend
+        dispatch(getTransactions(INCOME_TRANSACTION, {year: date.year(), month: date.month()} ));
     }, [date])
     
     const handleAddNewFinance = () => {
@@ -45,31 +45,17 @@ const TransactionsTable = () => {
         isLoading: state.finance.isTransactionsLoading
     }));
 
-    let transactions = expenseTransactions.concat(incomeTransactions);
-
-    const generateTransactionsMap = () => {
-        return  transactions?.map((transaction) => ({
-            id: transaction.id,
-            name: <>{transaction.name} <span className="additionaly-info">({transaction.id})</span></>,
-            created: <><BsCalendar /> {transaction.createdDate}</>,
-            cost: transaction.cost,
-            actions: <>
-                {getIconWithActionAndTooltip(BsEye, "table-action-icon", () => showTransactionDetails(transaction), "top", "Show details")}
-                {getIconWithActionAndTooltip(BsTrash, "table-action-icon", () => showDeleteConfirmationModal(transaction), "top", "Delete")}
-            </>,
-            type: transaction.type
-        }))
-    }
+    let transactions = expenseTransactions?.concat(incomeTransactions);
 
     const showTransactionDetails = (transaction) => {
-        if(transaction.receiptId !== null) {
+        if(transaction.receiptId !== null && transaction.type === EXPENSE_TRANSACTION) {
             dispatch(getTransactionFile(transaction.id))
         }
-        dispatch(openTransactionDetailsModal("transaction_details_" + transaction.name.trim() + "_" + transaction.id));
+        dispatch(openTransactionDetailsModal("transaction_details_" + transaction.name.trim() + "_" + transaction.type + "_" + transaction.id));
     }
 
     const showDeleteConfirmationModal = (transaction) => {
-        dispatch(openConfirmationModal("transaction_confirmation_" + transaction.name.trim() + "_" + transaction.id));
+        dispatch(openConfirmationModal("transaction_confirmation_" + transaction.name.trim() + "_" + transaction.type + "_" + transaction.id));
     }
 
     const handleAddTransaction = () => {
@@ -80,17 +66,33 @@ const TransactionsTable = () => {
         dispatch(deleteTransaction(id, transactionType));
     }
 
-    const costFormatter = (cell, transactionRow) => {
+    const generateTransactionsMap = () => {
+        return  transactions?.map((transaction) => ({
+            key: transaction.id + "_" + transaction.type,
+            id: transaction.id,
+            name: <>{transaction.name} <span className="additionaly-info">({transaction.id})</span></>,
+            created: <><BsCalendar /> {transaction.createdDate}</>,
+            amount: transaction.amount,
+            category: transaction.category.name,
+            actions: <>
+                {getIconWithActionAndTooltip(BsEye, "table-action-icon", () => showTransactionDetails(transaction), "top", "Show details")}
+                {getIconWithActionAndTooltip(BsTrash, "table-action-icon", () => showDeleteConfirmationModal(transaction), "top", "Delete")}
+            </>,
+            type: transaction.type
+        }))
+    }
+
+    const amountFormatter = (cell, transactionRow) => {
         switch(transactionRow.type) {
             case EXPENSE_TRANSACTION:
                 return (
-                    <span className={"expense-transaction-cost-style"} >
+                    <span className={"expense-transaction-amount-style"} >
                         - {cell} zł
                     </span>
                 )
             case INCOME_TRANSACTION:
                 return (
-                    <span className={"income-transaction-cost-style"} >
+                    <span className={"income-transaction-amount-style"} >
                         + {cell} zł
                     </span>
                 )
@@ -101,15 +103,18 @@ const TransactionsTable = () => {
         dataField: 'name',
         text: 'Name',
       }, {
+        dataField: 'amount',
+        text: 'Amount',
+        formatter: amountFormatter,
+        formatExtraData: transactions
+      }, {
+        dataField: 'category',
+        text: 'Category',
+      }, {
         dataField: 'created',
         text: 'Created',
         sort: true,
         sortFunc: dateSort
-      }, {
-        dataField: 'cost',
-        text: 'Cost',
-        formatter: costFormatter,
-        formatExtraData: transactions
       }, {
         dataField: 'actions',
         text: 'Action'  
@@ -120,7 +125,7 @@ const TransactionsTable = () => {
 
     const defaultSorted = [{
         dataField: 'created',
-        order: 'asc'
+        order: 'desc'
     }]
     
     const paginationOptions = {
@@ -149,7 +154,7 @@ const TransactionsTable = () => {
                     <BootstrapTable 
                         classes="list-table" 
                         bootstrap4 
-                        keyField="id" 
+                        keyField="key" 
                         data={ generateTransactionsMap() } 
                         columns={ columns }
                         bordered={false}
@@ -158,9 +163,9 @@ const TransactionsTable = () => {
                     />
 
                     {transactions?.map((transaction) => (
-                        <div key={transaction.id}>
-                            <ConfirmationModal id={"transaction_confirmation_" + transaction.name.trim() + "_" + transaction.id} confirmationFunction={() => handleDeleteTransaction(transaction.id, transaction.type)} confirmationMessage={"Are you sure you want to delete " + transaction.name + "?"} />
-                            <TransactionDetailsModal id={"transaction_details_" + transaction.name.trim() + "_" + transaction.id} transaction={transaction} />
+                        <div key={transaction.id + "_" + transaction.type}>
+                            <ConfirmationModal id={"transaction_confirmation_" + transaction.name.trim() + "_" + transaction.type + "_" + transaction.id} confirmationFunction={() => handleDeleteTransaction(transaction.id, transaction.type)} confirmationMessage={"Are you sure you want to delete " + transaction.name + "?"} />
+                            <TransactionDetailsModal id={"transaction_details_" + transaction.name.trim() + "_" + transaction.type + "_" + transaction.id} transaction={transaction} />
                         </div>
                     ))}
                 </> :
