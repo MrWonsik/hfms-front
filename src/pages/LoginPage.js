@@ -6,9 +6,8 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
 
-import { login } from "../user/user.actions";
+import { login, logout } from "../user/user.actions";
 import { Jumbotron } from "react-bootstrap";
-import { cleanStateWithourAlert } from "../_helpers";
 import { useHistory } from "react-router";
 
 const LoginPage = () => {
@@ -21,7 +20,7 @@ const LoginPage = () => {
 	}));
 
 	useEffect(() => {
-		dispatch(cleanStateWithourAlert());
+		dispatch(logout());
 	}, []);
 
 	const [username, setUsername] = useState("");

@@ -18,19 +18,20 @@ export const user = (state = initialState, action) => {
 	const { type, payload } = action;
 
 	switch (type) {
-		case LOGIN_REQUEST:
+		case LOGIN_REQUEST: {
 			const { user } = payload;
 			return {
 				loggingIn: true,
 				user: user,
 			};
-
-		case LOGIN_SUCCESS:
+		}
+		case LOGIN_SUCCESS: {
 			const { user: userLoginIn } = payload;
 			return {
 				loggedIn: true,
 				user: userLoginIn,
 			};
+		}
 		case LOGIN_FAILURE:
 			return {};
 
@@ -55,13 +56,13 @@ export const user = (state = initialState, action) => {
 				updatingPasswordInProgress: false,
 			};
 
-		case CHANGE_PAGE:
+		case CHANGE_PAGE: {
 			const { pageName } = payload;
 			return {
 				...state,
 				currentPage: pageName
 			};
-
+		}
 		default:
 			return state;
 	}

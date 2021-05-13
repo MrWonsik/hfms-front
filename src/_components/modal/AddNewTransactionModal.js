@@ -25,8 +25,8 @@ export const AddNewTransactionModal = () => {
 
     const [submitted, setSubmitted] = useState(false);
     const [transactionName, setTransactionName] = useState("");
-    const [category, setCategory] = useState(undefined);
-    const [shop, setShop] = useState(undefined);
+    const [category, setCategory] = useState({});
+    const [shop, setShop] = useState({});
     const [transactionType, setTransactionType] = useState(EXPENSE_TRANSACTION);
     const [amount, setMaximumAmount] = useState(0);
     const [receiptFile, setReceiptFile] = useState(undefined);
@@ -68,8 +68,9 @@ export const AddNewTransactionModal = () => {
         setTransactionType(EXPENSE_TRANSACTION);
         setMaximumAmount(0);
         setSubmitted(false);
-        setCategory(undefined);
+        setCategory({});
         setReceiptFile(undefined);
+        setShop({})
         setTransactionDate(new Date().toISOString().split('T')[0]);
         setPositionListForm([]);
       }
@@ -77,7 +78,7 @@ export const AddNewTransactionModal = () => {
     const handleAddNewTransaction = (e) => {
         e.preventDefault();
         setSubmitted(true);
-        if (transactionName && transactionType && amount && amount >= 0 && category && category.name !== "Please wait" && positionListForm.every(position => position.positionName !== "")) {
+        if (transactionName && transactionType && amount && amount > 0 && category && category.name !== "Please wait" && positionListForm.every(position => position.positionName !== "")) {
             dispatch(createTransaction({ 
                 name: transactionName, 
                 amount: amount,
@@ -99,7 +100,7 @@ export const AddNewTransactionModal = () => {
 
     const getOptions = (categories) => {
         return categories?.sort((a,b) => a.categoryName.localeCompare(b.categoryName)).sort(a => a.favourite ? -1 : 1).map((category) => 
-            (<option key={category.id} value={category.categoryName} id={category.id}>{category.categoryName} {category.favourite && "★"}</option>))
+            (<option type="category" key={category.id} value={category.categoryName} id={category.id}>{category.categoryName} {category.favourite && "★"}</option>))
     }
 
     return (
@@ -127,7 +128,7 @@ export const AddNewTransactionModal = () => {
                             <Form.Label>Amount:</Form.Label>
                             <Form.Control
                                 type="number"
-                                className={(submitted && amount < 0 ? " is-invalid" : "")}
+                                className={(submitted && amount <= 0 ? " is-invalid" : "")}
                                 name="amount"
                                 value={amount}
                                 onChange={(e) => setMaximumAmount(e.target.value)}
@@ -178,7 +179,7 @@ export const AddNewTransactionModal = () => {
                                 name="category"
                                 value={category?.name}
                                 onChange={(e) => {
-                                    let element = document.querySelector("option[value=\"" + e.target.value + "\"]");
+                                    let element = document.querySelector("option[value=\"" + e.target.value + "\"][type=\"category\"]");
                                     let category = element != null ? {id: element.getAttribute("id"), name: e.target.value } : undefined;
                                     setCategory(category)
                                 }}
@@ -210,15 +211,17 @@ export const AddNewTransactionModal = () => {
                                 name="shop"
                                 value={shop?.name}
                                 onChange={(e) => {
-                                    let element = document.querySelector("option[value=\"" + e.target.value + "\"]");
-                                    setShop({id: element != null ? element.getAttribute("id") : undefined, name: e.target.value})
+                                    let element = document.querySelector("option[value=\"" + e.target.value + "\"][type=\"shop\"]");
+                                    console.log(element);
+                                    setShop({id: (element != null ? element.getAttribute("shop_id") : undefined), name: e.target.value})
+                                    console.log({id: (element != null ? element.getAttribute("shop_id") : undefined), name: e.target.value});
                                 }}
                                 placeholder="Enter shop name"
                             />
                             {shops &&
                                 <datalist id="shop-list">
                                     {shops.map(shop => 
-                                        <option id={shop.id} key={shop.id} value={shop.name}>{shop.createDate.date}</option>
+                                        <option type="shop" shop_id={shop.id} key={shop.id} value={shop.name}>{shop.createDate.date}</option>
                                     )}
                                 </datalist>
                             }
