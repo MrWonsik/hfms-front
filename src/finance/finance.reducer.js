@@ -37,7 +37,9 @@ import {
 	UPLOAD_EXPENSE_FILE_FAILURE,
 	UPDATE_TRANSACTION_REQUEST,
 	UPDATE_TRANSACTION_SUCCESS,
-	UPDATE_TRANSACTION_FAILURE
+	UPDATE_TRANSACTION_FAILURE,
+	GET_ALL_TRANSACTIONS_REQUEST,
+	GET_ALL_TRANSACTIONS_SUCCESS
 } from "./finance.actions";
 import { EXPENSE_TRANSACTION, INCOME_TRANSACTION } from './TransactionType';
 
@@ -241,10 +243,7 @@ export const finance = (state = initialState, action) => {
 				isEditCategoryInProgress: false
 			};
 		case GET_TRANSACTIONS_REQUEST: {
-			return {
-				...state,
-				isTransactionsLoading: true
-			};
+			return state
 		}
 		case GET_TRANSACTIONS_SUCCESS: {
 			const { transactions, transactionType } = payload;
@@ -253,14 +252,12 @@ export const finance = (state = initialState, action) => {
 					return {
 						...state,
 						expenseTransactions: transactions.map(transaction => ({...transaction, type: transactionType})),
-						isTransactionsLoading: false,
 					};
 				}
 				case INCOME_TRANSACTION: {
 					return {
 						...state,
 						incomeTransactions: transactions.map(transaction => ({...transaction, type: transactionType})),
-						isTransactionsLoading: false
 					}
 				}
 				default:
@@ -272,6 +269,18 @@ export const finance = (state = initialState, action) => {
 				...state,
 				isTransactionsLoading: false
 			}
+		case GET_ALL_TRANSACTIONS_REQUEST: {
+			return {
+				...state,
+				isTransactionsLoading: true
+			};
+		}
+		case GET_ALL_TRANSACTIONS_SUCCESS: {
+			return {
+				...state,
+				isTransactionsLoading: false
+			};
+		}
 		case CREATE_TRANSACTION_REQUEST:
 			return {
 				...state,

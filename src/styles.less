@@ -9,6 +9,10 @@
 
 @main-font-color: white;
 
+html {
+    overflow-y:scroll;
+}
+
 .no-style-button {
 	all: unset;
 }
@@ -21,6 +25,7 @@
 	margin: 0;
 	width: 100%;
 	color: @main-color-dark;
+	background-color: white;
 }
 
 .login-page-jumbotron,
@@ -482,4 +487,32 @@ button.btn.btn-secondary {
 
 .react-bootstrap-table-pagination-list-hidden {
     display: none;
+}
+
+.users-charts-pie-title {
+	font-size: 24px;
+	color: @main-color-dark;
+	margin-bottom: 0px;
+}
+
+.expense-pie-container {
+	border: 3px solid rgb(150, 0, 0);
+	padding: 10px;
+	margin: 10px 50px;
+	border-radius: 4px;
+	justify-content: center;
+	align-items: center;
+	min-height: 250px;
+	flex-direction: column;
+}
+
+.income-pie-container {
+	border: 3px solid rgb(0, 150, 0);
+	padding: 10px;
+	margin: 10px 50px;
+	border-radius: 4px;
+	justify-content: center;
+	align-items: center;
+	min-height: 250px;
+	flex-direction: column;
 }

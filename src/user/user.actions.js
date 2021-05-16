@@ -38,7 +38,6 @@ export const logout = () => async dispatch => {
 	dispatch(getUsersClear());
 	dispatch(clearModal());
 	dispatch(clearFinances());
-	// dispatch(alertClear());
 } 
 
 export const CHANGE_PASSWORD_REQUEST = 'USER_CHANGE_PASSWORD_REQUEST';
