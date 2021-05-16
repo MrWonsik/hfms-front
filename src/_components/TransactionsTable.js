@@ -12,9 +12,8 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import { openConfirmationModal, openModalAddNewTransaction, openTransactionDetailsModal } from '../modal/modal.actions';
 import ConfirmationModal from './modal/ConfirmationModal';
-import { deleteTransaction, getTransactionFile } from '../finance/finance.actions';
+import { deleteTransaction, getAllTransactions, getTransactionFile } from '../finance/finance.actions';
 import Loader from '../_helpers/Loader';
-import { getTransactions } from '../finance/finance.actions';
 import { getMonth } from '../_helpers/dateHelper';
 import moment from 'moment';
 import TransactionDetailsModal from './modal/TransactionDetailsModal';
@@ -24,50 +23,25 @@ const TransactionsTable = () => {
 
     let [date, setDate] = useState(moment());
 
+    const { expenseTransactions, incomeTransactions, isTransactionsLoading } = useSelector(( state ) => ({
+        expenseTransactions: state.finance.expenseTransactions,
+        incomeTransactions: state.finance.incomeTransactions,
+        isTransactionsLoading: state.finance.isTransactionsLoading
+    }));
+
     useEffect(() => {
         dispatch(changePage("Transaction list"));
-        dispatch(getTransactions(EXPENSE_TRANSACTION, {year: date.year(), month: date.month()} ));
-        dispatch(getTransactions(INCOME_TRANSACTION, {year: date.year(), month: date.month()} ));
+        dispatch(getAllTransactions({year: date.year(), month: date.month()}))
       }, []);
 
     useEffect(() => {
-        dispatch(getTransactions(EXPENSE_TRANSACTION, {year: date.year(), month: date.month()} ));
-        dispatch(getTransactions(INCOME_TRANSACTION, {year: date.year(), month: date.month()} ));
+        dispatch(getAllTransactions({year: date.year(), month: date.month()}))
     }, [date])
-    
-    const handleAddNewFinance = () => {
-        dispatch(openModalAddNewTransaction());
-    }
 
-    const { expenseTransactions, incomeTransactions, isLoading } = useSelector(( state ) => ({
-        expenseTransactions: state.finance.expenseTransactions,
-        incomeTransactions: state.finance.incomeTransactions,
-        isLoading: state.finance.isTransactionsLoading
-    }));
-
-    let transactions = expenseTransactions?.concat(incomeTransactions);
-
-    const showTransactionDetails = (transaction) => {
-        if(transaction.receiptId !== null && transaction.type === EXPENSE_TRANSACTION) {
-            dispatch(getTransactionFile(transaction.id))
-        }
-        dispatch(openTransactionDetailsModal("transaction_details_" + transaction.name.trim() + "_" + transaction.type + "_" + transaction.id));
-    }
-
-    const showDeleteConfirmationModal = (transaction) => {
-        dispatch(openConfirmationModal("transaction_confirmation_" + transaction.name.trim() + "_" + transaction.type + "_" + transaction.id));
-    }
-
-    const handleAddTransaction = () => {
-        dispatch(openModalAddNewTransaction());
-    }
-
-    const handleDeleteTransaction = (id, transactionType) => {
-        dispatch(deleteTransaction(id, transactionType));
-    }
+    var transactions = expenseTransactions?.concat(incomeTransactions);
 
     const generateTransactionsMap = () => {
-        return  transactions?.map((transaction) => ({
+        return  transactions && transactions.map((transaction) => ({
             key: transaction.id + "_" + transaction.type,
             id: transaction.id,
             name: <>{transaction.name} <span className="additionaly-info">({transaction.id})</span></>,
@@ -80,6 +54,32 @@ const TransactionsTable = () => {
             </>,
             type: transaction.type
         }))
+    }
+    
+    const showTransactionDetails = (transaction) => {
+        if(transaction.receiptId !== null && transaction.type === EXPENSE_TRANSACTION) {
+            dispatch(getTransactionFile(transaction.id))
+        }
+        dispatch(openTransactionDetailsModal("transaction_details_" + transaction.name.trim() + "_" + transaction.type + "_" + transaction.id));
+    }
+
+    const showDeleteConfirmationModal = (transaction) => {
+        dispatch(openConfirmationModal("transaction_confirmation_" + transaction.name.trim() + "_" + transaction.type + "_" + transaction.id));
+    }
+
+
+    var transactionsMap = generateTransactionsMap();
+
+    const handleAddNewFinance = () => {
+        dispatch(openModalAddNewTransaction());
+    }
+
+    const handleAddTransaction = () => {
+        dispatch(openModalAddNewTransaction());
+    }
+
+    const handleDeleteTransaction = (id, transactionType) => {
+        dispatch(deleteTransaction(id, transactionType));
     }
 
     const amountFormatter = (cell, transactionRow) => {
@@ -129,7 +129,7 @@ const TransactionsTable = () => {
     }]
     
     const paginationOptions = {
-        sizePerPage: 5,
+        sizePerPage: 8,
         hideSizePerPage: true, 
         hidePageListOnlyOnePage: true,
         alwaysShowAllBtns: false,
@@ -149,13 +149,13 @@ const TransactionsTable = () => {
                     {getIconWithActionAndTooltip(BsPlus, "table-icon-action", () => handleAddNewFinance(), "top", "Add new transaction")}
                 </div>
             </Form.Group>
-            { isLoading === true ? <Loader /> :  transactions?.length > 0 ?  
+            { isTransactionsLoading ? <Loader /> :  transactions?.length > 0 ?  
                 <>
                     <BootstrapTable 
                         classes="list-table" 
                         bootstrap4 
                         keyField="key" 
-                        data={ generateTransactionsMap() } 
+                        data={ transactionsMap } 
                         columns={ columns }
                         bordered={false}
                         defaultSorted={defaultSorted}

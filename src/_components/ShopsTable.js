@@ -74,7 +74,7 @@ const ShopsTable = () => {
     }]
     
     const paginationOptions = {
-        sizePerPage: 5,
+        sizePerPage: 7,
         hideSizePerPage: true, 
         hidePageListOnlyOnePage: true,
         alwaysShowAllBtns: false,

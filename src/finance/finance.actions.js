@@ -1,6 +1,7 @@
 import { alertError, alertSuccess } from "../alert/alert.actions";
-import { EXPENSE } from "./CategoryType";
+import { EXPENSE, INCOME } from "./CategoryType";
 import { getShopsCall, createShopCall, deleteShopCall, getCategoriesCall, createCategoryCall, changeStateFavouriteCategoryCall, deleteCategoryCall, editExpenseCategoryMaximumAmountCall, editCategoryCall, createTransactionCall, getTransactionsCall, deleteTransactionCall, getExpenseFileCall, deleteExpenseFileCall, uploadExpenseFileCall, updateTransactionCall } from "./finance.service";
+import { EXPENSE_TRANSACTION, INCOME_TRANSACTION } from "./TransactionType";
 
 export const GET_SHOPS_REQUEST = "GET_SHOPS_REQUEST";
 export const GET_SHOPS_SUCCESS = "GET_SHOPS_SUCCESS";
@@ -248,6 +249,20 @@ export const getTransactions = ( transactionType, date ) => async dispatch => {
                 return Promise.reject(error);
             }
         );
+}
+
+export const GET_ALL_TRANSACTIONS_REQUEST = "GET_ALL_TRANSACTIONS_REQUEST";
+export const GET_ALL_TRANSACTIONS_SUCCESS = "GET_ALL_TRANSACTIONS_SUCCESS";
+export const getAllTransactionsRequest = () => ({ type: GET_ALL_TRANSACTIONS_REQUEST })
+export const getAllTransactionsSuccess = () => ({ type: GET_ALL_TRANSACTIONS_SUCCESS })
+export const getAllTransactions = ( date ) => async dispatch => {
+    dispatch(getAllTransactionsRequest());
+    await Promise.all([
+        dispatch(getTransactions(EXPENSE_TRANSACTION, date )),
+        dispatch(getTransactions(INCOME_TRANSACTION, date ))
+    ]);
+
+    dispatch(getAllTransactionsSuccess())
 }
 
 

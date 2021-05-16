@@ -10,6 +10,7 @@ import { EXPENSE_TRANSACTION } from "../../finance/TransactionType";
 import { createTransaction } from "../../finance/finance.actions";
 import { BsPlusCircle, BsTrashFill } from "react-icons/bs";
 import { getIconWithActionAndTooltip } from "../../_helpers/wrapWithTooltip";
+import moment from "moment";
 
 
 export const AddNewTransactionModal = () => {
@@ -30,7 +31,7 @@ export const AddNewTransactionModal = () => {
     const [transactionType, setTransactionType] = useState(EXPENSE_TRANSACTION);
     const [amount, setMaximumAmount] = useState(0);
     const [receiptFile, setReceiptFile] = useState(undefined);
-    const [transactionDate, setTransactionDate] = useState(new Date().toISOString().split('T')[0]);
+    const [transactionDate, setTransactionDate] = useState(moment(new Date()).format("YYYY-MM-DD"));
     const [positionListForm, setPositionListForm] = useState([]);
 
     const addNewPositionToList = () => {
@@ -71,7 +72,7 @@ export const AddNewTransactionModal = () => {
         setCategory({});
         setReceiptFile(undefined);
         setShop({})
-        setTransactionDate(new Date().toISOString().split('T')[0]);
+        setTransactionDate(moment(new Date()).format("YYYY-MM-DD"));
         setPositionListForm([]);
       }
 
