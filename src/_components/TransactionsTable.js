@@ -96,7 +96,7 @@ const TransactionsTable = () => {
     }
 
     const handleDeleteTransaction = (id, transactionType) => {
-        dispatch(deleteTransaction(id, transactionType));
+        dispatch(deleteTransaction(id, transactionType, {year: date.year(), month: date.month()}));
     }
 
     const amountFormatter = (cell, transactionRow) => {

@@ -137,7 +137,7 @@ const UserCharts = () => {
             <p className="text-center users-charts-pie-title">Incomes:</p>
             { filteredIncomeCategories?.length != 0 ?
               <>
-                <Pie data={getSumIncomeByCategory()}/>
+                {isTransactionsLoading ? "loading..." : <Pie data={getSumIncomeByCategory()}/>}
               </>
               :
               <p className="text-center">No incomes transactions found.</p>
@@ -147,7 +147,7 @@ const UserCharts = () => {
             <p className="text-center users-charts-pie-title">Expenses:</p>
             { filteredExpenseCategories?.length != 0 ? 
                 <>
-                  <Pie data={getSumExpensesByCategory()}/>
+                  {isTransactionsLoading ? "loading..." : <Pie data={getSumExpensesByCategory()}/>}
                 </>
                 :
                 <p className="text-center">No expenses transactions found.</p>
@@ -177,7 +177,7 @@ const UserCharts = () => {
                         .slice(0, 4)
                         .map(transaction => {
                           let isExpenseTransaction = transaction.type === EXPENSE_TRANSACTION;
-                          let sign = isExpenseTransaction ? "+" : "-";
+                          let sign = isExpenseTransaction ? "-" : "+";
                           let tdClass = isExpenseTransaction ? "expense-amount-last-transaction-table" : "income-amount-last-transaction-table"
                           return (                          
                             <tr key={transaction.id + transaction.name}>
