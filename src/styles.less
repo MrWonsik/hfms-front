@@ -219,7 +219,7 @@ button.btn.btn-secondary {
 			color: @main-focus-color-light;
 			transition: color 0.15s ease-in-out;
 			cursor: pointer;
-		}
+		} 
 	}
 }
 
@@ -257,6 +257,10 @@ button.btn.btn-secondary {
 		color: rgb(197, 196, 196);
 		cursor: default;
 	}
+}
+
+.table-icon-action.search {
+	font-size: 35px;
 }
 
 .navbar-username-container {
@@ -404,12 +408,12 @@ button.btn.btn-secondary {
 }
 
 .income-transaction-amount-style {
-	color: green;
+	color: rgb(0, 150, 0);
 	font-weight: 700;
 }
 
 .expense-transaction-amount-style {
-	color: red;
+	color: rgb(150, 0, 0);
 	font-weight: 700;
 }
 
@@ -495,8 +499,7 @@ button.btn.btn-secondary {
 	margin-bottom: 0px;
 }
 
-.expense-pie-container {
-	border: 3px solid rgb(150, 0, 0);
+.income-pie-container, .expense-pie-container {
 	padding: 10px;
 	margin: 10px 50px;
 	border-radius: 4px;
@@ -506,13 +509,54 @@ button.btn.btn-secondary {
 	flex-direction: column;
 }
 
+.expense-pie-container {
+	border: 3px solid rgb(150, 0, 0);
+
+}
+
 .income-pie-container {
 	border: 3px solid rgb(0, 150, 0);
-	padding: 10px;
-	margin: 10px 50px;
-	border-radius: 4px;
-	justify-content: center;
-	align-items: center;
-	min-height: 250px;
-	flex-direction: column;
+}
+
+#select-filter-column-category, #text-filter-column-name { //default filter column name
+	display: none;
+}
+
+.expense-amount-last-transaction-table {
+	color: rgb(150, 0, 0);
+}
+
+
+.income-amount-last-transaction-table {
+	color: rgb(0, 150, 0);
+}
+
+// .filter-options {
+// 	height: 0;
+// 	display: none;
+// }
+
+// .filter-options.open {
+// 	height: 150px;
+// 	display: flex;
+//     transition: height 5s linear;
+// }
+
+.slide-wrapper {
+	position: relative;
+    overflow: hidden;
+
+	.filter-options {
+		padding: 5px;
+		position: inherit;
+    	top: -200px;
+		height: 0;
+		transition: all 0.6s; 
+
+		&.open {
+			transition: all 0.3s;
+			height: 100%;
+			top: 0;
+		}
+	}
 }

@@ -1,12 +1,15 @@
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
+import { Spinner, Table } from 'react-bootstrap';
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import { Pie, Bar } from "react-chartjs-2";
 import { BsChevronCompactLeft, BsChevronCompactRight } from 'react-icons/bs';
 import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { EXPENSE, INCOME } from '../finance/CategoryType';
-import { getCategories } from '../finance/finance.actions';
+import { getAllTransactions, getCategories } from '../finance/finance.actions';
+import { EXPENSE_TRANSACTION } from '../finance/TransactionType';
 import { getMonth } from '../_helpers/dateHelper';
 import { getIconWithActionAndTooltip } from '../_helpers/wrapWithTooltip';
 
@@ -24,16 +27,21 @@ const UserCharts = () => {
 
     lastSixMonths.reverse();
 
-    const { expenseCategories, incomeCategories } = useSelector((state) => ({
+    const { expenseCategories, incomeCategories, expenseTransactions, incomeTransactions, isTransactionsLoading } = useSelector((state) => ({
         expenseCategories: state.finance.expenseCategories,
         incomeCategories: state.finance.incomeCategories,
+        expenseTransactions: state.finance.expenseTransactions,
+        incomeTransactions: state.finance.incomeTransactions,
+        isTransactionsLoading: state.finance.isTransactionsLoading
     }));
   
     useEffect(() => {
       dispatch(getCategories(EXPENSE));
       dispatch(getCategories(INCOME));
+      dispatch(getAllTransactions({year: date.year(), month: date.month()}))
     }, []);
 
+    var transactions = expenseTransactions?.concat(incomeTransactions);
     
     let activeMonth = lastSixMonths[5];
     const checkIsActiveMonthExistsForCategory = (category) => {
@@ -116,41 +124,80 @@ const UserCharts = () => {
 
 	return (
 		<>
+      <div className="date-selector-container d-flex justify-content-center">
+          {getIconWithActionAndTooltip(BsChevronCompactLeft, "table-icon-action", () => setDate((curDate) => curDate.clone().subtract(1, "months")), "top", "Previous month")}
+              <span className="transaction-current-year-and-month">{getMonth(date.month())} - {date.year()}</span>
+          {date.month() === moment().month() && date.year() === moment().year() 
+          ? getIconWithActionAndTooltip(BsChevronCompactRight, "table-icon-action disabled", () => "", "top", "Disabled") 
+          : getIconWithActionAndTooltip(BsChevronCompactRight, "table-icon-action", () => setDate((curDate) => curDate.clone().add(1, "months")), "top", "Next month")}
+      </div>
       <Row>
-        <Col>
-          <Row className="income-pie-container">
+        <Col lg={6}>          
+          <div className="income-pie-container">
             <p className="text-center users-charts-pie-title">Incomes:</p>
-            { filteredIncomeCategories.length != 0 ?
+            { filteredIncomeCategories?.length != 0 ?
               <>
-                <Pie data={getSumIncomeByCategory()} />
+                <Pie data={getSumIncomeByCategory()}/>
               </>
               :
-              <span>No incomes transactions found.</span>
+              <p className="text-center">No incomes transactions found.</p>
             }
-          </Row>
-          <Row className="justify-content-md-center expense-pie-container">
+          </div>
+          <div className="expense-pie-container">
             <p className="text-center users-charts-pie-title">Expenses:</p>
-            { filteredExpenseCategories.length != 0 ? 
+            { filteredExpenseCategories?.length != 0 ? 
                 <>
-                  <Pie data={getSumExpensesByCategory()} />
+                  <Pie data={getSumExpensesByCategory()}/>
                 </>
                 :
-                <span>No expenses transactions found.</span>
+                <p className="text-center">No expenses transactions found.</p>
             }
-          </Row>
-        </Col>
-        <Col className="align-self-md-center">
-          <div className="date-selector-container d-flex justify-content-center">
-                      {getIconWithActionAndTooltip(BsChevronCompactLeft, "table-icon-action", () => setDate((curDate) => curDate.clone().subtract(1, "months")), "top", "Previous month")}
-                          <span className="transaction-current-year-and-month">{getMonth(date.month())} - {date.year()}</span>
-                      {date.month() === moment().month() && date.year() === moment().year() 
-                      ? getIconWithActionAndTooltip(BsChevronCompactRight, "table-icon-action disabled", () => "", "top", "Disabled") 
-                      : getIconWithActionAndTooltip(BsChevronCompactRight, "table-icon-action", () => setDate((curDate) => curDate.clone().add(1, "months")), "top", "Next month")}
           </div>
+        </Col>
+        <Col lg={6}>
           <Bar
             data={getExpensesAndIncomesAmounts()}
             options={expenseAndIncomesOptions}
           />
+          <hr/>
+            <div>
+              <p className="text-center font-weight-bold">Last added expenses and incomes:</p>
+              {isTransactionsLoading ? <div className="text-center"><Spinner animation="border" size="lg" /></div> : transactions?.length > 0 ?
+                <> 
+                  <Table striped bordered>
+                    <thead>
+                      <tr>
+                        <th>Transaction name</th>
+                        <th>Transaction date</th>
+                        <th>Amount</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {transactions?.sort((a,b) => (new Date(b.createdDate) - new Date(a.createdDate)))
+                        .slice(0, 4)
+                        .map(transaction => {
+                          let isExpenseTransaction = transaction.type === EXPENSE_TRANSACTION;
+                          let sign = isExpenseTransaction ? "+" : "-";
+                          let tdClass = isExpenseTransaction ? "expense-amount-last-transaction-table" : "income-amount-last-transaction-table"
+                          return (                          
+                            <tr key={transaction.id + transaction.name}>
+                              <td>{transaction.name}</td>
+                              <td>{transaction.createdDate}</td>
+                              <td className={tdClass}>{sign}{transaction.amount} zł</td>
+                            </tr>)
+                        }
+                        )
+                      }
+                    </tbody>
+                  </Table>
+                  <p className="text-right"><Link className="" to="/home/transaction-list-page">see more</Link></p>
+                </> :
+                <> 
+                  <p>You don`t have any transactins added!</p> 
+                  <p><Link to="/home/transaction-list-page">Click here</Link> to go to transactions page.</p>
+                </>
+              }
+            </div>
         </Col>
       </Row>
 		</>

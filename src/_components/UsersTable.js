@@ -1,6 +1,5 @@
 import React, {useEffect} from "react";
 import { useSelector, useDispatch } from "react-redux";
-import Spinner from "react-bootstrap/Spinner";
 import Form from "react-bootstrap/Form";
 import { mapRoleToString } from "../_helpers"
 import AddNewUserModal from "./modal/AddNewUserModal"
