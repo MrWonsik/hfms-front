@@ -26,7 +26,7 @@ export const AddNewTransactionModal = () => {
 
     const [submitted, setSubmitted] = useState(false);
     const [transactionName, setTransactionName] = useState("");
-    const [category, setCategory] = useState({});
+    const [category, setCategory] = useState({name: "Please select"});
     const [shop, setShop] = useState({});
     const [transactionType, setTransactionType] = useState(EXPENSE_TRANSACTION);
     const [amount, setMaximumAmount] = useState(0);
@@ -79,7 +79,7 @@ export const AddNewTransactionModal = () => {
     const handleAddNewTransaction = (e) => {
         e.preventDefault();
         setSubmitted(true);
-        if (transactionName && transactionType && amount && amount > 0 && category && category.name !== "Please wait" && positionListForm.every(position => position.positionName !== "")) {
+        if (transactionName && transactionType && amount && amount > 0 && category && category.name !== "Please select" && positionListForm.every(position => position.positionName !== "")) {
             dispatch(createTransaction({ 
                 name: transactionName, 
                 amount: amount,
@@ -158,19 +158,19 @@ export const AddNewTransactionModal = () => {
                 <Form.Row>
                     <Form.Group as={Col} sm={5} controlId="transactionType">
                         <Form.Label>Type:</Form.Label>
-                            <Form.Control
-                                as="select"
-                                className={ "form-control"}
-                                name="transactionType"
-                                value={transactionType}
-                                onChange={(e) => {
-                                    setTransactionType(e.target.value)
-                                    setCategory(undefined)
-                                }}
-                            >
-                                <option>Expense</option>
-                                <option>Income</option>
-                            </Form.Control>
+                        <Form.Control
+                            as="select"
+                            className={ "form-control"}
+                            name="transactionType"
+                            value={transactionType}
+                            onChange={(e) => {
+                                setTransactionType(e.target.value)
+                                setCategory(undefined)
+                            }}
+                        >
+                            <option>Expense</option>
+                            <option>Income</option>
+                        </Form.Control>
                     </Form.Group>
                     <Form.Group as={Col} controlId="category">
                         <Form.Label>Category:</Form.Label>
