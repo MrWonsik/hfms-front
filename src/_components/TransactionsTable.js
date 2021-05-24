@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BsChevronCompactLeft, BsChevronCompactRight, BsEye, BsPlus, BsSearch } from 'react-icons/bs';
+import { BsChevronCompactLeft, BsChevronCompactRight, BsEye, BsSquareFill, BsPlus, BsSearch } from 'react-icons/bs';
 import { changePage } from '../user/user.actions';
 import { getIconWithActionAndTooltip } from '../_helpers/wrapWithTooltip';
 import Form from 'react-bootstrap/Form';
@@ -19,6 +19,8 @@ import moment from 'moment';
 import TransactionDetailsModal from './modal/TransactionDetailsModal';
 import filterFactory, { selectFilter, textFilter } from 'react-bootstrap-table2-filter';
 import { Col, Row } from 'react-bootstrap';
+import {getCurrency} from "../_helpers/currencyGetter";
+import { GiPayMoney, GiReceiveMoney } from 'react-icons/gi';
 
 let categoryFilter;
 let transactionNameFilter;
@@ -59,8 +61,8 @@ const TransactionsTable = () => {
             id: transaction.id,
             name: transaction.name,
             created: <><BsCalendar /> {transaction.createdDate}</>,
-            amount: transaction.amount,
-            category: transaction.category.name,
+            amount: transaction.amount.toFixed(2),
+            category: transaction.category,
             actions: <>
                 {getIconWithActionAndTooltip(BsEye, "table-action-icon", () => showTransactionDetails(transaction), "top", "Show details")}
                 {getIconWithActionAndTooltip(BsTrash, "table-action-icon", () => showDeleteConfirmationModal(transaction), "top", "Delete")}
@@ -104,16 +106,33 @@ const TransactionsTable = () => {
             case EXPENSE_TRANSACTION:
                 return (
                     <span className={"expense-transaction-amount-style"} >
-                        - {cell} zł
+                        <GiPayMoney/> {cell} {getCurrency()}
                     </span>
                 )
             case INCOME_TRANSACTION:
                 return (
                     <span className={"income-transaction-amount-style"} >
-                        + {cell} zł
+                        <GiReceiveMoney/> {cell} {getCurrency()}
                     </span>
                 )
         }
+    }
+
+    const categoriesFormatter = (cell, transactionRow) => {
+        switch(transactionRow.type) {
+            case EXPENSE_TRANSACTION: {
+                let exp = expenseCategories.find(category => category.id == cell.id);
+                // console.log(exp);
+                return (<><BsSquareFill fill={exp?.colorHex} /> {cell.name} </>);
+            }
+            case INCOME_TRANSACTION: {
+                let inc = incomeCategories.find(category => category.id == cell.id);
+                // console.log(inc);
+                return (<><BsSquareFill fill={inc?.colorHex} /> {cell.name}</>);
+            }
+        }
+        
+
     }
 
     const nameFormatter = (cell, row) => { 
@@ -151,7 +170,7 @@ const TransactionsTable = () => {
       }, {
         dataField: 'category',
         text: 'Category',
-        formatter: cell => categoriesMap[cell],
+        formatter: categoriesFormatter,
         filter: selectFilter({
             options: categoriesMap,
             getFilter: (filter) => {

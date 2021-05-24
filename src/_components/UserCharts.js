@@ -5,6 +5,7 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import { Pie, Bar } from "react-chartjs-2";
 import { BsChevronCompactLeft, BsChevronCompactRight } from 'react-icons/bs';
+import { GiPayMoney, GiReceiveMoney } from 'react-icons/gi';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { EXPENSE, INCOME } from '../finance/CategoryType';
@@ -12,6 +13,7 @@ import { getAllTransactions, getCategories } from '../finance/finance.actions';
 import { EXPENSE_TRANSACTION } from '../finance/TransactionType';
 import { getMonth } from '../_helpers/dateHelper';
 import { getIconWithActionAndTooltip } from '../_helpers/wrapWithTooltip';
+import { getCurrency } from "../_helpers/currencyGetter";
 
 const UserCharts = () => {
     let dispatch = useDispatch();
@@ -27,12 +29,14 @@ const UserCharts = () => {
 
     lastSixMonths.reverse();
 
-    const { expenseCategories, incomeCategories, expenseTransactions, incomeTransactions, isTransactionsLoading } = useSelector((state) => ({
+    const { expenseCategories, incomeCategories, expenseTransactions, incomeTransactions, isTransactionsLoading, isExpenseCategoriesLoading, isIncomeCategoriesLoading } = useSelector((state) => ({
         expenseCategories: state.finance.expenseCategories,
         incomeCategories: state.finance.incomeCategories,
         expenseTransactions: state.finance.expenseTransactions,
         incomeTransactions: state.finance.incomeTransactions,
-        isTransactionsLoading: state.finance.isTransactionsLoading
+        isTransactionsLoading: state.finance.isTransactionsLoading,
+        isExpenseCategoriesLoading: state.finance.isExpenseCategoriesLoading,
+        isIncomeCategoriesLoading: state.finance.isIncomeCategoriesLoading
     }));
   
     useEffect(() => {
@@ -51,8 +55,10 @@ const UserCharts = () => {
     let filteredExpenseCategories = expenseCategories?.map(category => checkIsActiveMonthExistsForCategory(category) ? category : null).filter(category => category != null);
     let filteredIncomeCategories = incomeCategories?.map(category => checkIsActiveMonthExistsForCategory(category) ? category : null).filter(category => category != null);
 
-    const incomesSummaryByMonth = lastSixMonths.map(month => incomeCategories?.map(category => category.summaryTransactionMap[month] ? category.summaryTransactionMap[month] : 0).reduce((a,b) => a + b, 0));
-    const expensesSummaryByMonth = lastSixMonths.map(month => -1 * expenseCategories?.map(category => category.summaryTransactionMap[month] ? category.summaryTransactionMap[month] : 0).reduce((a,b) => a + b, 0));
+    const getSumOfTransactions = (type, month) => type?.map(category => category.summaryTransactionMap[month] ? category.summaryTransactionMap[month] : 0).reduce((a,b) => a + b, 0).toFixed(2);
+
+    const incomesSummaryByMonth = lastSixMonths.map(month => getSumOfTransactions(incomeCategories, month));
+    const expensesSummaryByMonth = lastSixMonths.map(month => -1 * getSumOfTransactions(expenseCategories, month));
 
     const expensesAndIncomesSummary = {
         labels: lastSixMonths, //find a way to get array with last six month
@@ -89,7 +95,7 @@ const UserCharts = () => {
       }
 
       const getSumExpensesByCategory = () => {
-        const expenses = {
+        return {
           labels: filteredExpenseCategories?.map(category => category.categoryName),
           datasets: [
             {
@@ -100,11 +106,10 @@ const UserCharts = () => {
             },
           ],
         }
-        return expenses;
       }
   
       const getSumIncomeByCategory = () => {
-        const incomes = {
+        return {
           labels: filteredIncomeCategories?.map(category => category.categoryName),
           datasets: [
             {
@@ -115,7 +120,6 @@ const UserCharts = () => {
             },
           ],
         }
-        return incomes;
       }
   
       const getExpensesAndIncomesAmounts = () => {
@@ -133,8 +137,12 @@ const UserCharts = () => {
       </div>
       <Row>
         <Col lg={6}>          
-          <div className="income-pie-container">
-            <p className="text-center users-charts-pie-title">Incomes:</p>
+          <div className="pie-container income-pie-container">
+            <div className="users-charts-title-container">
+              <p className="users-charts-incomes">Incomes</p>
+              {isIncomeCategoriesLoading && <Spinner className="users-charts-incomes users-charts-spinner income" animation="border" size="sm" />}
+              <p className="users-charts-sum users-charts-incomes"><GiReceiveMoney/> {getSumOfTransactions(incomeCategories, activeMonth)} {getCurrency()}</p>
+            </div>
             { filteredIncomeCategories?.length != 0 ?
               <>
                 {isTransactionsLoading ? "loading..." : <Pie data={getSumIncomeByCategory()}/>}
@@ -143,8 +151,12 @@ const UserCharts = () => {
               <p className="text-center">No incomes transactions found.</p>
             }
           </div>
-          <div className="expense-pie-container">
-            <p className="text-center users-charts-pie-title">Expenses:</p>
+          <div className="pie-container expense-pie-container">
+            <div className="users-charts-title-container">
+              <p className="text-center users-charts-expenses">Expenses</p>
+              {isExpenseCategoriesLoading && <Spinner className="users-charts-expenses users-charts-spinner expense" animation="border" size="sm" />}
+              <p className="text-right users-charts-sum users-charts-expenses"><GiPayMoney/> {getSumOfTransactions(expenseCategories, activeMonth)} {getCurrency()}</p>
+            </div>
             { filteredExpenseCategories?.length != 0 ? 
                 <>
                   {isTransactionsLoading ? "loading..." : <Pie data={getSumExpensesByCategory()}/>}
@@ -161,29 +173,22 @@ const UserCharts = () => {
           />
           <hr/>
             <div>
-              <p className="text-center font-weight-bold">Last added expenses and incomes:</p>
+              <p className="text-center font-weight-bold">Last transactions</p>
               {isTransactionsLoading ? <div className="text-center"><Spinner animation="border" size="lg" /></div> : transactions?.length > 0 ?
                 <> 
                   <Table striped bordered>
-                    <thead>
-                      <tr>
-                        <th>Transaction name</th>
-                        <th>Transaction date</th>
-                        <th>Amount</th>
-                      </tr>
-                    </thead>
                     <tbody>
                       {transactions?.sort((a,b) => (new Date(b.createdDate) - new Date(a.createdDate)))
                         .slice(0, 4)
                         .map(transaction => {
                           let isExpenseTransaction = transaction.type === EXPENSE_TRANSACTION;
-                          let sign = isExpenseTransaction ? "-" : "+";
+                          let sign = isExpenseTransaction ? <GiPayMoney/> : <GiReceiveMoney/>;
                           let tdClass = isExpenseTransaction ? "expense-amount-last-transaction-table" : "income-amount-last-transaction-table"
                           return (                          
                             <tr key={transaction.id + transaction.name}>
                               <td>{transaction.name}</td>
                               <td>{transaction.createdDate}</td>
-                              <td className={tdClass}>{sign}{transaction.amount} zł</td>
+                              <td className={tdClass}>{sign} {transaction.amount.toFixed(2)} {getCurrency()}</td>
                             </tr>)
                         }
                         )
