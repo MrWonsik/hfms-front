@@ -28,14 +28,6 @@ let typesFilter;
 
 const TransactionsTable = () => {
     const dispatch = useDispatch();
-
-
-    let [date, setDate] = useState(moment());
-    let [categoryName, setCategoryName] = useState("");
-    let [transactionName, setTransactionName] = useState("");
-    let [transactionType, setTransactionType] = useState("");
-    let [showFilter, setShowFilter] = useState(false);
-
     const { expenseTransactions, incomeTransactions, isTransactionsLoading, expenseCategories, incomeCategories } = useSelector(( state ) => ({
         expenseTransactions: state.finance.expenseTransactions,
         incomeTransactions: state.finance.incomeTransactions,
@@ -44,9 +36,17 @@ const TransactionsTable = () => {
         isTransactionsLoading: state.finance.isTransactionsLoading
     }));
 
+    let categories = expenseCategories?.concat(incomeCategories);
+
+    let [date, setDate] = useState(moment());
+    let [categoryName, setCategoryName] = useState("");
+    let [transactionName, setTransactionName] = useState("");
+    let [transactionType, setTransactionType] = useState("");
+    let [showFilter, setShowFilter] = useState(false);
+
     useEffect(() => {
         dispatch(changePage("Transaction list"));
-        dispatch(getAllTransactions({year: date.year(), month: date.month()}))
+        dispatch(getAllTransactions({year: date.year(), month: date.month()}))            
       }, []);
 
     useEffect(() => {
@@ -62,7 +62,8 @@ const TransactionsTable = () => {
             name: transaction.name,
             created: <><BsCalendar /> {transaction.createdDate}</>,
             amount: transaction.amount.toFixed(2),
-            category: transaction.category,
+            category: transaction.category.name,
+            categoryId: transaction.category.id,
             actions: <>
                 {getIconWithActionAndTooltip(BsEye, "table-action-icon", () => showTransactionDetails(transaction), "top", "Show details")}
                 {getIconWithActionAndTooltip(BsTrash, "table-action-icon", () => showDeleteConfirmationModal(transaction), "top", "Delete")}
@@ -121,100 +122,94 @@ const TransactionsTable = () => {
     const categoriesFormatter = (cell, transactionRow) => {
         switch(transactionRow.type) {
             case EXPENSE_TRANSACTION: {
-                let exp = expenseCategories.find(category => category.id == cell.id);
-                // console.log(exp);
-                return (<><BsSquareFill fill={exp?.colorHex} /> {cell.name} </>);
+                let exp = expenseCategories.find(category => category.id == transactionRow.categoryId);
+                return (<><BsSquareFill fill={exp?.colorHex} /> {cell} </>);
             }
             case INCOME_TRANSACTION: {
-                let inc = incomeCategories.find(category => category.id == cell.id);
-                // console.log(inc);
-                return (<><BsSquareFill fill={inc?.colorHex} /> {cell.name}</>);
+                let inc = incomeCategories.find(category => category.id == transactionRow.categoryId);
+                return (<><BsSquareFill fill={inc?.colorHex} /> {cell}</>);
             }
         }
-        
-
     }
 
     const nameFormatter = (cell, row) => { 
         return (<>{cell} <span className="additionaly-info">({row.id})</span></>)
     }
 
-    let categories = expenseCategories?.concat(incomeCategories);
+    const typesMap = { "Income": "Income", "Expense": "Expense"}
 
-    const getCategoriesMap = () => {
-        let categoriesMap = {};
-        categories.forEach(category => {
-            categoriesMap[category.categoryName] = category.categoryName
-        })
-        return categoriesMap;
+    const getCategoriesMap = () => { 
+        let categoriesMapTemp = {};
+        categories.forEach(category => categoriesMapTemp[category.categoryName] = category.categoryName);
+        return categoriesMapTemp;
     }
 
-    const categoriesMap = getCategoriesMap();
-
-    const typesMap = { "Income": "Income", "Expense": "Expense"}
-    
     const columns = [{
-        dataField: 'name',
-        text: 'Name',
-        formatter: nameFormatter, 
-        filter: textFilter({
-            getFilter: (filter) => {
-                transactionNameFilter = filter;
-            }
-        })
-      }, {
-        dataField: 'amount',
-        text: 'Amount',
-        formatter: amountFormatter,
-        formatExtraData: transactions
-      }, {
-        dataField: 'category',
-        text: 'Category',
-        formatter: categoriesFormatter,
-        filter: selectFilter({
-            options: categoriesMap,
-            getFilter: (filter) => {
-                categoryFilter = filter;
-            }
-        })
-      }, {
-        dataField: 'created',
-        text: 'Created',
-        sort: true,
-        sortFunc: dateSort
-      }, {
-        dataField: 'actions',
-        text: 'Action'  
-      }, {
-        dataField: 'id',
-        hidden: true
-      }, {
-        dataField: 'type',
-        text: "Type",
-        headerStyle: {'display': 'none'},
-        style: {'display': 'none'},
-        filter: selectFilter({
-            options: typesMap,
-            getFilter: (filter) => {
-                typesFilter = filter;
-            }
-        })
-      }
+            dataField: 'name',
+            text: 'Name',
+            formatter: nameFormatter, 
+            filter: textFilter({
+                defaultValue: transactionName,
+                getFilter: (filter) => {
+                    transactionNameFilter = filter;
+                }
+            }),
+            sort: true,
+        }, {
+            dataField: 'amount',
+            text: 'Amount',
+            formatter: amountFormatter,
+            formatExtraData: transactions,
+            sort: true,
+            sortFunc: (a, b, order) => (order === "asc" ? a - b : b - a)
+        }, {
+            dataField: 'category',
+            text: 'Category',
+            formatter: categoriesFormatter,
+            filter: selectFilter({
+                defaultValue: categoryName,
+                options: getCategoriesMap(),
+                getFilter: (filter) => {
+                    categoryFilter = filter;
+                }
+            })
+        }, {
+            dataField: 'created',
+            text: 'Created',
+            sort: true,
+            sortFunc: dateSort
+        }, {
+            dataField: 'actions',
+            text: 'Action'  
+        }, {
+            dataField: 'id',
+            hidden: true
+        }, {
+            dataField: 'type',
+            text: "Type",
+            headerStyle: {'display': 'none'},
+            style: {'display': 'none'},
+            filter: selectFilter({
+                defaultValue: transactionType,
+                options: typesMap,
+                getFilter: (filter) => {
+                    typesFilter = filter;
+                }
+            })
+        }
     ];
 
     const defaultSorted = [{
         dataField: 'created',
         order: 'desc'
-    }]
-
-
+    }];
     
     const paginationOptions = {
         sizePerPage: 10,
         hideSizePerPage: true, 
         hidePageListOnlyOnePage: true,
         alwaysShowAllBtns: false,
-    }
+    };
 
     return (
         <>
@@ -231,62 +226,67 @@ const TransactionsTable = () => {
                     {getIconWithActionAndTooltip(BsPlus, "table-icon-action", () => handleAddNewFinance(), "top", "Add new transaction")}
                 </div>
             </Form.Group>
+            <hr/>
+                <div className={"slide-wrapper"}>
+                    <Row className={"filter-options " + (showFilter && "open")}>
+                        <Form.Group as={Col} lg={4}>
+                            <Form.Control
+                                type="text"
+                                name="transactionName"
+                                value={transactionName}
+                                onChange={(e) => {
+                                    setTransactionName(e.target.value);
+                                    transactionNameFilter(e.target.value);
+                                }}
+                                placeholder="Search by transaction name"
+                            />
+                        </Form.Group>
+                        <Form.Group as={Col} lg={4}>
+                        <Form.Control
+                                as="select"
+                                name="category"
+                                value={categoryName}
+                                onChange={(e) => {
+                                    setCategoryName(e.target.value);
+                                    if(e.target.value === "Search by category") {
+                                        categoryFilter("");
+                                    } else {
+                                        categoryFilter(e.target.value);
+                                    }
+                                }}
+                            >
+                                <option>Search by category</option>
+                                { transactionType === "Income" 
+                                    ? incomeCategories.map(category => <option key={category.id + category.categoryName}>{category.categoryName}</option>) 
+                                    : transactionType === "Expense" 
+                                        ? expenseCategories.map(category => <option key={category.id + category.categoryName}>{category.categoryName}</option>)
+                                        : categories.map(category => <option key={category.id + category.categoryName}>{category.categoryName}</option>) 
+                                }
+                            </Form.Control>
+                        </Form.Group>
+                        <Form.Group as={Col} lg={4}> 
+                        <Form.Control
+                                as="select"
+                                name="type"
+                                value={transactionType}
+                                onChange={(e) => {
+                                    setTransactionType(e.target.value);
+                                    if(e.target.value === "Search by transaction type") {
+                                        typesFilter("");
+                                    } else {
+                                        typesFilter(e.target.value);
+                                    }
+                                }}
+                            >
+                                <option>Search by transaction type</option>
+                                <option>Expense</option>
+                                <option>Income</option>
+                            </Form.Control>
+                        </Form.Group>
+                    </Row>
+                </div>
             { isTransactionsLoading ? <Loader /> :  transactions?.length > 0 ?  
                 <>
-                    <hr/>
-                    <div className={"slide-wrapper"}>
-                        <Row className={"filter-options " + (showFilter && "open")}>
-                            <Form.Group as={Col} lg={4}>
-                                <Form.Control
-                                    type="text"
-                                    name="transactionName"
-                                    value={transactionName}
-                                    onChange={(e) => {
-                                        setTransactionName(e.target.value);
-                                        transactionNameFilter(e.target.value);
-                                    }}
-                                    placeholder="Search by transaction name"
-                                />
-                            </Form.Group>
-                            <Form.Group as={Col} lg={4}>
-                            <Form.Control
-                                    as="select"
-                                    name="category"
-                                    value={categoryName}
-                                    onChange={(e) => {
-                                        setCategoryName(e.target.value);
-                                        if(e.target.value === "Search by category") {
-                                            categoryFilter("");
-                                        } else {
-                                            categoryFilter(e.target.value);
-                                        }
-                                    }}
-                                >
-                                    <option>Search by category</option>
-                                    { categories.map(category => <option key={category.id + category.categoryName}>{category.categoryName}</option>) }
-                                </Form.Control>
-                            </Form.Group>
-                            <Form.Group as={Col} lg={4}> 
-                            <Form.Control
-                                    as="select"
-                                    name="type"
-                                    value={transactionType}
-                                    onChange={(e) => {
-                                        setTransactionType(e.target.value);
-                                        if(e.target.value === "Search by transaction type") {
-                                            typesFilter("");
-                                        } else {
-                                            typesFilter(e.target.value);
-                                        }
-                                    }}
-                                >
-                                    <option>Search by transaction type</option>
-                                    <option>Expense</option>
-                                    <option>Income</option>
-                                </Form.Control>
-                            </Form.Group>
-                        </Row>
-                    </div>
                     <BootstrapTable 
                         classes="list-table" 
                         bootstrap4 
