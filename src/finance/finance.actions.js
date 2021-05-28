@@ -329,13 +329,13 @@ export const deleteTransactionRequest = () => ({ type: DELETE_TRANSACTION_REQUES
 export const deleteTransactionSuccess = () => ({ type: DELETE_TRANSACTION_SUCCESS })
 export const deleteTransactionFailure = () => ({ type: DELETE_TRANSACTION_FAILURE })
 
-export const deleteTransaction = ( transactionId, transactionType ) => async dispatch => {
+export const deleteTransaction = ( transactionId, transactionType, date ) => async dispatch => {
     dispatch(deleteTransactionRequest());
     await deleteTransactionCall(transactionId, transactionType)
         .then(
             deletedTransaction => {
                 dispatch(deleteTransactionSuccess(deletedTransaction, transactionType));
-                dispatch(getTransactions(transactionType));
+                dispatch(getTransactions(transactionType, date));
                 dispatch(alertSuccess("Transaction: " + deletedTransaction.name + " has been deleted."));
             },
             error => {

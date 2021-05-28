@@ -14,6 +14,7 @@ import PropTypes from "prop-types";
 import { getIconWithActionAndTooltip } from '../_helpers/wrapWithTooltip';
 import EditCategoryModal from './modal/EditCategoryModal';
 import Loader from '../_helpers/Loader';
+import {getCurrency} from '../_helpers/currencyGetter';
 
 const CategoriesTable = ({ type, categories, isLoading }) => {
 
@@ -77,7 +78,7 @@ const CategoriesTable = ({ type, categories, isLoading }) => {
         text: "Maximum amount", //TODO: Add some description of this coulmn...
         hidden: type === EXPENSE ? false : true,
         sort: true,
-        formatter: (cell) => Math.round(cell * 100 / 100).toFixed(2) + " zł"
+        formatter: (cell) => cell.toFixed(2) + " " + getCurrency()
       }, {
         dataField: 'actions',
         text: 'Action'  

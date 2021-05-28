@@ -9,6 +9,9 @@
 
 @main-font-color: white;
 
+@expense-color: rgb(150, 0, 0);
+@income-color: rgb(0, 150, 0);
+
 html {
     overflow-y:scroll;
 }
@@ -408,12 +411,12 @@ button.btn.btn-secondary {
 }
 
 .income-transaction-amount-style {
-	color: rgb(0, 150, 0);
+	color: @income-color;
 	font-weight: 700;
 }
 
 .expense-transaction-amount-style {
-	color: rgb(150, 0, 0);
+	color: @expense-color;
 	font-weight: 700;
 }
 
@@ -493,13 +496,7 @@ button.btn.btn-secondary {
     display: none;
 }
 
-.users-charts-pie-title {
-	font-size: 24px;
-	color: @main-color-dark;
-	margin-bottom: 0px;
-}
-
-.income-pie-container, .expense-pie-container {
+.pie-container {
 	padding: 10px;
 	margin: 10px 50px;
 	border-radius: 4px;
@@ -507,40 +504,50 @@ button.btn.btn-secondary {
 	align-items: center;
 	min-height: 250px;
 	flex-direction: column;
+	font-size: 25px;
+	border: 3px solid @main-color-dark;
+
+	.users-charts-title-container {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	.users-charts-spinner {
+		margin-bottom: 0.6rem;
+	}
+
+	.users-charts-incomes {
+		color: @income-color;
+	}
+
+	.users-charts-expenses {
+		color: @expense-color;
+	}
+
+	&.expense-pie-container {
+		border-color: @expense-color
+	}
+	
+	&.income-pie-container {
+		border-color: @income-color;
+	}
 }
 
-.expense-pie-container {
-	border: 3px solid rgb(150, 0, 0);
 
-}
-
-.income-pie-container {
-	border: 3px solid rgb(0, 150, 0);
-}
 
 #select-filter-column-category, #text-filter-column-name { //default filter column name
 	display: none;
 }
 
 .expense-amount-last-transaction-table {
-	color: rgb(150, 0, 0);
+	color: @expense-color;
 }
 
 
 .income-amount-last-transaction-table {
-	color: rgb(0, 150, 0);
+	color: @income-color;
 }
-
-// .filter-options {
-// 	height: 0;
-// 	display: none;
-// }
-
-// .filter-options.open {
-// 	height: 150px;
-// 	display: flex;
-//     transition: height 5s linear;
-// }
 
 .slide-wrapper {
 	position: relative;

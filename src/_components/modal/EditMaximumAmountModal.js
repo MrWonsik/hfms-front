@@ -8,6 +8,7 @@ import { Form, Spinner } from "react-bootstrap";
 import PropTypes from "prop-types";
 import { editExpenseCategoryMaximumAmount } from "../../finance/finance.actions";
 import { getMonth } from "../../_helpers/dateHelper";
+import {getCurrency} from "../../_helpers/currencyGetter";
 
 const EditMaximumAmountModal = ({ id, category }) => {
 
@@ -50,7 +51,7 @@ const EditMaximumAmountModal = ({ id, category }) => {
             let month = getMonth(date.getMonth());
             let isCurrentMonth = category.currentVersion.validMonth === version.validMonth;
             return <div key={version.id} className={isCurrentMonth ? "font-italic" : ""}>
-                    <BsArrowRightShort className="icon-as-list-pointer"/> {version.maximumAmount} zł ({month} {year}) {isCurrentMonth && " - current version"}
+                    <BsArrowRightShort className="icon-as-list-pointer"/> {version.maximumAmount} {getCurrency()} ({month} {year}) {isCurrentMonth && " - current version"}
             </div>
         })}
         <hr/>
