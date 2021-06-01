@@ -143,6 +143,20 @@ button.btn.btn-secondary {
 	.navbar-icon {
 		font-size: 30px;
 	}
+
+	.navbar-username-container {
+		padding: 10px 10px;
+		text-align: center;
+	
+		.navbar-username {
+			font-weight: bold;
+		}
+
+			
+		.navbar-main-date {
+			font-style: italic;
+		}
+	}
 }
 
 .categories-tabs {
@@ -264,14 +278,6 @@ button.btn.btn-secondary {
 
 .table-icon-action.search {
 	font-size: 35px;
-}
-
-.navbar-username-container {
-    padding: 10px 10px;
-
-    .navbar-username {
-        font-weight: bold;
-    }
 }
 
 .user-page-content-container {
@@ -565,5 +571,45 @@ button.btn.btn-secondary {
 			height: 100%;
 			top: 0;
 		}
+	}
+}
+
+.summary-page-block.summary-page-main-block {
+	padding: 10px;
+	align-items: center
+}
+
+.summary-page-block {
+	border-radius: 10px;
+	border: 1px solid black;
+	padding: 25px;
+	margin: 20px;
+
+	.summary-page-block-title {
+		font-size: 20px;
+		font-weight: bold;
+		color: @main-color-dark;
+	}
+}
+
+.summary-page-categories-blocks {
+	margin: 0;
+
+	.summary-page-block-category {
+		min-width: 250px;
+
+		.summary-page-block-favourite-icon {
+			margin-bottom: 4px;
+		}
+	}
+}
+
+.summary-page-block-expense, .summary-page-block-income, .summary-page-block-categories-quantity {
+	margin: 10px;
+	text-align: center;
+
+	.title {
+		font-size: 17px;
+		color: @main-color-dark;
 	}
 }

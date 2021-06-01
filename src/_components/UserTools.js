@@ -9,6 +9,8 @@ import { openModalChangePassword } from "../modal/modal.actions";
 import ChangePasswordModal from "./modal/ChangePasswordModal";
 import HoverTooltip from "../_helpers/wrapWithTooltip";
 import { alertSuccess } from "../alert/alert.actions";
+import { getMonth } from "../_helpers/dateHelper";
+import moment from "moment";
 
 const UserTools = () => {
 	const dispatch = useDispatch();
@@ -25,12 +27,16 @@ const UserTools = () => {
 		dispatch(alertSuccess("Logout successfully!"));
 	};
 
+	const now = moment();
+
 	return (
 		<>
 			<Navbar className="navbar-main justify-content-end">
 				<Nav>
 					<Navbar.Text className="navbar-username-container">
 						Logged in as: <span className="navbar-username">{user.username}</span>
+						<br/>
+						<span className="navbar-main-date text-center">{now.date()} {getMonth(now.month())} {now.year()}</span>
 					</Navbar.Text>
 					<Nav.Item>
 						<Nav.Link onClick={handleChangePasswordModalOpen}>
