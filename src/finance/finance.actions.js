@@ -1,5 +1,4 @@
 import { alertError, alertSuccess } from "../alert/alert.actions";
-import { EXPENSE, INCOME } from "./CategoryType";
 import { getShopsCall, createShopCall, deleteShopCall, getCategoriesCall, createCategoryCall, changeStateFavouriteCategoryCall, deleteCategoryCall, editExpenseCategoryMaximumAmountCall, editCategoryCall, createTransactionCall, getTransactionsCall, deleteTransactionCall, getExpenseFileCall, deleteExpenseFileCall, uploadExpenseFileCall, updateTransactionCall } from "./finance.service";
 import { EXPENSE_TRANSACTION, INCOME_TRANSACTION } from "./TransactionType";
 
@@ -58,7 +57,7 @@ export const SHOP_DELETE_REQUEST = "SHOP_DELETE_REQUEST";
 export const SHOP_DELETE_SUCCESS = "SHOP_DELETE_SUCCESS";
 export const SHOP_DELETE_FAILURE = "SHOP_DELETE_FAILURE";
 const shopDeleteRequest = (id) => ({ type: SHOP_DELETE_REQUEST, payload: { id } })
-const shopDeleteSuccess = () => ({ type: SHOP_DELETE_SUCCESS })
+const shopDeleteSuccess = (shopId) => ({ type: SHOP_DELETE_SUCCESS, payload: {shopId} })
 const shopDeleteFailure = () => ({ type: SHOP_DELETE_FAILURE })
 export const deleteShop = (id) => async dispatch => {
     dispatch(shopDeleteRequest(id));
@@ -66,7 +65,6 @@ export const deleteShop = (id) => async dispatch => {
         .then(
             shop => {
                 dispatch(shopDeleteSuccess(shop.id));
-                dispatch(getShops());
                 dispatch(alertSuccess("Shop: " + shop.name + " has been deleted."))
             },
             error => {
@@ -143,7 +141,6 @@ export const changeStateFavouriteExepenseCategory = ( category ) => async dispat
                 if(!updatedCategory.favourite) {
                     msg = "Category: " + updatedCategory.categoryName + " is not favourite anymore."
                 }
-                dispatch(getCategories(category.type));
                 dispatch(alertSuccess(msg));
             },
             error => {
@@ -158,7 +155,7 @@ export const DELETE_CATEGORY_REQUEST = "DELETE_CATEGORY_REQUEST";
 export const DELETE_CATEGORY_SUCCESS = "DELETE_CATEGORY_SUCCESS";
 export const DELETE_CATEGORY_FAILURE = "DELETE_CATEGORY_FAILURE";
 export const deleteCategoryRequest = () => ({ type: DELETE_CATEGORY_REQUEST })
-export const deleteCategorySuccess = () => ({ type: DELETE_CATEGORY_SUCCESS })
+export const deleteCategorySuccess = (id, categoryType) => ({ type: DELETE_CATEGORY_SUCCESS, payload: {id, categoryType} })
 export const deleteCategoryFailure = () => ({ type: DELETE_CATEGORY_FAILURE })
 
 export const deleteCategory = ( id, categoryType ) => async dispatch => {
@@ -166,8 +163,7 @@ export const deleteCategory = ( id, categoryType ) => async dispatch => {
     await deleteCategoryCall(id, categoryType)
         .then(
             deletedCategory => {
-                dispatch(deleteCategorySuccess());
-                dispatch(getCategories(categoryType));
+                dispatch(deleteCategorySuccess(id, categoryType));
                 dispatch(alertSuccess("Category " + deletedCategory.categoryName + " has been deleted."));
             },
             error => {
@@ -182,17 +178,18 @@ export const EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_REQUEST = "EDIT_EXPENSE_CATEGORY
 export const EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_SUCCESS = "EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_SUCCESS";
 export const EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_FAILURE = "EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_FAILURE";
 export const editExpenseCategoryMaximumAmountRequest = () => ({ type: EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_REQUEST })
-export const editExpenseCategoryMaximumAmountSuccess = () => ({ type: EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_SUCCESS })
+export const editExpenseCategoryMaximumAmountSuccess = (category, editedCategoryVersion, isValidFromNextMonth) => ({ type: EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_SUCCESS, payload: {category, editedCategoryVersion, isValidFromNextMonth} })
 export const editExpenseCategoryMaximumAmountFailure = () => ({ type: EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_FAILURE })
 
 export const editExpenseCategoryMaximumAmount = ( category, newMaximumAmount, isValidFromNextMonth ) => async dispatch => {
     dispatch(editExpenseCategoryMaximumAmountRequest());
+    let isExpenseCategoryUpdated = false;
     await editExpenseCategoryMaximumAmountCall(category.id, newMaximumAmount, isValidFromNextMonth )
         .then(
             editedCategoryVersion => {
-                dispatch(editExpenseCategoryMaximumAmountSuccess(editedCategoryVersion));
-                dispatch(getCategories(EXPENSE));
+                dispatch(editExpenseCategoryMaximumAmountSuccess(category, editedCategoryVersion, isValidFromNextMonth));
                 dispatch(alertSuccess("Category " + category.categoryName + " maximum amount has been updated."));
+                isExpenseCategoryUpdated = true;
             },
             error => {
                 dispatch(editExpenseCategoryMaximumAmountFailure());
@@ -200,13 +197,14 @@ export const editExpenseCategoryMaximumAmount = ( category, newMaximumAmount, is
                 return Promise.reject(error);
             }
         );
+        return Promise.resolve(isExpenseCategoryUpdated);
 }
 
 export const EDIT_CATEGORY_REQUEST = "EDIT_CATEGORY_REQUEST";
 export const EDIT_CATEGORY_SUCCESS = "EDIT_CATEGORY_SUCCESS";
 export const EDIT_CATEGORY_FAILURE = "EDIT_CATEGORY_FAILURE";
 export const editCategoryRequest = () => ({ type: EDIT_CATEGORY_REQUEST })
-export const editCategorySuccess = () => ({ type: EDIT_CATEGORY_SUCCESS })
+export const editCategorySuccess = (editedCategory, categoryType) => ({ type: EDIT_CATEGORY_SUCCESS, payload: {editedCategory, categoryType} })
 export const editCategoryFailure = () => ({ type: EDIT_CATEGORY_FAILURE })
 
 export const editCategory = (categoryEdited) => async dispatch => {
@@ -215,8 +213,7 @@ export const editCategory = (categoryEdited) => async dispatch => {
     await editCategoryCall(categoryEdited.categoryId, categoryEdited.categoryName, categoryEdited.colorHex, categoryEdited.categoryType)
         .then(
             editedCategory => {
-                dispatch(editCategorySuccess(editedCategory));
-                dispatch(getCategories(categoryEdited.categoryType));
+                dispatch(editCategorySuccess(editedCategory, categoryEdited.categoryType));
                 dispatch(alertSuccess("Category " + editedCategory.categoryName + " has been updated."));
                 isCategoryUpdated = true;
             },
@@ -281,7 +278,6 @@ export const createTransaction = ( transaction ) => async dispatch => {
         .then(
             createdTransaction => {
                 dispatch(createTransactionSuccess(createdTransaction, type));
-                // dispatch(getTransactions(type));
                 dispatch(alertSuccess("Transaction: " + createdTransaction.name + " has been created."));
                 isTransactionCreated = true;
             },
@@ -309,7 +305,6 @@ export const updateTransaction = ( transaction ) => async dispatch => {
         .then(
             updatedTransaction => {
                 dispatch(updateTransactionSuccess(updatedTransaction, type));
-                dispatch(getTransactions(type));
                 dispatch(alertSuccess("Transaction: " + updatedTransaction.name + " has been updated."));
                 isTransactionUpdated = true;
             },
@@ -326,16 +321,15 @@ export const DELETE_TRANSACTION_REQUEST = "DELETE_TRANSACTION_REQUEST";
 export const DELETE_TRANSACTION_SUCCESS = "DELETE_TRANSACTION_SUCCESS";
 export const DELETE_TRANSACTION_FAILURE = "DELETE_TRANSACTION_FAILURE";
 export const deleteTransactionRequest = () => ({ type: DELETE_TRANSACTION_REQUEST })
-export const deleteTransactionSuccess = () => ({ type: DELETE_TRANSACTION_SUCCESS })
+export const deleteTransactionSuccess = (transactionId, transactionType) => ({ type: DELETE_TRANSACTION_SUCCESS, payload: {transactionId, transactionType}})
 export const deleteTransactionFailure = () => ({ type: DELETE_TRANSACTION_FAILURE })
 
-export const deleteTransaction = ( transactionId, transactionType, date ) => async dispatch => {
+export const deleteTransaction = ( transactionId, transactionType ) => async dispatch => {
     dispatch(deleteTransactionRequest());
     await deleteTransactionCall(transactionId, transactionType)
         .then(
             deletedTransaction => {
-                dispatch(deleteTransactionSuccess(deletedTransaction, transactionType));
-                dispatch(getTransactions(transactionType, date));
+                dispatch(deleteTransactionSuccess(transactionId, transactionType));
                 dispatch(alertSuccess("Transaction: " + deletedTransaction.name + " has been deleted."));
             },
             error => {

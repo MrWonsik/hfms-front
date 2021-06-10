@@ -10,14 +10,17 @@ import { editExpenseCategoryMaximumAmount } from "../../finance/finance.actions"
 import { getMonth } from "../../_helpers/dateHelper";
 import {getCurrency} from "../../_helpers/currencyGetter";
 
-const EditMaximumAmountModal = ({ id, category }) => {
+const EditMaximumAmountModal = ({ id, categoryId }) => {
 
     const dispatch = useDispatch();
 
-    const { editMaximumAmountModal, isEditExpenseCategoryMaximumAmountInProgress } = useSelector(state => ({
+    const { editMaximumAmountModal, isEditExpenseCategoryMaximumAmountInProgress, expenseCategories } = useSelector(state => ({
+        expenseCategories: state.finance.expenseCategories,
         editMaximumAmountModal: state.modals.editMaximumAmountModal,
         isEditExpenseCategoryMaximumAmountInProgress: state.finance.isEditExpenseCategoryMaximumAmountInProgress
     }));
+
+    let category = expenseCategories.find(category => category.id === categoryId);
 
     const [submitted, setSubmitted] = useState(false);
     const [maximumAmount, setMaximumAmount] = useState(category.currentVersion.maximumAmount);
@@ -25,7 +28,6 @@ const EditMaximumAmountModal = ({ id, category }) => {
 
     const handleClose = () => {
         dispatch(closeModalEditMaximumAmount());
-        setMaximumAmount(category.currentVersion.maximumAmount);
         setValidInNextMonth(false);
         setSubmitted(false);
       }
@@ -34,7 +36,12 @@ const EditMaximumAmountModal = ({ id, category }) => {
         e.preventDefault();
         setSubmitted(true)
         if(maximumAmount >= 0) {
-            dispatch(editExpenseCategoryMaximumAmount( category, maximumAmount, validInNextMonth ));
+            dispatch(editExpenseCategoryMaximumAmount( category, maximumAmount, validInNextMonth ))
+            .then((isExpenseCategoryUpdated) => {
+                if ( isExpenseCategoryUpdated ) {
+                    handleClose()
+                }
+            });
         }
     };
 
@@ -91,7 +98,7 @@ const EditMaximumAmountModal = ({ id, category }) => {
 
 EditMaximumAmountModal.propTypes = {
     id: PropTypes.string.isRequired,
-    category: PropTypes.object.isRequired
+    categoryId: PropTypes.number.isRequired
 }
 
 export default EditMaximumAmountModal;
