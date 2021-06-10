@@ -13,7 +13,8 @@ import { Spinner } from 'react-bootstrap';
 import { GiPayMoney, GiReceiveMoney } from 'react-icons/gi';
 
 const SummaryPage = () => {
-    const today = moment().format("YYYY-MM");
+    const currentMonth = moment().format("YYYY-MM");
+    const previousMonth = moment().subtract(1, 'M').format("YYYY-MM");
     const dispatch = useDispatch();
 
     const { expenseCategories, incomeCategories, isExpenseCategoriesLoading, isIncomeCategoriesLoading } = useSelector((state) => ({
@@ -29,7 +30,7 @@ const SummaryPage = () => {
         dispatch(getCategories(INCOME));
     }, []);
 
-    const getSumOfTransactions = (type) => type?.map(category => category.summaryTransactionMap[today] ? category.summaryTransactionMap[today] : 0).reduce((a,b) => a + b, 0).toFixed(2);
+    const getSumOfTransactions = (type) => type?.map(category => category.summaryTransactionMap[currentMonth] ? category.summaryTransactionMap[currentMonth] : 0).reduce((a,b) => a + b, 0).toFixed(2);
     const getPlannedAmmountOfTransactions = () => expenseCategories?.map(category => category.currentVersion.maximumAmount).reduce((a,b) => a + b, 0).toFixed(2);
 
     const categories = expenseCategories?.concat(incomeCategories);
@@ -66,12 +67,14 @@ const SummaryPage = () => {
                                 }
                                 return Object.keys(category?.summaryTransactionMap).length > 0 ? sumOfAll / Object.keys(category?.summaryTransactionMap).length : 0;
                             }
+                            let currentMonthAmount = () => category?.summaryTransactionMap[currentMonth] ?? 0;
+                            let lastMonthAmount = () => category?.summaryTransactionMap[previousMonth] ?? 0;
                             return (
-                                <Col key={category.categoryName + category.id} className="summary-page-block-category summary-page-block" style={{backgroundImage: `radial-gradient(circle at 50% 50%, transparent 85%, ${category.colorHex})`}}>
+                                <Col key={category.categoryName + category.id} className="summary-page-block-category summary-page-block" style={{border: `3px solid ${category.colorHex}`}}>
                                     <p className="text-center summary-page-block-title">{category.categoryName} {category.favourite && <BsStarFill className="summary-page-block-favourite-icon"/>}</p>
-                                    <span>Amount: <b></b></span><br/>
+                                    <span>Amount: <b>{currentMonthAmount().toFixed(2)} {getCurrency()}</b></span><br/>
                                     <span>Avarage: <b>{avarageLast12Month().toFixed(2)} {getCurrency()} </b></span><br/>
-                                    <span>Last month: <b></b> </span><br/>
+                                    <span>Last month: <b>{lastMonthAmount().toFixed(2)} {getCurrency()}</b> </span><br/>
                                     <span>Suggested: <b></b></span><br/>
                                     <span>action... <b></b></span>
                                 </Col>
