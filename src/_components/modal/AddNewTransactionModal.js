@@ -213,9 +213,7 @@ export const AddNewTransactionModal = () => {
                                 value={shop?.name}
                                 onChange={(e) => {
                                     let element = document.querySelector("option[value=\"" + e.target.value + "\"][type=\"shop\"]");
-                                    console.log(element);
                                     setShop({id: (element != null ? element.getAttribute("shop_id") : undefined), name: e.target.value})
-                                    console.log({id: (element != null ? element.getAttribute("shop_id") : undefined), name: e.target.value});
                                 }}
                                 placeholder="Enter shop name"
                             />

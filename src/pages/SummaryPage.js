@@ -33,7 +33,6 @@ const SummaryPage = () => {
     const getPlannedAmmountOfTransactions = () => expenseCategories?.map(category => category.currentVersion.maximumAmount).reduce((a,b) => a + b, 0).toFixed(2);
 
     const categories = expenseCategories?.concat(incomeCategories);
-    console.log(expenseCategories);
     const categoriesSummary = {
         expensesSum: getSumOfTransactions(expenseCategories),
         plannedExpensesSum: getPlannedAmmountOfTransactions(),
@@ -46,41 +45,35 @@ const SummaryPage = () => {
             {(isExpenseCategoriesLoading || isIncomeCategoriesLoading) ? <div className="text-center"><Spinner animation="border" size="lg" /></div> : 
                 <>
                     <Row className="summary-page-block summary-page-main-block">
-                    <Col className="summary-page-block-income">
-                            <span className="title"><GiReceiveMoney className="income-icon"/> Incomes: {categoriesSummary.incomesSum} {getCurrency()}</span>
+                        <Col className="summary-page-block-income">
+                            <span className="title"><GiReceiveMoney className="income-icon"/> Incomes: <b>{categoriesSummary.incomesSum}</b> {getCurrency()}</span>
                         </Col>
                         <Col className="summary-page-block-expense">
-                                <span className="title"><GiPayMoney className="expense-icon"/> Expenses: {categoriesSummary.expensesSum} {getCurrency()}
+                                <span className="title"><GiPayMoney className="expense-icon"/> Expenses: <b>{categoriesSummary.expensesSum}</b> {getCurrency()}
                                 </span>
                         </Col>
                         <Col className="summary-page-block-expense">
-                                <span className="title"><GrMoney className="expense-icon"/> Planned expenses: {categoriesSummary.plannedExpensesSum} {getCurrency()}
+                                <span className="title"><GrMoney className="expense-icon"/> Planned: <b>{categoriesSummary.plannedExpensesSum}</b> {getCurrency()}
                                 </span>
-                        </Col>
-                        <Col className="summary-page-block-categories-quantity">
-                            <span className="title">Categories quantity: {categoriesSummary.categoriesQuantity}</span>
                         </Col>
                     </Row>
                     <Row className="summary-page-categories-blocks">
                         {categories?.map(category => {
-                            console.log(category);
+                            let sumOfAll = 0;
                             let avarageLast12Month = () => {
-                                let sumOfAll = 0;
                                 for(var sumOfMonth in category?.summaryTransactionMap) {
                                     sumOfAll += category.summaryTransactionMap[sumOfMonth];
                                 }
-                                console.log(Object.keys(category?.summaryTransactionMap).length);
                                 return Object.keys(category?.summaryTransactionMap).length > 0 ? sumOfAll / Object.keys(category?.summaryTransactionMap).length : 0;
                             }
-                            // let plannedExpense = category?.currentVersion.maximumAmount;
                             return (
-                                <Col key={category.categoryName + category.id} className="summary-page-block-category summary-page-block" style={{backgroundImage: `radial-gradient(circle at 100% 0%, ${category.colorHex}, transparent 10%)`}}>
+                                <Col key={category.categoryName + category.id} className="summary-page-block-category summary-page-block" style={{backgroundImage: `radial-gradient(circle at 50% 50%, transparent 85%, ${category.colorHex})`}}>
                                     <p className="text-center summary-page-block-title">{category.categoryName} {category.favourite && <BsStarFill className="summary-page-block-favourite-icon"/>}</p>
-                                    <span>Amount:</span><br/>
-                                    <span>Avarage (last 12 month): {avarageLast12Month().toFixed(2)}</span><br/>
-                                    <span>Compared to the last month: </span><br/>
-                                    <span>Suggested amount for the next month:</span><br/>
-                                    <span>action...</span>
+                                    <span>Amount: <b></b></span><br/>
+                                    <span>Avarage: <b>{avarageLast12Month().toFixed(2)} {getCurrency()} </b></span><br/>
+                                    <span>Last month: <b></b> </span><br/>
+                                    <span>Suggested: <b></b></span><br/>
+                                    <span>action... <b></b></span>
                                 </Col>
                             )
                         })}

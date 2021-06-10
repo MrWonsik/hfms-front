@@ -39,7 +39,10 @@ import {
 	UPDATE_TRANSACTION_SUCCESS,
 	UPDATE_TRANSACTION_FAILURE,
 	GET_ALL_TRANSACTIONS_REQUEST,
-	GET_ALL_TRANSACTIONS_SUCCESS
+	GET_ALL_TRANSACTIONS_SUCCESS,
+	DELETE_TRANSACTION_SUCCESS,
+	SHOP_DELETE_SUCCESS,
+	DELETE_CATEGORY_SUCCESS
 } from "./finance.actions";
 import { EXPENSE_TRANSACTION, INCOME_TRANSACTION } from './TransactionType';
 
@@ -85,6 +88,13 @@ export const finance = (state = initialState, action) => {
 				...state,
 				isShopsLoading: false,
 			};
+		case SHOP_DELETE_SUCCESS: {
+			const { shopId } = payload;
+			return {
+				...state,
+				shops: state?.shops.filter((shop) => shopId !== shop.id),
+			};	
+		}
 		case CLEAR_FINANCES:
 			return {};
 		case CREATE_SHOP_REQUEST:
@@ -195,16 +205,23 @@ export const finance = (state = initialState, action) => {
 				case EXPENSE: {
 					return {
 						...state,
-						expenseCategories: state.expenseCategories.map((expenseCategoryFromState, id) =>
-							updatedCategory.id === id ? { ...expenseCategoryFromState, favourite: updatedCategory.favourite } : expenseCategoryFromState
+						expenseCategories: state.expenseCategories.map(
+							(expenseCategoryFromState) => 
+							updatedCategory.id === expenseCategoryFromState.id 
+							? { ...expenseCategoryFromState, favourite: updatedCategory.favourite } 
+							: expenseCategoryFromState
 						),
 					};
 				}
 				case INCOME: {
 					return {
 						...state,
-						incomeCategories: state.incomeCategories.map((incomeCategoryFromState, id) =>
-							updatedCategory.id === id ? { ...incomeCategoryFromState, favourite: updatedCategory.favourite } : incomeCategoryFromState
+						incomeCategories: state.incomeCategories.map((incomeCategoryFromState) => {
+							updatedCategory.id;
+							return updatedCategory.id === incomeCategoryFromState.id 
+							? { ...incomeCategoryFromState, favourite: updatedCategory.favourite } 
+							: incomeCategoryFromState
+						}
 						),
 					};
 				}
@@ -217,11 +234,31 @@ export const finance = (state = initialState, action) => {
 				...state,
 				isEditExpenseCategoryMaximumAmountInProgress: true
 			};
-		case EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_SUCCESS: 
+		case EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_SUCCESS: {
+			const {category, editedCategoryVersion, isValidFromNextMonth} = payload;
 			return {
 				...state,
+				expenseCategories: state.expenseCategories.map((expenseCategory) => {
+					if(expenseCategory.id === category.id) {
+						return isValidFromNextMonth ?  
+						{...expenseCategory, 
+							expenseCategoryVersions: category.expenseCategoryVersions.map((expenseCategoryVersionState) => 
+								editedCategoryVersion.id === expenseCategoryVersionState.id ? editedCategoryVersion : expenseCategoryVersionState
+						)}
+						: 
+						{...expenseCategory, 
+							currentVersion: editedCategoryVersion, 
+							expenseCategoryVersions: category.expenseCategoryVersions.map((expenseCategoryVersionState) => 
+								editedCategoryVersion.id === expenseCategoryVersionState.id ? editedCategoryVersion : expenseCategoryVersionState
+						)}
+	
+					}
+
+					return expenseCategory;
+				}),
 				isEditExpenseCategoryMaximumAmountInProgress: false
 			}
+		}
 		case EDIT_EXPENSE_CATEGORY_MAXIMUM_COST_FAILURE:
 			return {
 				...state,
@@ -232,16 +269,61 @@ export const finance = (state = initialState, action) => {
 				...state,
 				isEditCategoryInProgress: true
 			};
-		case EDIT_CATEGORY_SUCCESS: 
-			return {
-				...state,
-				isEditCategoryInProgress: false
+		case EDIT_CATEGORY_SUCCESS: {
+			const {editedCategory, categoryType} = payload;
+			switch(categoryType) {
+				case EXPENSE: {
+					return {
+						...state,
+						expenseCategories: state.expenseCategories.map((expenseCategoryFromState) => 
+							editedCategory.id === expenseCategoryFromState.id 
+							? editedCategory 
+							: expenseCategoryFromState
+						),
+						isEditCategoryInProgress: false
+					};
+				}
+				case INCOME: {
+					return {
+						...state,
+						incomeCategories: state.incomeCategories.map((incomeCategoryFromState) => 
+							editedCategory.id === incomeCategoryFromState.id 
+							? editedCategory
+							: incomeCategoryFromState
+						),
+						isEditCategoryInProgress: false
+					};
+				}
+				default: 
+					return {...state,
+					isEditCategoryInProgress: false
+				}
 			}
+		}
 		case EDIT_CATEGORY_FAILURE:
 			return {
 				...state,
 				isEditCategoryInProgress: false
 			};
+		case DELETE_CATEGORY_SUCCESS: {
+			const {id, categoryType} = payload;
+			switch(categoryType) {
+				case EXPENSE: {
+					return {
+						...state,
+						expenseCategories: state.expenseCategories.filter((expenseCategoryFromState) => id !== expenseCategoryFromState.id),
+					};
+				}
+				case INCOME: {
+					return {
+						...state,
+						incomeCategories: state.incomeCategories.filter((incomeCategoryFromState) => id !== incomeCategoryFromState.id),
+					};
+				}
+				default: 
+					return {...state}
+			}
+		}
 		case GET_TRANSACTIONS_REQUEST: {
 			return state
 		}
@@ -343,7 +425,24 @@ export const finance = (state = initialState, action) => {
 				...state,
 				updateTransactionInProgress: false
 			};
-
+		case DELETE_TRANSACTION_SUCCESS: {
+			const { transactionId, transactionType} = payload;
+			switch(transactionType) {
+				case EXPENSE_TRANSACTION: {
+					return {
+						...state,
+						expenseTransactions: state?.expenseTransactions.filter((expenseTransactionsState) => transactionId !== expenseTransactionsState.id),
+					};
+				} 
+				case INCOME_TRANSACTION: {
+					return {
+						...state,
+						incomeTransactions: state?.incomeTransactions.filter((incomeTransactionsState) => transactionId !== incomeTransactionsState.id),
+					};
+				}
+				default: return { ...state, updateTransactionInProgress: false };
+			}
+		}
 		case GET_EXPENSE_FILE_REQUEST:
 			return {
 				...state,

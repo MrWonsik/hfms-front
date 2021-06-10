@@ -119,7 +119,7 @@ const CategoriesTable = ({ type, categories, isLoading }) => {
                     {categories?.map((category) => (
                         <div key={category.id}>
                             <ConfirmationModal id={"category_confirmation_" + category.categoryName.trim() + "_" + category.id} confirmationFunction={() => handleDeleteCategory(category.id, type)} confirmationMessage={"Are you sure you want to delete " + category.categoryName + "?"} />
-                            {type === EXPENSE && <EditMaximumAmountModal id={"category_edit_maximum_amount" + category.categoryName.trim() + "_" + category.id} category={category} />}
+                            {type === EXPENSE && <EditMaximumAmountModal id={"category_edit_maximum_amount" + category.categoryName.trim() + "_" + category.id} categoryId={category.id} />}
                             <EditCategoryModal id={"category_edit" + category.categoryName.trim() + "_" + category.id} category={category} categoryType={type}/>
                         </div>
                     ))}
