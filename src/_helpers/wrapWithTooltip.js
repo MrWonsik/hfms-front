@@ -12,6 +12,15 @@ export const getIconWithActionAndTooltip = (IconTag, iconClassName, methodOnClic
     />
 )
 
+export const getIconWithTooltip = (IconTag, iconClassName, tooltipMessage, tooltipPlacement = "top", isVisible=true) => (
+    <HoverTooltip 
+        el={<IconTag tabIndex="0" className={iconClassName + (isVisible ? "" : " d-none") } />}
+        placement={tooltipPlacement}
+        msg={tooltipMessage}
+        isVisible={isVisible}
+    />
+)
+
 const HoverTooltip = (props) => {
     return <OverlayTrigger
     placement={props.placement}

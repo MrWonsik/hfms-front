@@ -41,7 +41,7 @@ const HomePageUser = ({ match }) => {
                 <h1 id="current-page" className={currentPage != currentPageDisplay ? "other-page-hover" : ""}>{currentPageDisplay}</h1>
             </Row>
             <Row className="justify-content-md-center">
-                <Col md="5">
+                <Col lg="5">
                         <Navbar className="justify-content-between justify-content-center user-page-navbar" >
                             <Nav.Item>
                                 {getIconWihtAction(BsHouse, "Home")}
@@ -62,7 +62,7 @@ const HomePageUser = ({ match }) => {
                 </Col>
             </Row>
             <Row className="justify-content-md-center">
-                <Col md="9">
+                <Col lg="9">
                     <Jumbotron className="user-page-block user-page-content-container">
                         <Switch>
                             <Route path={`${match.path}/summary-page`} component={SummaryPage}/>

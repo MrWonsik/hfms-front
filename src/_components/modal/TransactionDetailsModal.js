@@ -221,14 +221,13 @@ export const TransactionDetailsModal = ({ id, transaction }) => {
                                 <Form.Control
                                     list="shop-list"
                                     type="text"
-                                    className={submitted && !shop.name ? " is-invalid" : ""}
                                     name="shop"
                                     value={shop.name ? shop.name : ""}
                                     onChange={(e) => {
                                         let element = document.querySelector("option[value=\"" + e.target.value + "\"]");
                                         setShop({id: element != null ? element.getAttribute("id") : undefined, name: e.target.value})
                                     }}
-                                    placeholder={submitted && !shop.name ? "Shop name is required" : "Shop name"}
+                                    placeholder="Shop name"
                                 />
                                 {shops &&
                                     <datalist id="shop-list">

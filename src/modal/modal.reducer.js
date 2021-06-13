@@ -19,7 +19,9 @@ import {
 	OPEN_MODAL_ADD_NEW_TRANSACTION,
 	CLOSE_MODAL_ADD_NEW_TRANSACTION,
 	OPEN_TRANSACTION_DETAILS_MODAL,
-	CLOSE_TRANSACTION_DETAILS_MODAL
+	CLOSE_TRANSACTION_DETAILS_MODAL,
+	OPEN_CATEGORY_CHART_MODAL,
+	CLOSE_CATEGORY_CHART_MODAL
 } from "./modal.actions";
 
 const initialState = {
@@ -30,7 +32,8 @@ const initialState = {
 	editMaximumAmountModal: { isOpen: false, id: ""},
 	addNewCategoryModalIsOpen: false,
 	editCategoryModal: {isOpen: false, id: ""},
-	transactionDetailsModalIsOpen: false
+	transactionDetailsModalIsOpen: false,
+	categoryChartModal: {isOpen: false, id: ""}
 };
 
 export const modals = (state = initialState, action) => {
@@ -145,6 +148,18 @@ export const modals = (state = initialState, action) => {
 			return {
 				...state,
 				transactionDetailsModal: {isOpen: false},
+			};
+		case OPEN_CATEGORY_CHART_MODAL: {
+			const { contextId } = payload;
+			return {
+				...state,
+				categoryChartModal: {isOpen: true, id: contextId },
+			};
+		}
+		case CLOSE_CATEGORY_CHART_MODAL:
+			return {
+				...state,
+				categoryChartModal: {isOpen: false },
 			};
 		case MODAL_CLEAR:
 			return {};

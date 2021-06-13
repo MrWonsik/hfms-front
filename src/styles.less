@@ -12,6 +12,8 @@
 @expense-color: rgb(150, 0, 0);
 @income-color: rgb(0, 150, 0);
 
+@standard-block-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+
 .no-style-button {
 	all: unset;
 }
@@ -66,6 +68,7 @@ button.btn.btn-primary {
 
 	&:hover:not(:disabled):not(.disabled) {
 		background-color: @main-color-focus-dark;
+		transition: background-color 0.15s ease-in-out;
 	}
 
 	&.disabled:hover {
@@ -91,6 +94,7 @@ button.btn.btn-secondary {
 
 	&:hover {
 		background-color: @main-color-focus-dark;
+		transition: background-color 0.15s ease-in-out;
 	}
 }
 
@@ -163,6 +167,7 @@ button.btn.btn-secondary {
 		&:focus, &:hover {
 			border-bottom-color: @main-color-dark; 
 			color: @main-focus-color-light;
+			transition: color 0.15s ease-in-out;
 		}
 
 		&.active {
@@ -262,7 +267,7 @@ button.btn.btn-secondary {
 	&:focus {
 		outline: none;
 		color: @main-focus-color-light;
-		transition: color 0.15s ease-in-out, color 0.15s ease-in-out;
+		transition: color 0.15s ease-in-out;
 		cursor: pointer;
 	}
 
@@ -285,6 +290,7 @@ button.btn.btn-secondary {
 	max-height: 60px;
 	border-bottom: 1px solid @main-color-dark;
 	padding: 5px;
+	min-width: 400px;
 
 	.user-page-navbar-icon {
 		width: 40px;
@@ -465,6 +471,7 @@ button.btn.btn-secondary {
 
 	&:hover {
 		color: @main-color-focus-dark;
+		transition: color 0.15s ease-in-out;
 		cursor: pointer;
 	}
 
@@ -508,6 +515,7 @@ button.btn.btn-secondary {
 	flex-direction: column;
 	font-size: 25px;
 	border: 3px solid @main-color-dark;
+	box-shadow: @standard-block-shadow;
 
 	.users-charts-title-container {
 		display: flex;
@@ -572,19 +580,34 @@ button.btn.btn-secondary {
 
 .summary-page-block.summary-page-main-block {
 	padding: 10px;
-	align-items: center
+	align-items: center;
+	min-width: 300px;
 }
 
 .summary-page-block {
 	border-radius: 10px;
-	border: 1px solid black;
+	// border: 1px solid black;
 	padding: 15px;
 	margin: 20px;
 
 	.summary-page-block-title {
 		font-size: 20px;
 		font-weight: bold;
-		color: @main-color-dark;
+		color: #3b552b;
+		align-items: center;
+		display: flex;
+		justify-content: center;
+		
+		.category-chart-icon {
+			font-size: 30px;
+			margin-left: auto;
+
+			&:hover {
+				color: @main-focus-color-light;
+				transition: color 0.15s ease-in-out;
+				cursor: pointer;
+			}
+		}
 	}
 }
 
@@ -592,10 +615,38 @@ button.btn.btn-secondary {
 	margin: 0;
 
 	.summary-page-block-category {
-		min-width: 250px;
+		min-width: 300px;
+		box-shadow: @standard-block-shadow;
 
 		.summary-page-block-favourite-icon {
-			margin-bottom: 4px;
+			margin-left: 5px;
+		}
+
+		.field {
+			font-size: 16px;
+			margin: 5px;
+
+			.field-name {
+				min-width: 120px;
+				display: inline-block;
+			}
+		}
+		
+		.alert-icon {
+			font-size: 23px;
+			margin-left: 3px;
+
+			&.alert-icon-bad {
+				color: @expense-color;
+			}
+	
+			&.alert-icon-good {
+				color: @income-color;
+			}
+	
+			&.alert-icon-planned-bad {
+				color:rgb(150, 0, 0);
+			}
 		}
 	}
 }
@@ -607,5 +658,57 @@ button.btn.btn-secondary {
 	.title {
 		font-size: 20px;
 		color: @main-color-dark;
+	}
+}
+
+.summary-page-container {
+	.summary-page-container-title {
+		font-size: 25px;
+		color: @main-color-dark;
+		text-align: center;
+		margin-top: 25px;
+		margin-bottom: 25px;
+		font-weight: 700;
+	}
+}
+
+.category-chart-modal-body {
+	background-color: white;
+	color: @main-color-dark;
+	
+	.category-chart-modal-month-navigation {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 20px;
+
+		.category-chart-modal-icon {
+			font-size: 20px;
+			padding-left: 5px;
+			padding-right: 5px;
+			padding-bottom: 5px;
+
+			&.disabled {
+				color: @main-disable-color !important;
+				cursor: not-allowed !important;
+			}
+		}
+
+		.category-chart-modal-info {
+			width: 160px;
+			text-align: center;
+		}
+	
+		.category-chart-modal-number {
+			font-size: 20px;
+			padding-left: 20px;
+		}
+	
+		.category-chart-modal-icon, .category-chart-modal-number {
+			&:hover {
+				color: @main-focus-color-light;
+				cursor: pointer;
+			}
+		}
 	}
 }
