@@ -51,3 +51,8 @@ export const OPEN_TRANSACTION_DETAILS_MODAL = "OPEN_TRANSACTION_DETAILS_MODAL";
 export const CLOSE_TRANSACTION_DETAILS_MODAL = "CLOSE_TRANSACTION_DETAILS_MODAL";
 export const openTransactionDetailsModal = (contextId) => ({ type: OPEN_TRANSACTION_DETAILS_MODAL, payload: {contextId}});
 export const closeTransactionDetailsModal = () => ({ type: CLOSE_TRANSACTION_DETAILS_MODAL });
+
+export const OPEN_CATEGORY_CHART_MODAL = "OPEN_CATEGORY_CHART_MODAL";
+export const CLOSE_CATEGORY_CHART_MODAL = "CLOSE_CATEGORY_CHART_MODAL";
+export const openCategoryChartModal = (contextId) => ({ type: OPEN_CATEGORY_CHART_MODAL, payload: {contextId}});
+export const closeCategoryChartModal = () => ({ type: CLOSE_CATEGORY_CHART_MODAL });
