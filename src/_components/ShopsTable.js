@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getShops, deleteShop } from '../finance/finance.actions';
 import Form from "react-bootstrap/Form";
-import { BsTrash, BsPlus, BsCalendar } from 'react-icons/bs'
+import { BsTrash, BsPlus, BsCalendar, BsFileText } from 'react-icons/bs'
 import { openConfirmationModal, openModalAddNewShop } from '../modal/modal.actions';
 import AddNewShopModal from './modal/AddNewShopsModal';
 import ConfirmationModal from './modal/ConfirmationModal';
@@ -12,6 +12,7 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import { getIconWithActionAndTooltip } from '../_helpers/wrapWithTooltip';
 import Loader from '../_helpers/Loader';
+import { Link } from 'react-router-dom';
 
 const ShopsTable = () => {
     const dispatch = useDispatch();
@@ -42,8 +43,10 @@ const ShopsTable = () => {
             date: <><BsCalendar /> {shop.createDate.date} </>,
             time: shop.createDate.time,
             actions: <>
+                <Link className="open-transaction-list-table-action-icon" to={"/home/transaction-list-page?shopId=" + shop.id}> 
+                    {getIconWithActionAndTooltip(BsFileText, "table-action-icon", () => {}, "top", "Open transaction list for this shop")}
+                </Link>
                 {getIconWithActionAndTooltip(BsTrash, "table-action-icon", () => showDeleteConfirmationModal(shop), "top", "Delete")}
-                {/*TODO: add action to show all expense from this shop*/}
             </>
         }))
     const columns = [{
