@@ -239,6 +239,11 @@ button.btn.btn-secondary {
 			cursor: pointer;
 		} 
 	}
+
+	a.open-transaction-list-table-action-icon {
+		color: @main-color-dark;
+	}
+
 }
 
 .pagination.react-bootstrap-table-page-btns-ul {
@@ -464,7 +469,7 @@ button.btn.btn-secondary {
 	}
 }
 
-.transaction-image-icon {
+.transaction-image-icon, .filter-icon {
 	font-size: 25px;
 	margin: 4px;
 	padding: 3px;
@@ -477,6 +482,24 @@ button.btn.btn-secondary {
 
 	&.disabled {
 		display: none;
+	}
+}
+
+.filter-icon {
+	font-size: 30px;
+	color: @main-color-dark;
+
+    &:hover,
+	&:focus {
+		outline: none;
+		color: @main-focus-color-light;
+		transition: color 0.15s ease-in-out;
+		cursor: pointer;
+	}
+
+	&.disabled {
+		color: rgb(197, 196, 196);
+		cursor: default;
 	}
 }
 
@@ -569,6 +592,7 @@ button.btn.btn-secondary {
     	top: -200px;
 		height: 0;
 		transition: all 0.6s; 
+		justify-content: center;
 
 		&.open {
 			transition: all 0.3s;

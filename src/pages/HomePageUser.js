@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Jumbotron } from 'react-bootstrap';
 import { Route, Switch, Link } from "react-router-dom";
 import { useSelector } from "react-redux";

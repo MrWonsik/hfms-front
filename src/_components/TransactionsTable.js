@@ -21,6 +21,9 @@ import filterFactory, { selectFilter, textFilter } from 'react-bootstrap-table2-
 import { Col, Row } from 'react-bootstrap';
 import {getCurrency} from "../_helpers/currencyGetter";
 import { GiPayMoney, GiReceiveMoney } from 'react-icons/gi';
+import { RiFilterOffFill } from 'react-icons/ri';
+import { useLocation } from "react-router-dom";
+
 
 let categoryFilter;
 let transactionNameFilter;
@@ -38,11 +41,15 @@ const TransactionsTable = () => {
 
     let categories = expenseCategories?.concat(incomeCategories);
 
+    let shopId = new URLSearchParams(useLocation().search).get("shopId");
+
     let [date, setDate] = useState(moment());
     let [categoryName, setCategoryName] = useState("");
     let [transactionName, setTransactionName] = useState("");
     let [transactionType, setTransactionType] = useState("");
-    let [showFilter, setShowFilter] = useState(false);
+    let [transactionShopId, setTransactionShopId] = useState(shopId ?? "");
+    let [showFilter, setShowFilter] = useState(shopId || false);
+
 
     useEffect(() => {
         dispatch(changePage("Transaction list"));
@@ -68,7 +75,9 @@ const TransactionsTable = () => {
                 {getIconWithActionAndTooltip(BsEye, "table-action-icon", () => showTransactionDetails(transaction), "top", "Show details")}
                 {getIconWithActionAndTooltip(BsTrash, "table-action-icon", () => showDeleteConfirmationModal(transaction), "top", "Delete")}
             </>,
-            type: transaction.type
+            type: transaction.type,
+            shopId: transaction.shop && transaction.shop.id,
+            shopName: transaction.shop && transaction.shop.name
         }))
     }
     
@@ -136,6 +145,15 @@ const TransactionsTable = () => {
         return (<>{cell} <span className="additionaly-info">({row.id})</span></>)
     }
 
+    const clearAllFilters = () => {
+        setCategoryName("");
+        categoryFilter("");
+        setTransactionName("");
+        setTransactionType("");
+        typesFilter("");
+        setTransactionShopId("");
+    }
+
     const typesMap = { "Income": "Income", "Expense": "Expense"}
 
     const getCategoriesMap = () => { 
@@ -179,11 +197,23 @@ const TransactionsTable = () => {
             sort: true,
             sortFunc: dateSort
         }, {
+            dataField: 'shopName',
+            text: "Shop",
+            sort: true
+        }, {
             dataField: 'actions',
             text: 'Action'  
         }, {
             dataField: 'id',
             hidden: true
+        }, {
+            dataField: 'shopId',
+            text: "Shop Id",
+            headerStyle: {'display': 'none'},
+            style: {'display': 'none'},
+            filter: textFilter({
+                defaultValue: transactionShopId
+            })
         }, {
             dataField: 'type',
             text: "Type",
@@ -229,7 +259,7 @@ const TransactionsTable = () => {
             <hr/>
                 <div className={"slide-wrapper"}>
                     <Row className={"filter-options " + (showFilter && "open")}>
-                        <Form.Group as={Col} lg={4}>
+                        <Form.Group as={Col} lg={3}>
                             <Form.Control
                                 type="text"
                                 name="transactionName"
@@ -241,8 +271,8 @@ const TransactionsTable = () => {
                                 placeholder="Search by transaction name"
                             />
                         </Form.Group>
-                        <Form.Group as={Col} lg={4}>
-                        <Form.Control
+                        <Form.Group as={Col} lg={3}>
+                            <Form.Control
                                 as="select"
                                 name="category"
                                 value={categoryName}
@@ -264,8 +294,8 @@ const TransactionsTable = () => {
                                 }
                             </Form.Control>
                         </Form.Group>
-                        <Form.Group as={Col} lg={4}> 
-                        <Form.Control
+                        <Form.Group as={Col} lg={3}> 
+                            <Form.Control
                                 as="select"
                                 name="type"
                                 value={transactionType}
@@ -283,6 +313,7 @@ const TransactionsTable = () => {
                                 <option>Income</option>
                             </Form.Control>
                         </Form.Group>
+                        {getIconWithActionAndTooltip(RiFilterOffFill, "filter-icon", () => clearAllFilters(), "top", "Clear all filters")}
                     </Row>
                 </div>
             { isTransactionsLoading ? <Loader /> :  transactions?.length > 0 ?  

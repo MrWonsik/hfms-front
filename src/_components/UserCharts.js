@@ -145,7 +145,7 @@ const UserCharts = () => {
             </div>
             { filteredIncomeCategories?.length != 0 ?
               <>
-                {isTransactionsLoading ? "loading..." : <Pie data={getSumIncomeByCategory()}/>}
+                {isTransactionsLoading ? "" : <Pie data={getSumIncomeByCategory()}/>}
               </>
               :
               <p className="text-center">No incomes transactions found.</p>
@@ -159,7 +159,7 @@ const UserCharts = () => {
             </div>
             { filteredExpenseCategories?.length != 0 ? 
                 <>
-                  {isTransactionsLoading ? "loading..." : <Pie data={getSumExpensesByCategory()}/>}
+                  {isTransactionsLoading ? "" : <Pie data={getSumExpensesByCategory()}/>}
                 </>
                 :
                 <p className="text-center">No expenses transactions found.</p>
