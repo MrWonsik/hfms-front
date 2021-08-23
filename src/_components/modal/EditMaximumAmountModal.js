@@ -52,7 +52,7 @@ const EditMaximumAmountModal = ({ id, categoryId }) => {
         <Modal.Body>
         Previous maximum amounts:
         {
-        category.expenseCategoryVersions?.sort((b, a) => new Date(b.validMonth) - new Date(a.validMonth)).slice(0, 3).map(version => {
+        category.expenseCategoryVersions?.sort((b, a) => new Date(a.validMonth) - new Date(b.validMonth)).slice(0, 5).reverse().map(version => {
             let date = new Date(version.validMonth);
             let year = date.getFullYear();
             let month = getMonth(date.getMonth());
