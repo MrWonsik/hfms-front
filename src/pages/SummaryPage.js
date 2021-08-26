@@ -48,7 +48,7 @@ const SummaryPage = () => {
         expensesSum: getSumOfTransactions(expenseCategories),
         plannedExpensesSum: getPlannedAmmountOfTransactions(),
         incomesSum: getSumOfTransactions(incomeCategories),
-        categoriesQuantity: categories.length
+        categoriesQuantity: categories?.length
     }
 
     const generateCategoryField = (fieldName, fieldValue, showAlert) => {
