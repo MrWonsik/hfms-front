@@ -10,7 +10,7 @@ export const loginRequestCall = (username, password) => {
         body: JSON.stringify({ username, password })
     };
 
-    return fetch(`${config.apiUrl}/api/auth/sign`, requestOptions)
+    return fetch(`${config.API_URL}/api/auth/sign`, requestOptions)
         .then(httpHelper.handleResponse)
         .then(jwt => {
             let decodedJwt = parseJwt(jwt.token);
@@ -27,7 +27,7 @@ export const changePasswordRequestCall = (oldPassword, newPassword, repeatedNewP
         body: JSON.stringify({ oldPassword, newPassword, repeatedNewPassword })
     };
 
-    return fetch(`${config.apiUrl}/api/user/password`, requestOptions)
+    return fetch(`${config.API_URL}/api/user/password`, requestOptions)
         .then(httpHelper.handleResponse)
         .then(data => {
             return data;

@@ -1,7 +1,6 @@
-var HtmlWebpackPlugin = require('html-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-    mode: 'development',
     resolve: {
         extensions: ['.js', '.jsx']
     },
@@ -28,20 +27,24 @@ module.exports = {
                 test: /\.(jpe?g|png|gif|svg)$/i, 
                 loader: 'file-loader',
             }
-        ]
+        ],
     },
-    plugins: [new HtmlWebpackPlugin({
-        template: './src/index.html'
-    })],
+    plugins: [
+        new HtmlWebpackPlugin({
+            template: './src/index.html'
+        })
+        ],
     devServer: {
+        host: '0.0.0.0',
+        port: 8080,
         historyApiFallback: {
             index: '/'
-        }
+        },
     },
     externals: {
         // global app config object
         config: JSON.stringify({
-            apiUrl: 'http://localhost:8081'
+            API_URL: "http://localhost:8081"
         })
     },
     output: {

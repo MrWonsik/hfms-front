@@ -8,7 +8,7 @@ import Spinner from "react-bootstrap/Spinner";
 
 import { login, logout } from "../user/user.actions";
 import { Jumbotron } from "react-bootstrap";
-import { useHistory } from "react-router";
+import { useHistory } from "react-router-dom";
 
 const LoginPage = () => {
 	let history = useHistory();

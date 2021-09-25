@@ -11,7 +11,7 @@ export const getShopsCall = () => {
 		headers: httpHelper.addAuthHeader({}, getJwtToken()),
 	};
 
-	return fetch(`${config.apiUrl}/api/shop`, requestOptions)
+	return fetch(`${config.API_URL}/api/shop`, requestOptions)
 		.then(httpHelper.handleResponse)
 		.catch(httpHelper.handleError);
 };
@@ -26,7 +26,7 @@ export const createShopCall = (shopName) => {
 		body: JSON.stringify({ name: shopName }),
 	};
 
-	return fetch(`${config.apiUrl}/api/shop`, requestOptions)
+	return fetch(`${config.API_URL}/api/shop`, requestOptions)
 		.then(httpHelper.handleResponse)
 		.then(shop => shop)
 		.catch(httpHelper.handleError);
@@ -38,7 +38,7 @@ export const deleteShopCall = (id) => {
 		headers: httpHelper.addAuthHeader({}, getJwtToken()),
 	};
 
-	return fetch(`${config.apiUrl}/api/shop/${id}`, requestOptions)
+	return fetch(`${config.API_URL}/api/shop/${id}`, requestOptions)
 		.then(httpHelper.handleResponse)
 		.then(shop => shop)
 		.catch(httpHelper.handleError);
@@ -54,7 +54,7 @@ export const getCategoriesCall = ( categoryType ) => {
 		headers: httpHelper.addAuthHeader({}, getJwtToken()),
 	};
 
-	return fetch(`${config.apiUrl}/api/category/${type}`, requestOptions)
+	return fetch(`${config.API_URL}/api/category/${type}`, requestOptions)
 		.then(httpHelper.handleResponse)
 		.catch(httpHelper.handleError);
 };
@@ -71,7 +71,7 @@ export const createCategoryCall = (category) => {
 		body: JSON.stringify(category),
 	};
 
-	return fetch(`${config.apiUrl}/api/category/${type}`, requestOptions)
+	return fetch(`${config.API_URL}/api/category/${type}`, requestOptions)
 		.then(httpHelper.handleResponse)
 		.then(createdCategory => createdCategory)
 		.catch(httpHelper.handleError);
@@ -88,7 +88,7 @@ export const changeStateFavouriteCategoryCall = ( category ) => {
 		body: JSON.stringify({ isFavourite: !category.favourite }),
 	};
 
-	return fetch(`${config.apiUrl}/api/category/${type}/favourite/${category.id}`, requestOptions)
+	return fetch(`${config.API_URL}/api/category/${type}/favourite/${category.id}`, requestOptions)
 		.then(httpHelper.handleResponse)
 		.then(expenseCategory => expenseCategory)
 		.catch(httpHelper.handleError);
@@ -102,7 +102,7 @@ export const deleteCategoryCall = (id, categoryType) => {
 		headers: httpHelper.addAuthHeader({}, getJwtToken()),
 	};
 
-	return fetch(`${config.apiUrl}/api/category/${type}/${id}`, requestOptions)
+	return fetch(`${config.API_URL}/api/category/${type}/${id}`, requestOptions)
 		.then(httpHelper.handleResponse)
 		.then(deletedCategory => deletedCategory)
 		.catch(httpHelper.handleError);
@@ -119,7 +119,7 @@ export const editExpenseCategoryMaximumAmountCall = (categoryId, newMaximumAmoun
 		body: JSON.stringify({newMaximumAmount, isValidFromNextMonth }),
 	};
 
-	return fetch(`${config.apiUrl}/api/category/expense/${categoryId}/version`, requestOptions)
+	return fetch(`${config.API_URL}/api/category/expense/${categoryId}/version`, requestOptions)
 		.then(httpHelper.handleResponse)
 		.then(editedCategoryVersion => editedCategoryVersion)
 		.catch(httpHelper.handleError);
@@ -137,7 +137,7 @@ export const editCategoryCall = (categoryId, categoryName, colorHex, categoryTyp
 		body: JSON.stringify({categoryName, colorHex }),
 	};
 
-	return fetch(`${config.apiUrl}/api/category/${type}/${categoryId}`, requestOptions)
+	return fetch(`${config.API_URL}/api/category/${type}/${categoryId}`, requestOptions)
 		.then(httpHelper.handleResponse)
 		.then(editedCategory => editedCategory)
 		.catch(httpHelper.handleError);
@@ -151,7 +151,7 @@ export const getTransactionsCall = ( transactionType, date ) => {
 		headers: httpHelper.addAuthHeader({}, getJwtToken()),
 	};
 
-	let urlGetRequest = date ? `${config.apiUrl}/api/transaction/${type}?year=${date.year}&month=${date.month + 1}` : `${config.apiUrl}/api/transaction/${type}`; 
+	let urlGetRequest = date ? `${config.API_URL}/api/transaction/${type}?year=${date.year}&month=${date.month + 1}` : `${config.API_URL}/api/transaction/${type}`; 
 
 	return fetch(urlGetRequest, requestOptions)
 		.then(httpHelper.handleResponse)
@@ -174,7 +174,7 @@ export const createTransactionCall = (transaction) => {
 		body: formData,
 	};
 
-	return fetch(`${config.apiUrl}/api/transaction/${type}`, requestOptions)
+	return fetch(`${config.API_URL}/api/transaction/${type}`, requestOptions)
 		.then(httpHelper.handleResponse)
 		.then(createdTransaction => createdTransaction)
 		.catch(httpHelper.handleError);
@@ -188,7 +188,7 @@ export const deleteTransactionCall = (transactionId, transactionType) => {
 		headers: httpHelper.addAuthHeader({}, getJwtToken()),
 	};
 
-	return fetch(`${config.apiUrl}/api/transaction/${type}/${transactionId}`, requestOptions)
+	return fetch(`${config.API_URL}/api/transaction/${type}/${transactionId}`, requestOptions)
 		.then(httpHelper.handleResponse)
 		.then(deletedTransaction => deletedTransaction)
 		.catch(httpHelper.handleError);
@@ -200,7 +200,7 @@ export const getExpenseFileCall = ( transactionId ) => {
 		headers: httpHelper.addAuthHeader({}, getJwtToken()),
 	};
 
-	return fetch(`${config.apiUrl}/api/transaction/expense/${transactionId}/file`, requestOptions)
+	return fetch(`${config.API_URL}/api/transaction/expense/${transactionId}/file`, requestOptions)
 		.then(httpHelper.handleResponse)
 		.catch(httpHelper.handleError);
 };
@@ -211,7 +211,7 @@ export const deleteExpenseFileCall = ( transactionId ) => {
 		headers: httpHelper.addAuthHeader({}, getJwtToken()),
 	};
 
-	return fetch(`${config.apiUrl}/api/transaction/expense/${transactionId}/file`, requestOptions)
+	return fetch(`${config.API_URL}/api/transaction/expense/${transactionId}/file`, requestOptions)
 		.then(httpHelper.handleFileResponse)
 		.catch(httpHelper.handleError);
 };
@@ -226,7 +226,7 @@ export const uploadExpenseFileCall = ( transactionId, receiptFile ) => {
 		body: formData,
 	};
 
-	return fetch(`${config.apiUrl}/api/transaction/expense/${transactionId}/file`, requestOptions)
+	return fetch(`${config.API_URL}/api/transaction/expense/${transactionId}/file`, requestOptions)
 		.then(httpHelper.handleResponse)
 		.then(transactionFile => transactionFile)
 		.catch(httpHelper.handleError);
@@ -244,7 +244,7 @@ export const updateTransactionCall = ( transaction ) => {
 		body: JSON.stringify(transaction),
 	};
 
-	return fetch(`${config.apiUrl}/api/transaction/${type}/${transaction.id}`, requestOptions)
+	return fetch(`${config.API_URL}/api/transaction/${type}/${transaction.id}`, requestOptions)
 		.then(httpHelper.handleResponse)
 		.then(editedTransaction => editedTransaction)
 		.catch(httpHelper.handleError);

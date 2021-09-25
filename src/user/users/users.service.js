@@ -8,7 +8,7 @@ export const getAllUsersCall = () => {
 		headers: httpHelper.addAuthHeader({}, getJwtToken()),
 	};
 
-	return fetch(`${config.apiUrl}/api/user`, requestOptions)
+	return fetch(`${config.API_URL}/api/user`, requestOptions)
 		.then(httpHelper.handleResponse)
 		.catch(httpHelper.handleError);
 };
@@ -23,7 +23,7 @@ export const editUserStatusCall = (id, isEnabled) => {
 		body: JSON.stringify({ isEnabled }),
 	};
 
-	return fetch(`${config.apiUrl}/api/user/${id}`, requestOptions)
+	return fetch(`${config.API_URL}/api/user/${id}`, requestOptions)
 		.then(httpHelper.handleResponse)
 		.then(user => user)
 		.catch(httpHelper.handleError);
@@ -39,7 +39,7 @@ export const editUserPasswordCall = (newPassword, id) => {
 		body: JSON.stringify({ password: newPassword }),
 	};
 
-	return fetch(`${config.apiUrl}/api/user/${id}`, requestOptions)
+	return fetch(`${config.API_URL}/api/user/${id}`, requestOptions)
 		.then(httpHelper.handleResponse)
 		.catch(httpHelper.handleError);
 };
@@ -50,7 +50,7 @@ export const deleteUserCall = (id) => {
 		headers: httpHelper.addAuthHeader({}, getJwtToken()),
 	};
 
-	return fetch(`${config.apiUrl}/api/user/${id}`, requestOptions)
+	return fetch(`${config.API_URL}/api/user/${id}`, requestOptions)
 		.then(httpHelper.handleResponse)
 		.then(user => user)
 		.catch(httpHelper.handleError);
@@ -66,7 +66,7 @@ export const createUserCall = (username, password, role) => {
 		body: JSON.stringify({ username, password, role }),
 	};
 
-	return fetch(`${config.apiUrl}/api/user`, requestOptions)
+	return fetch(`${config.API_URL}/api/user`, requestOptions)
 		.then(httpHelper.handleResponse)
 		.then(user => user)
 		.catch(httpHelper.handleError);

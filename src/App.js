@@ -70,7 +70,6 @@ const App = () => {
               </Alert>
             )}
             <BrowserRouter history={history}>
-              <>
                 {loggedIn && <UserTools />}
                 <Switch>
                   {user?.role && renderHomepage(user)}
@@ -78,7 +77,6 @@ const App = () => {
                   {!loggedIn && <Redirect from="*" to="/login" />}
                   <Route path="*" component={NotFoundPage} />
                 </Switch>
-              </>
             </BrowserRouter>
           </Col>
         </Row>
