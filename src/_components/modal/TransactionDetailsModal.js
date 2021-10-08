@@ -50,9 +50,6 @@ export const TransactionDetailsModal = ({ id, transaction }) => {
 
     setSubmitted(true)
     if (transactionName && amount && amount >= 0 && category && category.name !== 'Please wait') {
-      if (isExpenseTransaction) {
-        return
-      }
       dispatch(updateTransaction({
         id: transaction.id,
         name: transactionName,
