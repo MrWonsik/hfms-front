@@ -9,6 +9,7 @@ import { closeModalAddNewTransaction } from '../../modal/modal.actions'
 import { EXPENSE_TRANSACTION } from '../../finance/TransactionType'
 import { createTransaction } from '../../finance/finance.actions'
 import moment from 'moment'
+import { isObjectEmpty } from '../../_helpers/isObjectEmpty'
 
 export const AddNewTransactionModal = () => {
   const dispatch = useDispatch()
@@ -23,7 +24,7 @@ export const AddNewTransactionModal = () => {
 
   const [submitted, setSubmitted] = useState(false)
   const [transactionName, setTransactionName] = useState('')
-  const [category, setCategory] = useState({ name: 'Please select' })
+  const [category, setCategory] = useState({})
   const [shop, setShop] = useState({})
   const [transactionType, setTransactionType] = useState(EXPENSE_TRANSACTION)
   const [amount, setMaximumAmount] = useState(0)
@@ -45,12 +46,13 @@ export const AddNewTransactionModal = () => {
   const handleAddNewTransaction = (e) => {
     e.preventDefault()
     setSubmitted(true)
-    if (transactionName && transactionType && amount && amount > 0 && category && category.name !== 'Please select') {
+    console.log(isObjectEmpty(category))
+    if (transactionName && amount && amount > 0 && !isObjectEmpty(category)) {
       dispatch(createTransaction({
         name: transactionName,
         amount: amount,
         transactionType: transactionType,
-        shop: shop,
+        shop: shop.name !== '' ? shop : {},
         receiptFile: receiptFile,
         categoryId: category.id,
         transactionDate: transactionDate
@@ -79,7 +81,7 @@ export const AddNewTransactionModal = () => {
                         <Form.Label>Transaction name:</Form.Label>
                         <Form.Control
                             type="text"
-                            className={(submitted && !transactionName ? ' is-invalid' : '') }
+                            className={(submitted && !transactionName && ' is-invalid') }
                             name="transactionName"
                             value={transactionName}
                             onChange={(e) => setTransactionName(e.target.value)}
@@ -93,7 +95,7 @@ export const AddNewTransactionModal = () => {
                             <Form.Label>Amount:</Form.Label>
                             <Form.Control
                                 type="number"
-                                className={(submitted && amount <= 0 ? ' is-invalid' : '')}
+                                className={(submitted && amount <= 0 && ' is-invalid')}
                                 name="amount"
                                 value={amount}
                                 onChange={(e) => setMaximumAmount(e.target.value)}
@@ -140,7 +142,7 @@ export const AddNewTransactionModal = () => {
                         <Form.Label>Category:</Form.Label>
                             <Form.Control
                                 as="select"
-                                className={ 'form-control' + (submitted && (!category || category.name === 'Please select') ? ' is-invalid' : '') }
+                                className={ 'form-control' + (submitted && isObjectEmpty(category) && ' is-invalid') }
                                 name="category"
                                 value={category?.name}
                                 onChange={(e) => {
