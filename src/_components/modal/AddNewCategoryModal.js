@@ -1,61 +1,60 @@
-import React, { useState } from "react";
-import { useDispatch, useSelector } from 'react-redux';
-import Modal from "react-bootstrap/Modal";
-import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
-import Spinner from "react-bootstrap/Spinner";
-import Col from "react-bootstrap/Col";
+import React, { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import Modal from 'react-bootstrap/Modal'
+import Button from 'react-bootstrap/Button'
+import Form from 'react-bootstrap/Form'
+import Spinner from 'react-bootstrap/Spinner'
+import Col from 'react-bootstrap/Col'
 import { closeModalAddNewCategory } from '../../modal/modal.actions'
-import { createCategory } from "../../finance/finance.actions";
-import { BsCircle, BsCircleFill } from "react-icons/bs";
-import { EXPENSE } from '../../finance/CategoryType';
+import { createCategory } from '../../finance/finance.actions'
+import { BsCircle, BsCircleFill } from 'react-icons/bs'
+import { EXPENSE } from '../../finance/CategoryType'
 
 export const AddNewCategoryModal = () => {
+  const dispatch = useDispatch()
 
-    const dispatch = useDispatch();
+  const { addNewCategoryModalIsOpen, creatingCategoryInProgress } = useSelector(state => ({
+    addNewCategoryModalIsOpen: state.modals.addNewCategoryModalIsOpen,
+    creatingCategoryInProgress: state.finance.creatingCategoryInProgress
+  }))
 
-    const { addNewCategoryModalIsOpen, creatingCategoryInProgress } = useSelector(state => ({
-        addNewCategoryModalIsOpen: state.modals.addNewCategoryModalIsOpen,
-        creatingCategoryInProgress: state.finance.creatingCategoryInProgress
-    }));
+  const [submitted, setSubmitted] = useState(false)
+  const [categoryName, setCategoryName] = useState('')
+  const [colorHex, setColorHex] = useState(undefined)
+  const [categoryType, setCategoryType] = useState(EXPENSE)
+  const [maximumAmount, setMaximumAmount] = useState(0)
+  const [isFavourite, setIsFavourite] = useState(false)
 
-    const [submitted, setSubmitted] = useState(false);
-    const [categoryName, setCategoryName] = useState("");
-    const [colorHex, setColorHex] = useState(undefined);
-    const [categoryType, setCategoryType] = useState(EXPENSE);
-    const [maximumAmount, setMaximumAmount] = useState(0);
-    const [isFavourite, setIsFavourite] = useState(false);
+  const handleClose = () => {
+    dispatch(closeModalAddNewCategory())
+    setCategoryName('')
+    setColorHex(undefined)
+    setCategoryType(EXPENSE)
+    setMaximumAmount(0)
+    setSubmitted(false)
+  }
 
-    const handleClose = () => {
-        dispatch(closeModalAddNewCategory())
-        setCategoryName("");
-        setColorHex(undefined);
-        setCategoryType(EXPENSE);
-        setMaximumAmount(0);
-        setSubmitted(false);
-      }
+  const handleAddNewCategory = (e) => {
+    e.preventDefault()
 
-    const handleAddNewCategory = (e) => {
-        e.preventDefault();
+    setSubmitted(true)
+    if (categoryName && categoryType) {
+      dispatch(createCategory({
+        categoryName,
+        colorHex: (colorHex || null),
+        isFavourite,
+        maximumAmount,
+        categoryType: categoryType
+      }))
+        .then((isCategoriesCreated) => {
+          if (isCategoriesCreated) {
+            handleClose()
+          }
+        })
+    }
+  }
 
-        setSubmitted(true);
-        if (categoryName && categoryType) {
-            dispatch(createCategory({ 
-                categoryName, 
-                colorHex: (colorHex ? colorHex : null), 
-                isFavourite,
-                maximumAmount,
-                categoryType: categoryType
-             }))
-            .then((isCategoriesCreated) => {
-                if(isCategoriesCreated) {
-                    handleClose();
-                }
-            });
-        }
-      };
-
-    return (<Modal show={addNewCategoryModalIsOpen} onHide={handleClose}>
+  return (<Modal show={addNewCategoryModalIsOpen} onHide={handleClose}>
         <Modal.Header closeButton>
             <Modal.Title>Categories creator</Modal.Title>
         </Modal.Header>
@@ -65,7 +64,7 @@ export const AddNewCategoryModal = () => {
                     <Form.Label>Category name:</Form.Label>
                     <Form.Control
                         type="text"
-                        className={ "form-control" + (submitted && !categoryName ? " is-invalid" : "") }
+                        className={ 'form-control' + (submitted && !categoryName ? ' is-invalid' : '') }
                         name="categoryName"
                         value={categoryName}
                         onChange={(e) => setCategoryName(e.target.value)}
@@ -78,21 +77,20 @@ export const AddNewCategoryModal = () => {
                 <Form.Group as={Col} controlId="colorHex">
                     <Form.Label>Category color:</Form.Label>
                         <div className="color-picker-wrapper">
-                            {colorHex ? 
-                                <>
-                                    <BsCircleFill className="color-picker-circle" style={{color: colorHex}}/>
+                            {colorHex
+                              ? <>
+                                    <BsCircleFill className="color-picker-circle" style={{ color: colorHex }}/>
                                     <div className="color-picker-value">{colorHex}</div>
-                                </> 
-                            : 
-                                <>
+                                </>
+                              : <>
                                     <BsCircle className="color-picker-circle" />
                                     <div className="color-picker-value">random</div>
                                 </>
                             }
-                            
-                            <Form.Control 
+
+                            <Form.Control
                                 className="color-picker"
-                                type="color" 
+                                type="color"
                                 name="colorHex"
                                 value={colorHex}
                                 onChange={(e) => setColorHex(e.target.value)}
@@ -104,7 +102,7 @@ export const AddNewCategoryModal = () => {
                 <Form.Label>Category type:</Form.Label>
                     <Form.Control
                         as="select"
-                        className={ "form-control"}
+                        className={ 'form-control'}
                         name="categoryType"
                         value={categoryType}
                         onChange={(e) => setCategoryType(e.target.value)}
@@ -118,7 +116,7 @@ export const AddNewCategoryModal = () => {
                     <Form.Label>Maximum category amount:</Form.Label>
                         <Form.Control
                             type="number"
-                            className={ "form-control" + (submitted && maximumAmount < 0 ? " is-invalid" : "")}
+                            className={ 'form-control' + (submitted && maximumAmount < 0 ? ' is-invalid' : '')}
                             name="maximumCategoryAmount"
                             value={maximumAmount}
                             onChange={(e) => setMaximumAmount(e.target.value)}
@@ -127,7 +125,7 @@ export const AddNewCategoryModal = () => {
                             placeholder="0,00"
                         />
                         <Form.Control.Feedback type="invalid">
-                            Please provide correct positive number set maximum amount (or 0 to not set any maximum value). 
+                            Please provide correct positive number set maximum amount (or 0 to not set any maximum value).
                         </Form.Control.Feedback>
                 </Form.Group>
             }
@@ -150,4 +148,4 @@ export const AddNewCategoryModal = () => {
       </Modal>)
 }
 
-export default AddNewCategoryModal;
+export default AddNewCategoryModal

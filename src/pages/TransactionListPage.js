@@ -1,17 +1,15 @@
-import React from 'react';
-import TransactionsTable from '../_components/TransactionsTable';
-import AddNewTransactionModal from '../_components/modal/AddNewTransactionModal';
-
-
+import React from 'react'
+import TransactionsTable from '../_components/TransactionsTable'
+import AddNewTransactionModal from '../_components/modal/AddNewTransactionModal'
 
 const TransactionListPage = () => {
-    return (
+  return (
         <>
-            <TransactionsTable />            
+            <TransactionsTable />
 
             <AddNewTransactionModal />
         </>
-    );
+  )
 }
 
-export default TransactionListPage;
+export default TransactionListPage

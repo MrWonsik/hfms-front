@@ -1,11 +1,9 @@
-import React from "react";
-import Col from "react-bootstrap/Col";
-import Row from "react-bootstrap/Row";
-import UsersTable from "../_components/UsersTable";
-
+import React from 'react'
+import Col from 'react-bootstrap/Col'
+import Row from 'react-bootstrap/Row'
+import UsersTable from '../_components/UsersTable'
 
 const HomePageAdmin = () => {
-
   return (
     <>
       <Row className="justify-content-md-center home-page-admin">
@@ -14,7 +12,7 @@ const HomePageAdmin = () => {
         </Col>
       </Row>
     </>
-  );
-};
+  )
+}
 
-export default HomePageAdmin;
+export default HomePageAdmin

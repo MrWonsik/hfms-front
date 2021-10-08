@@ -1,45 +1,43 @@
-import React, { useState } from "react";
-import { useDispatch, useSelector } from 'react-redux';
-import Modal from "react-bootstrap/Modal";
-import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
-import Spinner from "react-bootstrap/Spinner";
+import React, { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import Modal from 'react-bootstrap/Modal'
+import Button from 'react-bootstrap/Button'
+import Form from 'react-bootstrap/Form'
+import Spinner from 'react-bootstrap/Spinner'
 import { closeModalAddNewShop } from '../../modal/modal.actions'
-import { createShop } from "../../finance/finance.actions";
-
+import { createShop } from '../../finance/finance.actions'
 
 export const AddNewShopModal = () => {
+  const dispatch = useDispatch()
 
-    const dispatch = useDispatch();
+  const { addNewShopModalIsOpen, creatingShopInProgress } = useSelector(state => ({
+    addNewShopModalIsOpen: state.modals.addNewShopModalIsOpen,
+    creatingShopInProgress: state.finance.creatingShopInProgress
+  }))
 
-    const { addNewShopModalIsOpen, creatingShopInProgress } = useSelector(state => ({
-        addNewShopModalIsOpen: state.modals.addNewShopModalIsOpen,
-        creatingShopInProgress: state.finance.creatingShopInProgress
-    }));
+  const [submitted, setSubmitted] = useState(false)
+  const [shopName, setShopName] = useState('')
 
-    const [submitted, setSubmitted] = useState(false);
-    const [shopName, setShopName] = useState("");
+  const handleClose = () => {
+    dispatch(closeModalAddNewShop())
+    setShopName('')
+    setSubmitted(false)
+  }
 
-    const handleClose = () => {
-        dispatch(closeModalAddNewShop())
-        setShopName("");
-        setSubmitted(false);
-      }
+  const handleAddNewShop = (e) => {
+    e.preventDefault()
 
-    const handleAddNewShop = (e) => {
-        e.preventDefault();
-    
-        setSubmitted(true);
-        if (shopName) {
-            dispatch(createShop(shopName)).then((isShopCreated) => {
-                if(isShopCreated) {
-                    handleClose();
-                }
-            });
+    setSubmitted(true)
+    if (shopName) {
+      dispatch(createShop(shopName)).then((isShopCreated) => {
+        if (isShopCreated) {
+          handleClose()
         }
-      };
+      })
+    }
+  }
 
-    return (<Modal show={addNewShopModalIsOpen} onHide={handleClose}>
+  return (<Modal show={addNewShopModalIsOpen} onHide={handleClose}>
         <Modal.Header closeButton>
             <Modal.Title>Shop creator</Modal.Title>
         </Modal.Header>
@@ -48,7 +46,7 @@ export const AddNewShopModal = () => {
                 <Form.Label>Shop name:</Form.Label>
                 <Form.Control
                     type="text"
-                    className={ "form-control" + (submitted && !shopName ? " is-invalid" : "") }
+                    className={ 'form-control' + (submitted && !shopName ? ' is-invalid' : '') }
                     name="shopName"
                     value={shopName}
                     onChange={(e) => setShopName(e.target.value)}
@@ -68,4 +66,4 @@ export const AddNewShopModal = () => {
       </Modal>)
 }
 
-export default AddNewShopModal;
+export default AddNewShopModal

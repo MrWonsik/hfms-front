@@ -1,44 +1,43 @@
-import React, { useState } from "react";
-import { useDispatch, useSelector } from 'react-redux';
-import Modal from "react-bootstrap/Modal";
-import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
-import Spinner from "react-bootstrap/Spinner";
-import { closeModalChangePasswordUsers } from "../../modal/modal.actions";
-import { editUserPassword } from "../../user/users/users.actions";
-
+import React, { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import Modal from 'react-bootstrap/Modal'
+import Button from 'react-bootstrap/Button'
+import Form from 'react-bootstrap/Form'
+import Spinner from 'react-bootstrap/Spinner'
+import { closeModalChangePasswordUsers } from '../../modal/modal.actions'
+import { editUserPassword } from '../../user/users/users.actions'
 
 export const ChangeUserPasswordModal = () => {
-    const dispatch = useDispatch();
+  const dispatch = useDispatch()
 
-    const { changePasswordModalUsers, updatingPasswordInProgress } = useSelector(state => ({
-        changePasswordModalUsers: state.modals.changePasswordModalUsers,
-        updatingPasswordInProgress: state.users.updatingPasswordInProgress
-    }));
+  const { changePasswordModalUsers, updatingPasswordInProgress } = useSelector(state => ({
+    changePasswordModalUsers: state.modals.changePasswordModalUsers,
+    updatingPasswordInProgress: state.users.updatingPasswordInProgress
+  }))
 
-    const [newPassword, setNewPassword] = useState("");
-    const [submitted, setSubmitted] = useState(false);  
+  const [newPassword, setNewPassword] = useState('')
+  const [submitted, setSubmitted] = useState(false)
 
-    const handleClose = () => {
-        dispatch(closeModalChangePasswordUsers())
-        setNewPassword("");
-        setSubmitted(false);
-      }
+  const handleClose = () => {
+    dispatch(closeModalChangePasswordUsers())
+    setNewPassword('')
+    setSubmitted(false)
+  }
 
-    const handleChangePasswordUsers = (e) => {
-        e.preventDefault();
-    
-        setSubmitted(true);
-        if (newPassword) {
-            dispatch(editUserPassword(newPassword, changePasswordModalUsers.id)).then((isPasswordChanged) => {
-				if (isPasswordChanged) {
-					handleClose();
-				}
-			});
+  const handleChangePasswordUsers = (e) => {
+    e.preventDefault()
+
+    setSubmitted(true)
+    if (newPassword) {
+      dispatch(editUserPassword(newPassword, changePasswordModalUsers.id)).then((isPasswordChanged) => {
+        if (isPasswordChanged) {
+          handleClose()
         }
-      };
+      })
+    }
+  }
 
-    return (<Modal show={changePasswordModalUsers?.isOpen} onHide={handleClose}>
+  return (<Modal show={changePasswordModalUsers?.isOpen} onHide={handleClose}>
         <Modal.Header closeButton>
             <Modal.Title>Change password</Modal.Title>
         </Modal.Header>
@@ -47,7 +46,7 @@ export const ChangeUserPasswordModal = () => {
             <Form.Label>New password:</Form.Label>
                 <Form.Control
                     type="password"
-                    className={ "form-control" + (submitted && !newPassword ? " is-invalid" : "") }
+                    className={ 'form-control' + (submitted && !newPassword ? ' is-invalid' : '') }
                     name="newPassword"
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
@@ -67,4 +66,4 @@ export const ChangeUserPasswordModal = () => {
       </Modal>)
 }
 
-export default ChangeUserPasswordModal;
+export default ChangeUserPasswordModal

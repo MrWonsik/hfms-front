@@ -1,47 +1,46 @@
-import React, { useState } from "react";
-import { useDispatch, useSelector } from 'react-redux';
-import Modal from "react-bootstrap/Modal";
-import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
-import Spinner from "react-bootstrap/Spinner";
+import React, { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import Modal from 'react-bootstrap/Modal'
+import Button from 'react-bootstrap/Button'
+import Form from 'react-bootstrap/Form'
+import Spinner from 'react-bootstrap/Spinner'
 import { closeModalChangePassword } from '../../modal/modal.actions'
 
-import { changePassword } from '../../user/user.actions';
-
+import { changePassword } from '../../user/user.actions'
 
 export const ChangePasswordModal = () => {
-    const dispatch = useDispatch();
+  const dispatch = useDispatch()
 
-    const { isModalChangePasswordOpen, updatingPasswordInProgress } = useSelector(state => ({
-        isModalChangePasswordOpen: state.modals.changePasswordModalIsOpen,
-        updatingPasswordInProgress: state.user.updatingPasswordInProgress
-    }));
+  const { isModalChangePasswordOpen, updatingPasswordInProgress } = useSelector(state => ({
+    isModalChangePasswordOpen: state.modals.changePasswordModalIsOpen,
+    updatingPasswordInProgress: state.user.updatingPasswordInProgress
+  }))
 
-    const [oldPassword, setOldPassword] = useState("");
-    const [newPassword, setNewPassword] = useState("");
-    const [repeatedNewPassword, setRepeatedNewPassword] = useState("");
-    const [submitted, setSubmitted] = useState(false);  
+  const [oldPassword, setOldPassword] = useState('')
+  const [newPassword, setNewPassword] = useState('')
+  const [repeatedNewPassword, setRepeatedNewPassword] = useState('')
+  const [submitted, setSubmitted] = useState(false)
 
-    const handleClose = () => {
-        dispatch(closeModalChangePassword())
-        setOldPassword("");
-        setNewPassword("");
-        setRepeatedNewPassword("");
-        setSubmitted(false);
-      }
+  const handleClose = () => {
+    dispatch(closeModalChangePassword())
+    setOldPassword('')
+    setNewPassword('')
+    setRepeatedNewPassword('')
+    setSubmitted(false)
+  }
 
-    const handleChangePassword = (e) => {
-        e.preventDefault();
-    
-        setSubmitted(true);
-        if (oldPassword && newPassword && repeatedNewPassword) {
-            dispatch(
-				changePassword(oldPassword, newPassword, repeatedNewPassword)
-			).then(isPasswordChanged => isPasswordChanged && handleClose());
-        }
-      };
+  const handleChangePassword = (e) => {
+    e.preventDefault()
 
-    return (<Modal show={isModalChangePasswordOpen} onHide={handleClose}>
+    setSubmitted(true)
+    if (oldPassword && newPassword && repeatedNewPassword) {
+      dispatch(
+        changePassword(oldPassword, newPassword, repeatedNewPassword)
+      ).then(isPasswordChanged => isPasswordChanged && handleClose())
+    }
+  }
+
+  return (<Modal show={isModalChangePasswordOpen} onHide={handleClose}>
         <Modal.Header closeButton>
             <Modal.Title>Change password</Modal.Title>
         </Modal.Header>
@@ -50,7 +49,7 @@ export const ChangePasswordModal = () => {
                 <Form.Label>Old password:</Form.Label>
                 <Form.Control
                     type="password"
-                    className={ "form-control" + (submitted && !oldPassword ? " is-invalid" : "") }
+                    className={ 'form-control' + (submitted && !oldPassword ? ' is-invalid' : '') }
                     name="oldPassword"
                     value={oldPassword}
                     onChange={(e) => setOldPassword(e.target.value)}
@@ -64,7 +63,7 @@ export const ChangePasswordModal = () => {
                 <Form.Label>New password:</Form.Label>
                 <Form.Control
                     type="password"
-                    className={ "form-control" + (submitted && !newPassword ? " is-invalid" : "") }
+                    className={ 'form-control' + (submitted && !newPassword ? ' is-invalid' : '') }
                     name="newPassword"
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
@@ -78,7 +77,7 @@ export const ChangePasswordModal = () => {
                 <Form.Label>Repeat new password:</Form.Label>
                     <Form.Control
                         type="password"
-                        className={ "form-control" + (submitted && !repeatedNewPassword ? " is-invalid" : "") }
+                        className={ 'form-control' + (submitted && !repeatedNewPassword ? ' is-invalid' : '') }
                         name="repeatedNewPassword"
                         value={repeatedNewPassword}
                         onChange={(e) => setRepeatedNewPassword(e.target.value)}
@@ -98,4 +97,4 @@ export const ChangePasswordModal = () => {
       </Modal>)
 }
 
-export default ChangePasswordModal;
+export default ChangePasswordModal

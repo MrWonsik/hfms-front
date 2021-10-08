@@ -1,4 +1,4 @@
 
 export const getCurrency = () => {
-	return "zł";
+  return 'zł'
 }

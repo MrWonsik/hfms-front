@@ -1,24 +1,21 @@
-import React, { useEffect } from 'react';
-import { useDispatch} from 'react-redux';
-import { changePage } from '../user/user.actions';
-import UserCharts from '../_components/UserCharts';
+import React, { useEffect } from 'react'
+import { useDispatch } from 'react-redux'
+import { changePage } from '../user/user.actions'
+import UserCharts from '../_components/UserCharts'
 
 const MainUserPage = () => {
-    let dispatch = useDispatch();
+  const dispatch = useDispatch()
 
-    useEffect(() => {
-      dispatch(changePage("Home"))
-    }, []);
+  useEffect(() => {
+    dispatch(changePage('Home'))
+  }, [])
 
-
-
-
-    return (
+  return (
         <>
             <UserCharts />
             <hr/>
         </>
-    );
+  )
 }
 
-export default MainUserPage;
+export default MainUserPage

@@ -1,53 +1,52 @@
-import React, { useEffect, useState } from "react";
-import { Route, Switch, Redirect, BrowserRouter } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useEffect, useState } from 'react'
+import { Route, Switch, Redirect, BrowserRouter } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
 
-import { alertClear } from "./alert/alert.actions";
-import HomePageUser from "./pages/HomePageUser";
-import HomePageAdmin from "./pages/HomePageAdmin";
-import NotFoundPage from "./pages/NotFoundPage";
-import LoginPage from "./pages/LoginPage";
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import Alert from "react-bootstrap/Alert";
-import UserTools from "./_components/UserTools";
-import { createBrowserHistory } from "history";
+import { alertClear } from './alert/alert.actions'
+import HomePageUser from './pages/HomePageUser'
+import HomePageAdmin from './pages/HomePageAdmin'
+import NotFoundPage from './pages/NotFoundPage'
+import LoginPage from './pages/LoginPage'
+import Container from 'react-bootstrap/Container'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
+import Alert from 'react-bootstrap/Alert'
+import UserTools from './_components/UserTools'
+import { createBrowserHistory } from 'history'
 
 const renderHomepage = (user) => {
   switch (user.role) {
-    case "ROLE_ADMIN": return ( <Route exact path="/home" component={HomePageAdmin} /> );
-    case "ROLE_USER": return ( <Route path="/home" component={HomePageUser} /> );
-    default: false;
+    case 'ROLE_ADMIN': return (<Route exact path="/home" component={HomePageAdmin} />)
+    case 'ROLE_USER': return (<Route path="/home" component={HomePageUser} />)
   }
-};
+}
 
-export const history = createBrowserHistory({forceRefresh:true});
+export const history = createBrowserHistory({ forceRefresh: true })
 
 const App = () => {
-  const [show, setShow] = useState(false);
+  const [show, setShow] = useState(false)
 
   const { alert, user, loggedIn } = useSelector((state) => ({
     alert: state.alert,
     user: state.user.user,
-    loggedIn: state.user.loggedIn,
-  }));
-  const dispatch = useDispatch();
+    loggedIn: state.user.loggedIn
+  }))
+  const dispatch = useDispatch()
 
-  useEffect(() => { 
-    if(alert && alert.message) {
-      setShow(true); 
+  useEffect(() => {
+    if (alert && alert.message) {
+      setShow(true)
     }
   }, [])
 
-  useEffect(() => { 
-    setShow(true); 
+  useEffect(() => {
+    setShow(true)
   })
 
   const getAlertHeading = (type) => {
-    switch(type) {
-      case "danger": return "Error";
-      case "success": return "Success";
+    switch (type) {
+      case 'danger': return 'Error'
+      case 'success': return 'Success'
     }
   }
 
@@ -85,7 +84,7 @@ const App = () => {
         <div className="text-center">Tomasz Wąsacz 2021</div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default App;
+export default App

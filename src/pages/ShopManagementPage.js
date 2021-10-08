@@ -1,22 +1,20 @@
-import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { changePage } from '../user/user.actions';
-import ShopsTable from '../_components/ShopsTable';
+import React, { useEffect } from 'react'
+import { useDispatch } from 'react-redux'
+import { changePage } from '../user/user.actions'
+import ShopsTable from '../_components/ShopsTable'
 
 const ShopManagementPage = () => {
+  const dispatch = useDispatch()
 
-    const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(changePage('Shop management'))
+  }, [])
 
-    useEffect(() => {
-        dispatch(changePage("Shop management"));
-      }, []);
-
-    
-    return (
+  return (
         <>
             <ShopsTable />
         </>
-    );
+  )
 }
 
-export default ShopManagementPage;
+export default ShopManagementPage
