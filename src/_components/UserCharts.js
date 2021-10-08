@@ -55,6 +55,30 @@ const UserCharts = () => {
   const filteredExpenseCategories = expenseCategories?.map(category => checkIsActiveMonthExistsForCategory(category) ? category : null).filter(category => category != null)
   const filteredIncomeCategories = incomeCategories?.map(category => checkIsActiveMonthExistsForCategory(category) ? category : null).filter(category => category != null)
 
+  const filteredExpenseCategoriesData = {
+    labels: filteredExpenseCategories?.map(category => category.categoryName),
+    datasets: [
+      {
+        label: 'Categories expenses and incomes amount',
+        data: filteredExpenseCategories?.map(category => category.summaryTransactionMap[lastSixMonths[5]]),
+        backgroundColor: filteredExpenseCategories?.map(category => category.colorHex),
+        borderWidth: 1
+      }
+    ]
+  }
+
+  const filteredIncomeCategoriesData = {
+    labels: filteredIncomeCategories?.map(category => category.categoryName),
+    datasets: [
+      {
+        label: 'Categories expenses and incomes amount',
+        data: filteredIncomeCategories?.map(category => category.summaryTransactionMap[lastSixMonths[5]]),
+        backgroundColor: filteredIncomeCategories?.map(category => category.colorHex),
+        borderWidth: 1
+      }
+    ]
+  }
+
   const getSumOfTransactions = (type, month) => type?.map(category => category.summaryTransactionMap[month] ? category.summaryTransactionMap[month] : 0).reduce((a, b) => a + b, 0).toFixed(2)
 
   const incomesSummaryByMonth = lastSixMonths.map(month => getSumOfTransactions(incomeCategories, month))
@@ -96,34 +120,6 @@ const UserCharts = () => {
     }
   }
 
-  const getSumExpensesByCategory = () => {
-    return {
-      labels: filteredExpenseCategories?.map(category => category.categoryName),
-      datasets: [
-        {
-          label: 'Categories expenses and incomes amount',
-          data: filteredExpenseCategories?.map(category => category.summaryTransactionMap[lastSixMonths[5]]),
-          backgroundColor: filteredExpenseCategories?.map(category => category.colorHex),
-          borderWidth: 1
-        }
-      ]
-    }
-  }
-
-  const getSumIncomeByCategory = () => {
-    return {
-      labels: filteredIncomeCategories?.map(category => category.categoryName),
-      datasets: [
-        {
-          label: 'Categories expenses and incomes amount',
-          data: filteredIncomeCategories?.map(category => category.summaryTransactionMap[lastSixMonths[5]]),
-          backgroundColor: filteredIncomeCategories?.map(category => category.colorHex),
-          borderWidth: 1
-        }
-      ]
-    }
-  }
-
   const getExpensesAndIncomesAmounts = () => {
     return expensesAndIncomesSummary
   }
@@ -146,7 +142,7 @@ const UserCharts = () => {
             </div>
             { filteredIncomeCategories?.length !== 0
               ? <>
-                {isTransactionsLoading ? '' : <Pie data={getSumIncomeByCategory()} />}
+                {!isTransactionsLoading && filteredIncomeCategories && <Pie data={filteredIncomeCategoriesData} />}
               </>
               : <p className="text-center">No incomes transactions found.</p>
             }
@@ -159,17 +155,19 @@ const UserCharts = () => {
             </div>
             { filteredExpenseCategories?.length !== 0
               ? <>
-                  {isTransactionsLoading ? '' : <Pie data={getSumExpensesByCategory()}/>}
+                  {!isTransactionsLoading && filteredExpenseCategories && <Pie data={filteredExpenseCategoriesData}/>}
                 </>
               : <p className="text-center">No expenses transactions found.</p>
             }
           </div>
         </Col>
         <Col sm={12} md={12} lg={7} xl={7}>
-          <Bar
+          {!isTransactionsLoading &&
+            <Bar
             data={getExpensesAndIncomesAmounts()}
             options={expenseAndIncomesOptions}
-          />
+            />
+          }
           <hr/>
             <div>
               <p className="text-center font-weight-bold">Last transactions</p>

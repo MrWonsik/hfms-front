@@ -46,7 +46,6 @@ export const AddNewTransactionModal = () => {
   const handleAddNewTransaction = (e) => {
     e.preventDefault()
     setSubmitted(true)
-    console.log(isObjectEmpty(category))
     if (transactionName && amount && amount > 0 && !isObjectEmpty(category)) {
       dispatch(createTransaction({
         name: transactionName,
