@@ -64,11 +64,13 @@ const UserCharts = () => {
     labels: lastSixMonths, // find a way to get array with last six month
     datasets: [
       {
+        stack: 'expenses-and-incomes',
         label: 'incomes',
         data: incomesSummaryByMonth,
         backgroundColor: 'rgb(0, 150, 0)'
       },
       {
+        stack: 'expenses-and-incomes',
         label: 'expenses',
         data: expensesSummaryByMonth,
         backgroundColor: 'rgb(150, 0, 0)'
@@ -78,7 +80,7 @@ const UserCharts = () => {
 
   const expenseAndIncomesOptions = {
     scales: {
-      yAxes: [
+      y: [
         {
           stacked: true,
           ticks: {
@@ -86,7 +88,7 @@ const UserCharts = () => {
           }
         }
       ],
-      xAxes: [
+      x: [
         {
           stacked: true
         }
@@ -135,7 +137,7 @@ const UserCharts = () => {
             : getIconWithActionAndTooltip(BsChevronCompactRight, 'table-icon-action', () => setDate((curDate) => curDate.clone().add(1, 'months')), 'top', 'Next month')}
       </div>
       <Row>
-        <Col lg={6}>
+        <Col sm={12} md={12} lg={5} xl={5}>
           <div className="pie-container income-pie-container">
             <div className="users-charts-title-container">
               <p className="users-charts-incomes">Incomes</p>
@@ -144,7 +146,7 @@ const UserCharts = () => {
             </div>
             { filteredIncomeCategories?.length !== 0
               ? <>
-                {isTransactionsLoading ? '' : <Pie data={getSumIncomeByCategory()}/>}
+                {isTransactionsLoading ? '' : <Pie data={getSumIncomeByCategory()} />}
               </>
               : <p className="text-center">No incomes transactions found.</p>
             }
@@ -163,7 +165,7 @@ const UserCharts = () => {
             }
           </div>
         </Col>
-        <Col lg={6}>
+        <Col sm={12} md={12} lg={7} xl={7}>
           <Bar
             data={getExpensesAndIncomesAmounts()}
             options={expenseAndIncomesOptions}

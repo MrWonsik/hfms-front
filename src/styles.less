@@ -530,15 +530,18 @@ button.btn.btn-secondary {
 
 .pie-container {
 	padding: 10px;
-	margin: 10px 50px;
+	margin: 10px 10px;
 	border-radius: 4px;
 	justify-content: center;
 	align-items: center;
-	min-height: 250px;
 	flex-direction: column;
 	font-size: 25px;
 	border: 3px solid @main-color-dark;
 	box-shadow: @standard-block-shadow;
+
+	& canvas {
+		max-height: 250px;
+	}
 
 	.users-charts-title-container {
 		display: flex;
