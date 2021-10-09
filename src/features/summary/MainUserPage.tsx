@@ -3,10 +3,10 @@ import { useDispatch } from 'react-redux'
 import { changePage } from '../user/oldRedux/user.actions'
 import UserCharts from './UserCharts'
 
-const MainUserPage = () => {
+const MainUserPage = (): JSX.Element => {
   const dispatch = useDispatch()
 
-  useEffect(() => {
+  useEffect((): void => {
     dispatch(changePage('Home'))
   }, [])
 

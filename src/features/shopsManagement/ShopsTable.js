@@ -44,7 +44,7 @@ const ShopsTable = () => {
     time: shop.createDate.time,
     actions: <>
                 <Link className="open-transaction-list-table-action-icon" to={'/home/transaction-list-page?shopId=' + shop.id}>
-                    {getIconWithActionAndTooltip(BsFileText, 'table-action-icon', () => {}, 'top', 'Open transaction list for this shop')}
+                    {getIconWithActionAndTooltip(BsFileText, 'table-action-icon', () => { return; }, 'top', 'Open transaction list for this shop')}
                 </Link>
                 {getIconWithActionAndTooltip(BsTrash, 'table-action-icon', () => showDeleteConfirmationModal(shop), 'top', 'Delete')}
             </>

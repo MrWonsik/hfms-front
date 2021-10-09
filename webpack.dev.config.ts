@@ -1,6 +1,6 @@
-import {merge} from 'webpack-merge';
-import common from './webpack.common.config'
-import ESLintPlugin from 'eslint-webpack-plugin'
+const { merge } = require('webpack-merge');
+const common = require('./webpack.common.config.ts');
+const ESLintPlugin = require('eslint-webpack-plugin');
 
 module.exports = merge(common, {
   mode: 'development',

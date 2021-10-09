@@ -128,7 +128,7 @@ const SummaryPage = () => {
                                             {getIconWithActionAndTooltip(AiOutlineAreaChart, 'category-chart-icon', () => openCategoryChartModalAction('category_chart_modal_details_expense' + category?.categoryName?.trim() + '_' + category.id), 'top', 'Click to see chart.')}
                                         </p>
                                         <hr style={{ borderColor: `${category.colorHex}` }}/>
-                                        {generateCategoryField('Amount', currentMonthAmount, () => {})}
+                                        {generateCategoryField('Amount', currentMonthAmount, () => { return; })}
                                         {generateCategoryField('Planned', category.currentVersion.maximumAmount, () =>
                                           isPlannedAmountHasBeenExceed && currentMonthAmount !== 0 && getIconWithTooltip(FiAlertTriangle, 'alert-icon alert-icon-planned-bad', 'Planned amount has been exceeded.')
                                         )}
@@ -177,7 +177,7 @@ const SummaryPage = () => {
                                         {getIconWithActionAndTooltip(AiOutlineAreaChart, 'category-chart-icon', () => openCategoryChartModalAction('category_chart_modal_details_income' + category?.categoryName?.trim() + '_' + category.id), 'top', 'Click to see chart.')}
                                     </p>
                                     <hr style={{ borderColor: `${category.colorHex}` }}/>
-                                    {generateCategoryField('Amount', currentMonthAmount, () => {})}
+                                    {generateCategoryField('Amount', currentMonthAmount, () => { return; })}
                                     {generateCategoryField('Avarage', avarageLast12Month,
                                       () => {
                                         if (avarageLast12Month !== 0 && currentMonthAmount !== 0) {
