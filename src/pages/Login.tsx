@@ -5,7 +5,8 @@ import {Row, Col, Form, Button, Spinner, Jumbotron } from 'react-bootstrap'
 import { login, logout } from '../features/user/oldRedux/user.actions'
 import { RootState } from '../app/storeTS'
 import { TS_TURN_ON } from '..'
-import { loginTS } from '../features/user/user'
+import { login as loginTS, logOut } from '../features/user/user'
+import { clearUserState } from '../features/usersManagement/users'
 
 const LoginPage = (): JSX.Element => {
   const dispatch = useDispatch()
@@ -15,7 +16,10 @@ const LoginPage = (): JSX.Element => {
   }))
 
   useEffect(() => {
-    dispatch(logout())
+    dispatch(TS_TURN_ON ? logOut() : logout())
+	if(TS_TURN_ON) {
+		dispatch(clearUserState());
+	}
   }, [])
 
   const [username, setUsername] = useState<string>('')

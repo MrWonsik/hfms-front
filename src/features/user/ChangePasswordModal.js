@@ -7,12 +7,14 @@ import Spinner from 'react-bootstrap/Spinner'
 import { closeModalChangePassword } from '../../_components/modal/modal.actions'
 
 import { changePassword } from '../user/oldRedux/user.actions'
+import { TS_TURN_ON } from '../..'
+import { closeModal } from '../../_components/modal/modal'
 
 export const ChangePasswordModal = () => {
   const dispatch = useDispatch()
 
   const { isModalChangePasswordOpen, updatingPasswordInProgress } = useSelector(state => ({
-    isModalChangePasswordOpen: state.modals.changePasswordModalIsOpen,
+    isModalChangePasswordOpen: TS_TURN_ON ? (state.modal.isOpen && state.modal.type === "changePassword" ) : state.modals.changePasswordModalIsOpen,
     updatingPasswordInProgress: state.user.updatingPasswordInProgress
   }))
 
@@ -22,7 +24,7 @@ export const ChangePasswordModal = () => {
   const [submitted, setSubmitted] = useState(false)
 
   const handleClose = () => {
-    dispatch(closeModalChangePassword())
+    dispatch(TS_TURN_ON ? closeModal() : closeModalChangePassword())
     setOldPassword('')
     setNewPassword('')
     setRepeatedNewPassword('')

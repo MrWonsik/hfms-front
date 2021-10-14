@@ -13,12 +13,14 @@ import Navbar from 'react-bootstrap/Navbar'
 import { BsHouse, BsFiles, BsFillPieChartFill, BsInboxesFill } from 'react-icons/bs'
 import { AiOutlineShop } from 'react-icons/ai'
 import { Route, Switch, Link, BrowserRouter } from 'react-router-dom'
-
+import { createBrowserHistory } from 'history'
 
 const HomeUser = () => {
   const { currentPage } = useSelector((state) => ({
     currentPage: state.user.currentPage
   }))
+
+ const history = createBrowserHistory({ forceRefresh: true })
 
   const [currentPageDisplay, setCurrentPageDisplay] = useState(currentPage || 'Home')
 
@@ -29,7 +31,7 @@ const HomeUser = () => {
           onMouseOut={() => setCurrentPageDisplay(currentPage)}
       >
           <IconTag
-              className={'user-page-navbar-icon ' + (currentPage === name ? 'current-page' : '')}
+              className={'user-page-navbar-icon ' + (currentPage === name && 'current-page')}
           />
       </Nav.Link>
     )

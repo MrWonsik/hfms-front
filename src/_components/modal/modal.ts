@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-type ModalType = "changePassword" | "changeUserPassword" | "addNewUser"
+type ModalType = "changePassword" | "changeUserPassword" | "addNewUser" | "confirmationModal"
 
 interface ModalState {
     isOpen: boolean

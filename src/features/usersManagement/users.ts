@@ -1,4 +1,5 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { getAllUsersCall } from './usersApi';
 
 export interface UsersState {
   users: Array<any>,
@@ -14,23 +15,19 @@ const initialState: UsersState = {
   creatingUserInProgress: false,
 };
 
+export const getAllUsers = createAsyncThunk(
+  "users/getAll",
+  async () => {
+      const response = await getAllUsersCall()
+      return response.users;
+  }
+);
+
 export const users = createSlice({
   name: 'users',
   initialState,
   reducers: {
-    getUsersRequest: (state) => {
-      state.isUsersLoading = true;
-    },
-    getUsersSuccess: (state, action: PayloadAction<Array<any>>): void => {
-      state.users = action.payload;
-      state.isUsersLoading = false;
-    },
-    getUsersFailure: (state): void => {
-      state.isUsersLoading = false;
-    },
-    getUsersClear: (state): void => {
-      state = initialState;
-    },
+    clearUserState: () => initialState,
     userChangeStatusSuccess: (state, action: PayloadAction<{ id: number, isEnabled: boolean}>): void => {
       state.users = state.users.map((user, userId) => userId === action.payload.id ? { ...user, isEnabled: action.payload.isEnabled } : user)
     },
@@ -54,10 +51,22 @@ export const users = createSlice({
       state.updatingPasswordInProgress = false;
     },
   },
-  
+  extraReducers(builder) {
+    builder
+        .addCase(getAllUsers.pending, (state) => {
+            state.isUsersLoading = true
+        })
+        .addCase(getAllUsers.fulfilled, (state, action) => {
+            state.isUsersLoading = false
+            state.users = action.payload
+        })
+        .addCase(getAllUsers.rejected, (state) => {
+            state.isUsersLoading = false
+        })
+      }
 });
 
-export const { getUsersRequest, getUsersSuccess, getUsersFailure, getUsersClear, 
+export const { clearUserState, 
   userChangeStatusSuccess, createUserRequest, createUserSuccess, createUserFailure,
 changeUserPasswordFailure, changeUserPasswordRequest, changeUserPasswordSuccess } = users.actions;
 

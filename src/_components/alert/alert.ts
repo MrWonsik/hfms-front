@@ -1,7 +1,8 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+export type AlertType = "success" | "danger"
 interface AlertState {
-    type: "success" | "danger",
+    type: AlertType,
     message: string
 }
 
@@ -11,7 +12,7 @@ export const alert = createSlice({
   name: 'alert',
   initialState,
   reducers: {
-    alertSucces: (state, action: PayloadAction<string>) => {
+    alertSuccess: (state, action: PayloadAction<string>) => {
         state.type = "success"
         state.message = action.payload
     },
@@ -19,12 +20,10 @@ export const alert = createSlice({
         state.type="danger"
         state.message = action.payload
     }, 
-    alertClear: (state) => {
-        state = initialState
-    }
+    alertClear: () => initialState
   }
 });
 
-export const {  } = alert.actions;
+export const { alertSuccess, alertError, alertClear } = alert.actions;
 
 export default alert.reducer;

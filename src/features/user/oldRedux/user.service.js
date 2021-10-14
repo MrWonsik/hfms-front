@@ -1,6 +1,5 @@
 import config from 'config'
 import { parseJwt, httpHelper } from '../../../_utils'
-import { getJwtToken } from '../../../index'
 
 export const loginRequestCall = (username, password) => {
   const requestOptions = {
@@ -22,7 +21,7 @@ export const loginRequestCall = (username, password) => {
 export const changePasswordRequestCall = (oldPassword, newPassword, repeatedNewPassword) => {
   const requestOptions = {
     method: 'POST',
-    headers: httpHelper.addAuthHeader({ 'Content-Type': 'application/json' }, getJwtToken()),
+    headers: httpHelper.addAuthHeader({ 'Content-Type': 'application/json' }),
     body: JSON.stringify({ oldPassword, newPassword, repeatedNewPassword })
   }
 

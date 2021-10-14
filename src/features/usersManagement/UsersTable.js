@@ -6,6 +6,7 @@ import AddNewUserModal from './AddNewUserModal'
 import ChangeUserPasswordModal from './ChangeUserPasswordModal'
 import { BsTrash, BsPersonPlusFill, BsPencil, BsPersonCheck, BsPerson, BsCalendar } from 'react-icons/bs'
 import { getAllUsers, editUserStatus, deleteUser } from './oldRedux/users.actions'
+import { getAllUsers as getAllUsersTS } from './users'
 import { openConfirmationModal, openModalAddNewUser, openModalChangePasswordUsers } from '../../_components/modal/modal.actions'
 import ConfirmationModal from '../../_components/ConfirmationModal'
 import BootstrapTable from 'react-bootstrap-table-next'
@@ -13,21 +14,23 @@ import paginationFactory from 'react-bootstrap-table2-paginator'
 import { dateSort } from '../../_utils/tableBootstrapSorter'
 import { getIconWithActionAndTooltip } from '../../_components/HoverTooltip'
 import Loader from '../../_components/Loader'
+import { TS_TURN_ON } from '../..'
+import { openModal } from '../../_components/modal/modal'
 
 const UsersTable = () => {
   const dispatch = useDispatch()
   const { currentUser, users, isUsersLoading } = useSelector((state) => ({
     currentUser: state.user.user,
     users: state.users.users,
-    isUsersLoading: state.users.isLoading
+    isUsersLoading: TS_TURN_ON ? state.users.isUsersLoading : state.users.isLoading
   }))
 
   useEffect(() => {
-    dispatch(getAllUsers())
+    dispatch(TS_TURN_ON ? getAllUsersTS() : getAllUsers())
   }, [])
 
   const showDeleteConfirmationModal = (user) => {
-    dispatch(openConfirmationModal('user_' + user.username.trim() + '_' + user.id))
+    dispatch(TS_TURN_ON ? openModal({type: 'confirmationModal', context: ('user_' + user.username.trim() + '_' + user.id)}) : openConfirmationModal('user_' + user.username.trim() + '_' + user.id))
   }
 
   const handleUserStatus = (id, isEnabled) => {

@@ -1,5 +1,5 @@
 import config from 'config'
-import { httpHelper } from '../../../_utils'
+import { httpHelper } from '../../_utils'
 
 export const getAllUsersCall = () => {
   const requestOptions = {

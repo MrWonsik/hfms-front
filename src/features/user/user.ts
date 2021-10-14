@@ -31,7 +31,7 @@ const initialState: UserState = {
     user: {} as User
 }
 
-export const loginTS = createAsyncThunk(
+export const login = createAsyncThunk(
     "user/login",
     async (credentials: credentials) => {
         const response = await loginRequestCall(credentials)
@@ -43,22 +43,20 @@ export const user = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    logOut: (state) => {
-        state = initialState
-    }
+    logOut: () => initialState
   },
   extraReducers(builder) {
     builder
-        .addCase(loginTS.pending, (state) => {
+        .addCase(login.pending, (state) => {
             state.loggingIn = true
             state.loggedIn = false
         })
-        .addCase(loginTS.fulfilled, (state, action) => {
+        .addCase(login.fulfilled, (state, action) => {
             state.loggingIn = false
             state.loggedIn = true
             state.user = action.payload
         })
-        .addCase(loginTS.rejected, (state) => {
+        .addCase(login.rejected, (state) => {
             state.loggingIn = false
             state.loggedIn = false
         })

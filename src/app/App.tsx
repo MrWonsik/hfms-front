@@ -1,30 +1,20 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import {Container, Row, Col, Alert } from 'react-bootstrap'
 
-import { alertClear } from '../_components/alert/alert.actions'
 import HomeUser from '../pages/HomeUser'
 import HomeAdmin from '../pages/HomeAdmin'
 import Login from '../pages/Login'
-import Container from 'react-bootstrap/Container'
-import Row from 'react-bootstrap/Row'
-import Col from 'react-bootstrap/Col'
-import Alert from 'react-bootstrap/Alert'
 import UserTools from '../features/user/UserTools'
-import { createBrowserHistory } from 'history'
+import { alertClear } from '../_components/alert/alert.actions'
+import { alertClear as alertClearTS, AlertType} from '../_components/alert/alert'
+import { TS_TURN_ON } from '..'
+import { RootState } from './storeTS'
 
-const renderHomepage = (user) => {
-  switch (user.role) {
-    case 'ROLE_ADMIN': return (<><UserTools /><HomeAdmin /></>)
-    case 'ROLE_USER': return (<><UserTools /><HomeUser /></>)
-  }
-}
+const App = (): JSX.Element => {
+  const [show, setShow] = useState<boolean>(false)
 
-export const history = createBrowserHistory({ forceRefresh: true })
-
-const App = () => {
-  const [show, setShow] = useState(false)
-
-  const { alert, user, loggedIn } = useSelector((state) => ({
+  const { alert, user, loggedIn } = useSelector((state: RootState) => ({
     alert: state.alert,
     user: state.user.user,
     loggedIn: state.user.loggedIn
@@ -37,11 +27,14 @@ const App = () => {
     }
   }, [])
 
-  useEffect(() => {
-    setShow(true)
-  })
+  const renderHomepage = (): JSX.Element => {
+    switch (user.role) {
+      case 'ROLE_ADMIN': return (<><UserTools /><HomeAdmin /></>)
+      case 'ROLE_USER': return (<><UserTools /><HomeUser /></>)
+    }
+  }
 
-  const getAlertHeading = (type) => {
+  const getAlertHeading = (type: AlertType): "Error" | "Success" => {
     switch (type) {
       case 'danger': return 'Error'
       case 'success': return 'Success'
@@ -58,7 +51,7 @@ const App = () => {
                 className="fixed-bottom alert-main"
                 key={alert.message}
                 variant={alert.type}
-                onClose={() => dispatch(alertClear())}
+                onClose={() => dispatch(TS_TURN_ON ? alertClearTS() : alertClear())}
                 dismissible
               >
                 <Alert.Heading>{getAlertHeading(alert.type)}</Alert.Heading>
@@ -66,7 +59,7 @@ const App = () => {
                 <div className = "text-center">{alert.message}</div>
               </Alert>
             )}
-                {!loggedIn ? <Login /> : renderHomepage(user)}
+                {!loggedIn ? <Login /> : renderHomepage()}
           </Col>
         </Row>
       </Container>

@@ -1,13 +1,12 @@
 import config from 'config'
 import { httpHelper, mapCategoryTypeToDomain, mapTransactionTypeToDomain } from '../../_utils'
-import { getJwtToken } from '../../index'
 
 // <================= SHOPS:
 
 export const getShopsCall = () => {
   const requestOptions = {
     method: 'GET',
-    headers: httpHelper.addAuthHeader({}, getJwtToken())
+    headers: httpHelper.addAuthHeader({})
   }
 
   return fetch(`${config.API_URL}/api/shop`, requestOptions)
@@ -19,8 +18,7 @@ export const createShopCall = (shopName) => {
   const requestOptions = {
     method: 'POST',
     headers: httpHelper.addAuthHeader(
-      { 'Content-Type': 'application/json' },
-      getJwtToken()
+      { 'Content-Type': 'application/json' }
     ),
     body: JSON.stringify({ name: shopName })
   }
@@ -34,7 +32,7 @@ export const createShopCall = (shopName) => {
 export const deleteShopCall = (id) => {
   const requestOptions = {
     method: 'DELETE',
-    headers: httpHelper.addAuthHeader({}, getJwtToken())
+    headers: httpHelper.addAuthHeader({})
   }
 
   return fetch(`${config.API_URL}/api/shop/${id}`, requestOptions)
@@ -50,7 +48,7 @@ export const getCategoriesCall = (categoryType) => {
 
   const requestOptions = {
     method: 'GET',
-    headers: httpHelper.addAuthHeader({}, getJwtToken())
+    headers: httpHelper.addAuthHeader({})
   }
 
   return fetch(`${config.API_URL}/api/category/${type}`, requestOptions)
@@ -64,8 +62,7 @@ export const createCategoryCall = (category) => {
   const requestOptions = {
     method: 'POST',
     headers: httpHelper.addAuthHeader(
-      { 'Content-Type': 'application/json' },
-      getJwtToken()
+      { 'Content-Type': 'application/json' }
     ),
     body: JSON.stringify(category)
   }
@@ -81,8 +78,7 @@ export const changeStateFavouriteCategoryCall = (category) => {
   const requestOptions = {
     method: 'PATCH',
     headers: httpHelper.addAuthHeader(
-      { 'Content-Type': 'application/json' },
-      getJwtToken()
+      { 'Content-Type': 'application/json' }
     ),
     body: JSON.stringify({ isFavourite: !category.favourite })
   }
@@ -98,7 +94,7 @@ export const deleteCategoryCall = (id, categoryType) => {
 
   const requestOptions = {
     method: 'DELETE',
-    headers: httpHelper.addAuthHeader({}, getJwtToken())
+    headers: httpHelper.addAuthHeader({})
   }
 
   return fetch(`${config.API_URL}/api/category/${type}/${id}`, requestOptions)
@@ -111,8 +107,7 @@ export const editExpenseCategoryMaximumAmountCall = (categoryId, newMaximumAmoun
   const requestOptions = {
     method: 'PUT',
     headers: httpHelper.addAuthHeader(
-      { 'Content-Type': 'application/json' },
-      getJwtToken()
+      { 'Content-Type': 'application/json' }
     ),
     body: JSON.stringify({ newMaximumAmount, isValidFromNextMonth })
   }
@@ -128,8 +123,7 @@ export const editCategoryCall = (categoryId, categoryName, colorHex, categoryTyp
   const requestOptions = {
     method: 'PATCH',
     headers: httpHelper.addAuthHeader(
-      { 'Content-Type': 'application/json' },
-      getJwtToken()
+      { 'Content-Type': 'application/json' }
     ),
     body: JSON.stringify({ categoryName, colorHex })
   }
@@ -145,7 +139,7 @@ export const getTransactionsCall = (transactionType, date) => {
 
   const requestOptions = {
     method: 'GET',
-    headers: httpHelper.addAuthHeader({}, getJwtToken())
+    headers: httpHelper.addAuthHeader({})
   }
 
   const urlGetRequest = date ? `${config.API_URL}/api/transaction/${type}?year=${date.year}&month=${date.month + 1}` : `${config.API_URL}/api/transaction/${type}`
@@ -166,7 +160,7 @@ export const createTransactionCall = (transaction) => {
 
   const requestOptions = {
     method: 'POST',
-    headers: httpHelper.addAuthHeader({}, getJwtToken()),
+    headers: httpHelper.addAuthHeader({}),
     body: formData
   }
 
@@ -181,7 +175,7 @@ export const deleteTransactionCall = (transactionId, transactionType) => {
 
   const requestOptions = {
     method: 'DELETE',
-    headers: httpHelper.addAuthHeader({}, getJwtToken())
+    headers: httpHelper.addAuthHeader({})
   }
 
   return fetch(`${config.API_URL}/api/transaction/${type}/${transactionId}`, requestOptions)
@@ -193,7 +187,7 @@ export const deleteTransactionCall = (transactionId, transactionType) => {
 export const getExpenseFileCall = (transactionId) => {
   const requestOptions = {
     method: 'GET',
-    headers: httpHelper.addAuthHeader({}, getJwtToken())
+    headers: httpHelper.addAuthHeader({})
   }
 
   return fetch(`${config.API_URL}/api/transaction/expense/${transactionId}/file`, requestOptions)
@@ -204,7 +198,7 @@ export const getExpenseFileCall = (transactionId) => {
 export const deleteExpenseFileCall = (transactionId) => {
   const requestOptions = {
     method: 'DELETE',
-    headers: httpHelper.addAuthHeader({}, getJwtToken())
+    headers: httpHelper.addAuthHeader({})
   }
 
   return fetch(`${config.API_URL}/api/transaction/expense/${transactionId}/file`, requestOptions)
@@ -218,7 +212,7 @@ export const uploadExpenseFileCall = (transactionId, receiptFile) => {
 
   const requestOptions = {
     method: 'POST',
-    headers: httpHelper.addAuthHeader({}, getJwtToken()),
+    headers: httpHelper.addAuthHeader({}),
     body: formData
   }
 
@@ -234,8 +228,7 @@ export const updateTransactionCall = (transaction) => {
   const requestOptions = {
     method: 'PUT',
     headers: httpHelper.addAuthHeader(
-      { 'Content-Type': 'application/json' },
-      getJwtToken()
+      { 'Content-Type': 'application/json' }
     ),
     body: JSON.stringify(transaction)
   }

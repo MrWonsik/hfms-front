@@ -3,7 +3,7 @@ import Col from 'react-bootstrap/Col'
 import Row from 'react-bootstrap/Row'
 import UsersTable from '../features/usersManagement/UsersTable'
 
-const HomePageAdmin = () => {
+const HomeAdmin = () => {
   return (
     <>
       <Row className="justify-content-md-center home-page-admin">
@@ -15,4 +15,4 @@ const HomePageAdmin = () => {
   )
 }
 
-export default HomePageAdmin
+export default HomeAdmin

@@ -1,3 +1,4 @@
+import { store } from ".."
 
 export const httpHelper = {
   addAuthHeader,
@@ -5,7 +6,8 @@ export const httpHelper = {
   handleError
 }
 
-function addAuthHeader (headers, token) {
+function addAuthHeader (headers) {
+  const token = store.getState().user?.user?.token
   if (token) {
     return {
       ...headers,

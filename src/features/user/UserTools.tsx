@@ -1,32 +1,38 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import Nav from 'react-bootstrap/Nav'
-import Navbar from 'react-bootstrap/Navbar'
+import { Nav, Navbar } from 'react-bootstrap'
 import { BsPower, BsGearFill } from 'react-icons/bs'
 import { openModalChangePassword } from '../../_components/modal/modal.actions'
 
 import ChangePasswordModal from './ChangePasswordModal'
 import HoverTooltip from '../../_components/HoverTooltip'
 import { alertSuccess } from '../../_components/alert/alert.actions'
+import { alertSuccess as alertSuccessTS} from '../../_components/alert/alert'
 import { getMonth } from '../../_utils/dateHelper'
 import moment from 'moment'
 import { logout } from './oldRedux/user.actions'
+import { RootState } from '../../app/storeTS'
+import { TS_TURN_ON } from '../..'
+import { openModal } from '../../_components/modal/modal'
+import { logOut } from './user'
 
 
-const UserTools = () => {
+
+const UserTools = (): JSX.Element => {
   const dispatch = useDispatch()
 
-  const { user } = useSelector((state) => ({
+  const { user } = useSelector((state: RootState) => ({
     user: state.user.user
   }))
 
-  const handleChangePasswordModalOpen = () => {
-    dispatch(openModalChangePassword())
+  const handleChangePasswordModalOpen = (): void => {
+    dispatch(TS_TURN_ON ? openModal({type: "changePassword", context: ""}) : openModalChangePassword())
   }
 
-  const handleLogout = () => {
-    dispatch(logout())
-    dispatch(alertSuccess('Logout successfully!'))
+  const handleLogout = (): void => {
+    console.log("test");
+    dispatch(TS_TURN_ON ? logOut() : logout())
+    dispatch(TS_TURN_ON ? alertSuccessTS('Logout successfully!') : alertSuccess('Logout successfully!'))
   }
 
   const now = moment()

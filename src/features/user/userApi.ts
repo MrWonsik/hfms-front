@@ -1,6 +1,5 @@
 import config from 'config'
 import { parseJwt, httpHelper } from '../../_utils'
-import { getJwtToken } from '../../index'
 
 export const loginRequestCall = ({username, password}) => {
 

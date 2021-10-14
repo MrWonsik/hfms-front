@@ -4,16 +4,18 @@ import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
 import PropTypes from 'prop-types'
 import { closeConfirmationModal } from './modal/modal.actions'
+import { TS_TURN_ON } from '..'
+import { closeModal } from './modal/modal'
 
 export const ConfirmationModal = ({ id, confirmationFunction, confirmationMessage }) => {
   const dispatch = useDispatch()
 
   const { confirmationModal } = useSelector(state => ({
-    confirmationModal: state.modals.confirmationModal
+    confirmationModal: TS_TURN_ON ? state.modal : state.modals.confirmationModal
   }))
 
   const handleClose = () => {
-    dispatch(closeConfirmationModal())
+    dispatch(TS_TURN_ON ? closeModal() : closeConfirmationModal())
   }
 
   const handleConfirm = (e) => {
@@ -23,7 +25,15 @@ export const ConfirmationModal = ({ id, confirmationFunction, confirmationMessag
     handleClose()
   }
 
-  return (<Modal show={confirmationModal && id === confirmationModal.contextId && confirmationModal.isOpen} onHide={handleClose}>
+  const shouldDisplay = () => {
+    if(!TS_TURN_ON) {
+      return confirmationModal && id === confirmationModal.contextId && confirmationModal.isOpen
+    } else {
+      return confirmationModal.isOpen && id === confirmationModal.context
+    }
+  }
+
+  return (<Modal show={shouldDisplay()} onHide={handleClose}>
         <Modal.Header closeButton>
             <Modal.Title>Confirmation</Modal.Title>
         </Modal.Header>
