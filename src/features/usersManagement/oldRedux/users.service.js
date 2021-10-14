@@ -1,5 +1,5 @@
 import config from 'config'
-import { httpHelper } from '../../../_services'
+import { httpHelper } from '../../../_utils'
 import { getJwtToken } from '../../../index'
 
 export const getAllUsersCall = () => {

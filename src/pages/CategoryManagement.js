@@ -1,16 +1,16 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { changePage } from '../user/oldRedux/user.actions'
 import Tab from 'react-bootstrap/Tab'
 import Tabs from 'react-bootstrap/Tabs'
-import CategoriesTable from './CategoriesTable'
-import AddNewCategoryModal from './AddNewCategoryModal'
 import Form from 'react-bootstrap/Form'
 import { BsPlus } from 'react-icons/bs'
-import { openModalAddNewCategory } from '../../_components/modal/modal.actions'
-import { getCategories } from '../../features/finance-oldRedux/finance.actions'
-import { EXPENSE, INCOME } from '../../features/finance-oldRedux/CategoryType'
-import { getIconWithActionAndTooltip } from '../../_components/HoverTooltip'
+import { changePage } from '../features/user/oldRedux/user.actions'
+import CategoriesTable from '../features/categoriesManagement/CategoriesTable'
+import AddNewCategoryModal from '../features/categoriesManagement/AddNewCategoryModal'
+import { openModalAddNewCategory } from '../_components/modal/modal.actions'
+import { getCategories } from '../features/finance-oldRedux/finance.actions'
+import { EXPENSE, INCOME } from '../features/finance-oldRedux/CategoryType'
+import { getIconWithActionAndTooltip } from '../_components/HoverTooltip'
 
 const CategoryPage = () => {
   const { expenseCategories, incomeCategories, isExpenseCategoriesLoading, isIncomeCategoriesLoading } = useSelector((state) => ({

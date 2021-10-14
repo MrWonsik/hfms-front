@@ -5,14 +5,15 @@ import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
 import Spinner from 'react-bootstrap/Spinner'
 import { closeModalAddNewUser } from '../../_components/modal/modal.actions'
-import { mapRoleToDomain } from '../../_services/mapper'
+import { mapRoleToDomain } from '../../_utils/mapper'
 import { createUser } from './oldRedux/users.actions'
+import { TS_TURN_ON } from '../..'
 
 export const ChangePasswordModal = () => {
   const dispatch = useDispatch()
 
   const { addNewUserModalIsOpen, creatingUserInProgress } = useSelector(state => ({
-    addNewUserModalIsOpen: state.modals.addNewUserModalIsOpen,
+    addNewUserModalIsOpen: TS_TURN_ON ? state.modal.isOpen && state.modal.type === "addNewUser" : state.modals.addNewUserModalIsOpen,
     creatingUserInProgress: state.users.creatingUserInProgress
   }))
 
@@ -22,7 +23,7 @@ export const ChangePasswordModal = () => {
   const [role, setRole] = useState('user')
 
   const handleClose = () => {
-    dispatch(closeModalAddNewUser())
+    dispatch(TS_TURN_ON ? closeModal() : closeModalAddNewUser())
     setUsername('')
     setPassword('')
     setRole('user')

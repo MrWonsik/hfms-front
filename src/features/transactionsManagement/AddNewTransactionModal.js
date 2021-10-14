@@ -9,7 +9,7 @@ import { closeModalAddNewTransaction } from '../../_components/modal/modal.actio
 import { EXPENSE_TRANSACTION } from '../../features/finance-oldRedux/TransactionType'
 import { createTransaction } from '../../features/finance-oldRedux/finance.actions'
 import moment from 'moment'
-import { isObjectEmpty } from '../../_services/isObjectEmpty'
+import { isObjectEmpty } from '../../_utils/isObjectEmpty'
 
 export const AddNewTransactionModal = () => {
   const dispatch = useDispatch()

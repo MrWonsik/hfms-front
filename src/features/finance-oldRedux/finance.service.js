@@ -1,5 +1,5 @@
 import config from 'config'
-import { httpHelper, mapCategoryTypeToDomain, mapTransactionTypeToDomain } from '../../_services'
+import { httpHelper, mapCategoryTypeToDomain, mapTransactionTypeToDomain } from '../../_utils'
 import { getJwtToken } from '../../index'
 
 // <================= SHOPS:

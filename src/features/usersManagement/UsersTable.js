@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import Form from 'react-bootstrap/Form'
-import { mapRoleToString } from '../../_services'
+import { mapRoleToString } from '../../_utils'
 import AddNewUserModal from './AddNewUserModal'
 import ChangeUserPasswordModal from './ChangeUserPasswordModal'
 import { BsTrash, BsPersonPlusFill, BsPencil, BsPersonCheck, BsPerson, BsCalendar } from 'react-icons/bs'
@@ -10,7 +10,7 @@ import { openConfirmationModal, openModalAddNewUser, openModalChangePasswordUser
 import ConfirmationModal from '../../_components/ConfirmationModal'
 import BootstrapTable from 'react-bootstrap-table-next'
 import paginationFactory from 'react-bootstrap-table2-paginator'
-import { dateSort } from '../../_services/tableBootstrapSorter'
+import { dateSort } from '../../_utils/tableBootstrapSorter'
 import { getIconWithActionAndTooltip } from '../../_components/HoverTooltip'
 import Loader from '../../_components/Loader'
 

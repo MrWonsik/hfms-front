@@ -11,9 +11,9 @@ import { Link } from 'react-router-dom'
 import { EXPENSE, INCOME } from '../../features/finance-oldRedux/CategoryType'
 import { getAllTransactions, getCategories } from '../../features/finance-oldRedux/finance.actions'
 import { EXPENSE_TRANSACTION } from '../../features/finance-oldRedux/TransactionType'
-import { getMonth } from '../../_services/dateHelper'
+import { getMonth } from '../../_utils/dateHelper'
 import { getIconWithActionAndTooltip } from '../../_components/HoverTooltip'
-import { getCurrency } from '../../_services/currencyGetter'
+import { getCurrency } from '../../_utils/currencyGetter'
 
 const UserCharts = () => {
   const dispatch = useDispatch()

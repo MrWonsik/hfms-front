@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { Route, Switch, Redirect, BrowserRouter } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { alertClear } from '../_components/alert/alert.actions'
-import HomePageUser from '../standardPages/HomePageUser'
-import HomePageAdmin from '../standardPages/HomePageAdmin'
-import NotFoundPage from '../standardPages/NotFoundPage'
-import LoginPage from '../standardPages/LoginPage'
+import HomeUser from '../pages/HomeUser'
+import HomeAdmin from '../pages/HomeAdmin'
+import Login from '../pages/Login'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
@@ -16,8 +14,8 @@ import { createBrowserHistory } from 'history'
 
 const renderHomepage = (user) => {
   switch (user.role) {
-    case 'ROLE_ADMIN': return (<Route exact path="/home" component={HomePageAdmin} />)
-    case 'ROLE_USER': return (<Route path="/home" component={HomePageUser} />)
+    case 'ROLE_ADMIN': return (<><UserTools /><HomeAdmin /></>)
+    case 'ROLE_USER': return (<><UserTools /><HomeUser /></>)
   }
 }
 
@@ -68,15 +66,7 @@ const App = () => {
                 <div className = "text-center">{alert.message}</div>
               </Alert>
             )}
-            <BrowserRouter history={history}>
-                {loggedIn && <UserTools />}
-                <Switch>
-                  {user?.role && renderHomepage(user)}
-                  <Route exact path="/login" component={LoginPage} />
-                  {!loggedIn && <Redirect from="*" to="/login" />}
-                  <Route path="*" component={NotFoundPage} />
-                </Switch>
-            </BrowserRouter>
+                {!loggedIn ? <Login /> : renderHomepage(user)}
           </Col>
         </Row>
       </Container>

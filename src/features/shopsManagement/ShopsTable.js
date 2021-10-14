@@ -7,7 +7,7 @@ import { openConfirmationModal, openModalAddNewShop } from '../../_components/mo
 import AddNewShopModal from './AddNewShopsModal'
 import ConfirmationModal from '../../_components/ConfirmationModal'
 import Alert from 'react-bootstrap/Alert'
-import { dateSort, sortByName } from '../../_services/tableBootstrapSorter'
+import { dateSort, sortByName } from '../../_utils/tableBootstrapSorter'
 import BootstrapTable from 'react-bootstrap-table-next'
 import paginationFactory from 'react-bootstrap-table2-paginator'
 import { getIconWithActionAndTooltip } from '../../_components/HoverTooltip'

@@ -9,6 +9,7 @@ import { alert } from '../_components/alert/alert.reducer'
 import { users } from '../features/usersManagement/oldRedux/users.reducer' 
 import { modals } from '../_components/modal/modal.reducer'
 import { finance } from '../features/finance-oldRedux/finance.reducer'
+// import user from '../features/user/user' 
 
 const reducers = combineReducers({
   user,

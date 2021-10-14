@@ -7,8 +7,8 @@ import { BsArrowRightShort } from 'react-icons/bs'
 import { Form, Spinner } from 'react-bootstrap'
 import PropTypes from 'prop-types'
 import { editExpenseCategoryMaximumAmount } from '../../features/finance-oldRedux/finance.actions'
-import { getMonth } from '../../_services/dateHelper'
-import { getCurrency } from '../../_services/currencyGetter'
+import { getMonth } from '../../_utils/dateHelper'
+import { getCurrency } from '../../_utils/currencyGetter'
 
 const EditMaximumAmountModal = ({ id, categoryId }) => {
   const dispatch = useDispatch()

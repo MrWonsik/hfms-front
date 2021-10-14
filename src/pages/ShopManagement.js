@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
-import { changePage } from '../user/oldRedux/user.actions'
-import ShopsTable from './ShopsTable'
+import { changePage } from '../features/user/oldRedux/user.actions'
+import ShopsTable from '../features/shopsManagement/ShopsTable'
 
 const ShopManagementPage = () => {
   const dispatch = useDispatch()

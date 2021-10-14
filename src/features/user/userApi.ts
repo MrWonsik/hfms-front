@@ -1,8 +1,9 @@
 import config from 'config'
-import { parseJwt, httpHelper } from '../../../_utils'
-import { getJwtToken } from '../../../index'
+import { parseJwt, httpHelper } from '../../_utils'
+import { getJwtToken } from '../../index'
 
-export const loginRequestCall = (username, password) => {
+export const loginRequestCall = ({username, password}) => {
+
   const requestOptions = {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

@@ -1,6 +1,5 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
 import Nav from 'react-bootstrap/Nav'
 import Navbar from 'react-bootstrap/Navbar'
 import { BsPower, BsGearFill } from 'react-icons/bs'
@@ -9,8 +8,10 @@ import { openModalChangePassword } from '../../_components/modal/modal.actions'
 import ChangePasswordModal from './ChangePasswordModal'
 import HoverTooltip from '../../_components/HoverTooltip'
 import { alertSuccess } from '../../_components/alert/alert.actions'
-import { getMonth } from '../../_services/dateHelper'
+import { getMonth } from '../../_utils/dateHelper'
 import moment from 'moment'
+import { logout } from './oldRedux/user.actions'
+
 
 const UserTools = () => {
   const dispatch = useDispatch()
@@ -24,6 +25,7 @@ const UserTools = () => {
   }
 
   const handleLogout = () => {
+    dispatch(logout())
     dispatch(alertSuccess('Logout successfully!'))
   }
 
@@ -48,7 +50,7 @@ const UserTools = () => {
             </Nav.Link>
           </Nav.Item>
           <Nav.Item>
-            <Nav.Link as={Link} to="/login" onClick={handleLogout}>
+            <Nav.Link onClick={handleLogout}>
               <HoverTooltip
                 el={<BsPower className="navbar-icon"/>}
                 msg="Logout"

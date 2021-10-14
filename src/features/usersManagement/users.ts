@@ -2,14 +2,14 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface UsersState {
   users: Array<any>,
-  isLoading: boolean,
+  isUsersLoading: boolean,
   updatingPasswordInProgress: boolean,
   creatingUserInProgress: boolean
 }
 
 const initialState: UsersState = {
   users: [],
-  isLoading: false,
+  isUsersLoading: false,
   updatingPasswordInProgress: false,
   creatingUserInProgress: false,
 };
@@ -19,14 +19,14 @@ export const users = createSlice({
   initialState,
   reducers: {
     getUsersRequest: (state) => {
-      state.isLoading = true;
+      state.isUsersLoading = true;
     },
     getUsersSuccess: (state, action: PayloadAction<Array<any>>): void => {
       state.users = action.payload;
-      state.isLoading = false;
+      state.isUsersLoading = false;
     },
     getUsersFailure: (state): void => {
-      state.isLoading = false;
+      state.isUsersLoading = false;
     },
     getUsersClear: (state): void => {
       state = initialState;
@@ -57,7 +57,8 @@ export const users = createSlice({
   
 });
 
-// Action creators are generated for each case reducer function
-export const { getUsersRequest, getUsersSuccess, getUsersFailure, getUsersClear } = users.actions;
+export const { getUsersRequest, getUsersSuccess, getUsersFailure, getUsersClear, 
+  userChangeStatusSuccess, createUserRequest, createUserSuccess, createUserFailure,
+changeUserPasswordFailure, changeUserPasswordRequest, changeUserPasswordSuccess } = users.actions;
 
 export default users.reducer;
