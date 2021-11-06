@@ -103,7 +103,7 @@ export const TransactionDetailsModal = ({ id, transaction }) => {
 
   const getOptions = (categories) => {
     return categories?.sort((a, b) => a.categoryName.localeCompare(b.categoryName)).sort(a => a.favourite ? -1 : 1).map((category) =>
-      (<option key={category.id} value={category.categoryName} id={category.id}>{category.categoryName} {category.favourite && '★'}</option>))
+      (<option key={category.id} value={category.categoryName}>{category.categoryName} {category.favourite && '★'}</option>))
   }
 
   return (
@@ -166,9 +166,10 @@ export const TransactionDetailsModal = ({ id, transaction }) => {
                                     name="category"
                                     value={category?.name}
                                     onChange={(e) => {
-                                      const element = document.querySelector('option[value="' + e.target.value + '"]')
-                                      const category = element != null ? { id: element.getAttribute('id'), name: e.target.value } : undefined
-                                      setCategory(category)
+                                      const el = isExpenseTransaction 
+                                      ? expenseCategories.find(category => category.categoryName === e.target.value) 
+                                      : incomeCategories.find(category => category.categoryName === e.target.value);
+                                      setCategory({ id: el.id, name: el.categoryName })
                                     }}
                                 >
                                     <option>Please select</option>
