@@ -1,6 +1,8 @@
 import config from 'config'
-import { parseJwt, httpHelper } from '../../../_services'
+import { httpHelper } from '../../../_services'
 import { getJwtToken } from '../../../index'
+import jwt_decode from 'jwt-decode';
+
 
 export const loginRequestCall = (username, password) => {
   const requestOptions = {
@@ -12,7 +14,7 @@ export const loginRequestCall = (username, password) => {
   return fetch(`${config.API_URL}/api/auth/sign`, requestOptions)
     .then(httpHelper.handleResponse)
     .then(jwt => {
-      const decodedJwt = parseJwt(jwt.token)
+      const decodedJwt = jwt_decode(jwt.token);
       const user = decodedJwt?.userInfo
       user.token = jwt.token
       return user
